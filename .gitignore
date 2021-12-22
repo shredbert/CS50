@@ -1,1 +1,6 @@
+# binary files
+*
+!*.*
+
+# Vim files
 Session.*
