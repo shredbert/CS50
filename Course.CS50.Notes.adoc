@@ -1,7 +1,24 @@
 = CS50 (2020)
 
 View https://cs50.harvard.edu/x/2021/[course notes] &
-https://ide.cs50.io[IDE]
+https://ide.cs50.io[IDE].
+
+For local dev, download the libraries/headers from the
+https://cs50.stackexchange.com/questions/1982/downloading-cs50-h[CS50 Stack
+Exchange].
+
+For issues with the CLI tools, read the https://cs50.readthedocs.io/#[main
+docs].
+
+For cs50 utilities, read the https://cs50.readthedocs.io/libraries/cs50/c/[cs50
+library], https://cs50.readthedocs.io/projects/check50/en/latest/[check50], &
+https://cs50.readthedocs.io/style50/[style50] docs.
+
+For helpful hints on configuring a local dev environment, see the
+https://cs50.stackexchange.com/questions/1483/undefined-reference-to-getstring[linking
+libraries thread] &
+https://stackoverflow.com/questions/55107463/how-to-build-cs50-programs-with-make[using
+Makefiles thread].
 
 == Lecture 0: Scratch
 
