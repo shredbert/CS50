@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <cs50.h>
 #include <math.h>
+/* NOTE: check50 don't work, probably compiler issue with math lib import*/
 
 int main(void)
 {
