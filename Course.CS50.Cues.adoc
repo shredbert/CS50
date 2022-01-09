@@ -56,7 +56,7 @@
 * what *5 things* are necessary to *create & assign* variables in C?
 ** name *each part* in the example below
 ** which side of the *assignment operator* is executed by the comp. 1^st^?
-*
++
 ----
 string name = "bert";
 ----
