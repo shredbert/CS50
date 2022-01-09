@@ -141,7 +141,7 @@ Makefiles thread].
 ** graphical lang. with same prog. fundamentals (more friendly)
 ** *then* c -> text/keyboard-based
 ** function, conditions, bools, loops, vars, threads, events, & more
-
++
 [source, c]
 ----
 #include <stdio.h>
@@ -289,7 +289,7 @@ View the https://cs50.harvard.edu/x/2021/weeks/1/[lecture website].
 * CS50 lib. -> allows same logic as scratch (`get_string`)
 
 * Boilerplate -- needed to start writing
-
++
 ----
 int main(void)
 {
@@ -375,7 +375,7 @@ int main(void)
 ** *OR* `counter += 1;` or `counter++;` -> *syntactic sugar*
 
 * conditions:
-
++
 ----
 if ([condition])
 {
@@ -390,7 +390,7 @@ else
     [other other logic]
 }
 ----
-
++
 ** try to *be succinct* -> just use else at end to reduce typing
 
 * equality = `x == y`, less than = `x < y`, greater than = `x > y`
@@ -400,7 +400,7 @@ else
 ** use `||` for multiple options (`if ([cond1] || [cond2])`)
 
 * looping -> `for()` = specific # of times, `while()` = until condition true
-
++
 ----
 // while loops -- check condition *then* do something
 int i = 0 // "i" = int, short
