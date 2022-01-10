@@ -15,10 +15,15 @@ int main(void)
     for (int i = 0; i < height; i++)
     {
         // TODO: print 1 col for each height, with space & (i + 1) for hashes
-        for (int j = 0; j < (height * 2) + 2; j++)
+        for (int j = 0; j < (height + 2 + i + 1); j++)
         {
-            if (j == height || j == height + 1 || j < height - i - 1 ||
-                j > height + i + 2)
+            // Middle spaces == height & height + 1
+            if (j == height || j == height + 1)
+            {
+                printf(" ");
+            }
+            // Leading spaces
+            else if (j < height - i - 1)
             {
                 printf(" ");
             }
