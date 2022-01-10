@@ -10,7 +10,7 @@ int main(void)
         height = get_int("Enter the pyramid height plz: ");
     }
     while (height < 1 || height > 8);
-
+    
     // TODO: print 1 row for each height
     for (int i = 0; i < height; i++)
     {
