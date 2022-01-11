@@ -480,7 +480,103 @@ https://cs50.harvard.edu/x/2021/psets/1/credit/[Credit (advanced)]
 
 == Lecture 2: Arrays
 
-* 
+=== Compiling
+
+* `make` = program that *calls* the actual compiler
+** course compiler = `clang`
+** can call that instead -> `clang hello.c`
+*** _notice file extension -> diff. than make_
+** by default, outputs `a.out`
+** make like `make` -> `clang -o hello hello.c`
+*** `-o` = *argument* to program that means *output*
+** need arg for external libraries, too -> `-lcs50`
+*** i.e., `clang -o hello hello.c -lcs50`
+** `make` = automatically do above
+
+* compiling has *4 substeps:*
+. preprocessing
+*** _take header files & replace with *prototypes* of original code (i.e.,
+    header file contents)_
+. compiling
+*** convert to *assembly language* -> mix of recognizable from our code &
+    binary-like instructions for computer processor
++
+[src,assembly]
+----
+...
+main:                         # @main
+    .cfi_startproc
+# BB#0:
+    pushq    %rbp
+.Ltmp0:
+    .cfi_def_cfa_offset 16
+.Ltmp1:
+    .cfi_offset %rbp, -16
+    movq    %rsp, %rbp
+.Ltmp2:
+    .cfi_def_cfa_register %rbp
+    subq    $16, %rsp
+    xorl    %eax, %eax
+    movl    %eax, %edi
+    movabsq    $.L.str, %rsi
+    movb    $0, %al
+    callq    get_string
+    movabsq    $.L.str.1, %rdi
+    movq    %rax, -8(%rbp)
+    movq    -8(%rbp), %rsi
+    movb    $0, %al
+    callq    printf
+    ...
+----
+. assembling
+*** *then* translate to binary (called *assembly*) -> machine code that comps.
+    processor can run directly
+. linking
+*** take files from *link* step (above) & combine with our code to make *single
+    binary file* (`hello`)
+** _`make` makes it easier by taking care of it all for us with 1 cmd._
+
+=== Debugging
+
+* bugs = unintentional behaviour, debugging = *find & fix*
+** debugging often helps you see what's going on behind the scenes -> can often
+   do with more `printf()` statements to visualize
+
+* use `debug50` -> will help use debugger *built into VSCode*
+** steps:
+. click to *left of line #* on line of interest to insert a *breakpoint* (i.e.,
+  where debugger starts by *pausing code*)
+*** hit *play button* to move to next
+*** hit *step over* to run through program *line-by-line*
+. run `debug50 [filename]` in term.
+*** can view *Variables* in the *Run & Debug* window
+. step through line-by-line -> don't need to print vars. if viewing in window
+
+* *rubber duck* -> 
+
+=== Memory
+
+* {empty}
+
+=== Arrays
+
+* {empty}
+
+=== Characters
+
+* {empty}
+
+=== Strings
+
+* {empty}
+
+=== Command-line args.
+
+* {empty}
+
+=== Applications
+
+* {empty}
 
 == Lecture 3: Algorithms
 
@@ -510,7 +606,17 @@ https://cs50.harvard.edu/x/2021/psets/1/credit/[Credit (advanced)]
 
 * 
 
-== Lecture 10: Ethics
+== Lecture 10: Emoji
 
 * 
+
+== Bonus: Cybersecurity
+
+* 
+
+== Bonus: Seminars
+
+* 
+
+== Bonus: Educator Workshop
 
