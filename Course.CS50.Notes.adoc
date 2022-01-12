@@ -551,24 +551,154 @@ main:                         # @main
 . run `debug50 [filename]` in term.
 *** can view *Variables* in the *Run & Debug* window
 . step through line-by-line -> don't need to print vars. if viewing in window
-
-* *rubber duck* -> 
+. step into -> good if bug isn't var-related, can see which line issue occurs
+  on
+** *rubber duck* -> explain step-by-step as though to inanimate object
 
 === Memory
 
-* {empty}
+* diff. vars take up diff. memory:
+** bool & char (256 ASCII chars) = 1 byte
+** float & int (32 bill. vals) = 4 bytes
+** double (float * 2) & long (int * 2) = 8 bytes
+** string = indetermined (variable-length, short or long)
+
+* random access memory -> bytes stored in "grid squares"
+** char = 1 square, int = 4 squares, etc.
+** abstracted away so we can build shiiiitttt
 
 === Arrays
 
-* {empty}
+* ints can divide but remainder is thrown away
+** divide by decimal to cast implicitly
+
+* arrays = store multiple vals. of same type
+** "index into" to assign vals -> `int var[length]` to declare, `var[0] = 5` to
+   assign
+** *for loops* good -> index already there
++
+[src,c]
+----
+#include <cs50.h>
+#include <stdio.h>
+
+int main(void)
+{
+    int n = get_int("How many scores? ");
+
+    int scores[n];
+
+    for (int i = 0; i < n; i++)
+    {
+        scores[i] = get_int("Score: ");
+    }
+
+    printf("Average: %f\n", (scores[0] + scores[1] + scores[2]) / 3.0);
+}
+----
 
 === Characters
 
-* {empty}
+* `printf("%c", charVar);` to print chars
+
+* `printf()` can *print chars as ints* -> raw ASCII val.
+** or cast to int
+
+* *casting floats to ints loses decimals/other info!!!*
 
 === Strings
 
-* {empty}
+* *arrays* of chars, as defined by CS50's lib.
+** `string[0]`, `string[1]`, etc.
+
+* *alls strings* in C end with special char to indicate ending -> `\0`
+** *null character* or NUL
+** 4 bytes needed for string with 3 chars
+** fixed-size datatypes don't need
+** other langs/libs might have variable length datatypes but can also be
+   implemented by *recording* the # of bytes somehow?
+
+* can count # of chars in string:
++
+[src,c]
+----
+#include <cs50.h>
+#include <stdio.h>
+  
+int string_length(string s);
+  
+int main(void)
+{
+    string name = get_string("Name: ");
+    int length = string_length(name);
+    printf("%i\n", length);
+}
+  
+int string_length(string s)
+{
+    int i = 0;
+    while (s[i] != '\0')
+    {
+        i++;
+    }
+    return i;
+}
+----
+** don't bother if char is `\0` -> string end
+** or use the C `string` lib (`string.h`) `strlen()` func. to count
+** CS50 has a https://manual.cs50.io/[manual] for C std lib, C POSIX lib, &
+   CS50 lib, too
+*** _simpler that std. man. pages_
+*** see the https://manual.cs50.io/3/strlen[string length] page in particular
+** print each char in string using `strlen`:
++
+[src,c]
+----
+#include <cs50.h>
+#include <stdio.h>
+#include <string.h>
+
+int main(void)
+{
+    string s = get_string("Input:  ");
+    printf("Output: \n");
+    for (int i = 0, n = strlen(s); i < n; i++)
+    {
+        printf("%c\n", s[i]);
+    }
+}
+----
+** make prg. to caps. letters:
++
+[src,c]
+----
+#include <cs50.h>
+#include <stdio.h>
+#include <string.h>
+
+int main(void)
+{
+    string s = get_string("Before: ");
+    printf("After:  ");
+    for (int i = 0, n = strlen(s); i < n; i++)
+    {
+        // If lowercase...
+        if (s[i] >= 'a' && s[i] <= 'z')
+        {
+            // ...Convert to uppercase
+            printf("%c", s[i] - 32);
+        }
+        else
+        {
+            printf("%c", s[i]);
+        }
+    }
+    printf("\n");
+}
+----
+*** can convert char. cases by -/+ the 32 bit diff.
+** C lib. for string cases -> `ctype.h`
+*** use `islower()` to determine case or `toupper()` to convert for you
 
 === Command-line args.
 
