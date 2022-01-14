@@ -171,3 +171,28 @@ printf("hey, %s!!!\n", name);
 * what *limitation* most commonly causes computers to be *imprecise &
   unreliable?*
 ** what *types of programs* will this impact the most?
+
+== Lecture 2: Arrays
+
+=== Compiling
+
+* what's the *compiler* used by `make` in this course?
+** what are the *3 arguments* required to compile basic CS50 apps?
+
+* what are the *4 steps* compilers have to make an app?
+** what are 
+
+=== Debugging
+
+=== Memory
+
+=== Arrays
+
+=== Characters
+
+=== Strings
+
+=== Command-line arguments
+
+=== Applications
+

@@ -700,13 +700,30 @@ int main(void)
 ** C lib. for string cases -> `ctype.h`
 *** use `islower()` to determine case or `toupper()` to convert for you
 
-=== Command-line args.
+=== Command-line arguments
 
-* {empty}
+* `string argv[]` = arg. *vector* (arr. of args), `int argc` = arg *count*
+  (num.)
+** e.g., `int main(int argc, string argv[]) { }`
+** don't know # of args. before
+** `argv[0]` = name of program (i.e., *1^st^ word typed*)
+** check to make sure *2 args* before using `argv[1]` (always at least 1)
+
+* `main()` = returns *exit status*
+** 0 by default = nothing went wrong
+** `return 1;` = indicate error to sys. calling prg.
+** `return 0;` = explicit, more readability
 
 === Applications
 
-* {empty}
+* *cryptography* = art of scrambling info. to hide it
+** *encrypt* = process of scrambling
+** *plaintext* = source
+** *ciphertext* = output after scrambling
+** *cipher* = algorithm that does the scrambling
+** *key* = 2^nd^ (secret) input required by cipher (number) for scrambling
+** e.g., `cipher("HI!", 1)` outputs "IJ!" (forward 1)
+** e.g., `cipher("UIJT XBT DT50", -1)` outputs "THIS WAS CS50"
 
 == Lecture 3: Algorithms
 
