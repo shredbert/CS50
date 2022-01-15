@@ -177,9 +177,11 @@ printf("hey, %s!!!\n", name);
 === Compiling
 
 * what's the *compiler* used by `make` in this course?
-** what are the *3 arguments* required to compile basic CS50 apps?
+** what are the *3 arguments* required to compile basic CS50 apps using the
+   compiler *directly*? _(**O**striches **S**niff **L**ysol)_
 
-* what are the *4 steps* compilers have to make an app?
+* what are the *4 steps* compilers have to compile an app? _(**P**etty
+  **C**unts in **A**lberta **L**ie)_
 ** what are 
 
 === Debugging
