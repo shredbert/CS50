@@ -1,0 +1,600 @@
+= Lecture 1: C
+:source-highlighter: highlightjs
+:highlightjs-languages: x86asm
+
+== Course Notes
+
+=== C
+
+* C = computer lang, new syntax & more precision than Scratch
+
+* 3 aspects of good code:
+** correctness (solves problem)
+** design (well-written == understandable & efficient)
+** style (visual formatting)
+
+=== IDEs, compilers, interfaces
+
+* compiler = convert code bt langs
+** in this case, C code (source) to machine code (0s & 1s)
+
+* CLI = command-line interface w/ direct access to OS
+** compile w/ `make hello` (creates file)
+** run w/ `./hello`
+*** current folder -> `.`, specify files in folder w/ `/[filename]`
+** delete w/ `rm [filename]` & respond w/ `y`
+** view w/ `ls` (list)
+*** files w/ `*` & green text *executable*
+** *recompile* when changing
+
+* make *not* a compiler -> finds file, compiles, & names automatically
+** handy-dandy build tool
+
+=== Functions, arguments, return vals, vars
+
+* functions = actions, args = inputs
+** `printf()`
+
+* side effect = change that can be observed
+** arg -> function -> side effect
+
+* return vals -> save into var, don't output
+** single `=` -> *assignment* operator, not equality
+** variable types dictate how programs *handle different bytes*
+
+* many tools (compilers) written long ago -> errors concise due to constraints
+  so not user-friendly
+
+* escape sequence -> pass special symbol to string, like `\n` (new line)
+** begin with `\`
+
+* library = reusable extensions to code
+** `#include <[libName].h>` in C
+
+* `printf()` accepts *placeholder* to print vars -> also var as 2^nd^ arg
+** `printf("print %s\n", var);`
+
+=== main, header files, commands
+
+* `main { }` in C = entry point, begins execution from top-down
+
+* header files (`fn.h`) are *menus* of functions linked
+** implementation files are `fn.c` -> separate
+
+* common Linux commands:
+** `cd` = change dir
+** `ls` = list contents
+** `cp` = copy
+** `rm` = remove (file)
+** `rmdir` = remove dir
+** `mkdir` = make dir
+** `mv` = move (file or dir)
+
+* can pass commands to editor (VSCode) -> `code [filename]` to create/open
+  files
+
+* move backwards with `../` -> `..` = *parent* directory (above)
+
+* run files with `./[filename]` -> `.` = current directory
+
+=== Types, format codes, operators
+
+* data types indicate what data represented by vars -- commonly:
+** char = 1 character ("1", "a", "X", etc.)
+** string = multi characters
+** bool = true/false (or 1/0 depending on lang)
+** int = nums without decimals
+** long = ints that go higher
+** float = nums with decimals
+** double = floats that go higher
+** CS50 library has `get_[datatype]()` helper functions for assignments ->
+   makes getting input easier
+
+* `printf()` placeholders *change* for each type:
+** `%c` = chars
+** `%s` = strings
+** `%i` = ints
+** `%li` = long ints
+** `%f` = floats *&* doubles
+
+* comps. do lots of math:
+** `*` = multiply
+** `/` = divide
+** `+` = add
+** `-` = subtract
+** `%` = divide but return *remainder* (modulus = nerd term)
+
+=== Variables, syntactic sugar
+
+* declare var with `[type] [name];`
+** can also *assign* during declaration with `[type] [name] = [val];`
+** *or* assign *after* declaring with just `[name] = [val];` (*don't* declare
+   more than once)
+
+* syntactic sugar = shorthands for common operations
+** e.g., add 1 to var:
++
+[source,c++]
+----
+int num = 1;
+num = num + 1; // add 1 to num
+num += 1; // also add 1 to num
+num++; // also also add 1 to num
+----
+
+=== Calculations
+
+* var names should be semantic
+** *but* algebra-style OK with just math (e.g., `x`, `y`)
+
+* can assign anything to var (e.g., output of calculations)
+** *however,* don't bother if *not re-using* -> waste of space
+
+* comments = remind what code does & how
+** start line comments with `//` in C
+** put multi-line comments between `/* */` in C
+
+* terminal hacks:
+** tab completion -> start command (e.g., `make h`) & tab will finish (`make
+   hello`)
+** up/down arrows = go to previous/next commands in history
+
+* each data type has fixed # of bits for vals -> e.g., int = 32-bits (++~++4
+  billion vals)
+** *but* positive & negative, which means an int can be ++~++-2 bill to ++~++2
+   bill
+** longs help store more than ints but still have limitations due to memory
+   constraints
+
+=== Conditionals, Boolean expressions
+
+* `if ()`, `else ()`, & `else if()` -> conditionals, *not* functions
+** i.e., *don't* need `;`
+
+* `==` -> *compare* 2 values for equality
+** use `else` to finish conditionals -> simpler when *prev* conditions rule out
+   any other possibilities
++
+[source,c++]
+----
+if (x < y)
+{
+    printf("x is less than y\n");
+}
+else if (x > y)
+{
+    printf("x is greater than y\n");
+}
+else
+{
+    printf("x is equal to y\n");
+}
+----
+
+* *magic numbers* -> values that come from somewhere unknown
+** e.g., randomly hard-coding to a val
+** declare vals like these with constants (i.e., don't change) -> `const in
+   NAME = 1`
+*** capital case naming = *convention for consts in C*
+
+* good use-case for `%` (remainder/modulus) -> `if (n % 2 == 0)` means
+  something's an even number
+
+* *or* operator -> `if (x == "y" || x == "Y")`
+
+* *and* operator -> `if (x == "y" && y == "y")`
+
+=== Loops, functions
+
+* `while (condition) { }` -> loop forever while *condition true*
+** e.g., counters:
++
+[source,c++]
+----
+int i = 0;
+while (i < 3)
+{
+    printf("%i\n", i);
+    i++;
+}
+----
+*** `i` = common var name for counters
+** so common that there's a dedicated loop *just* for counting:
++
+[source,c++]
+----
+for (int i = 0; i < 3; i++)
+{
+    printf("meow\n");
+}
+----
+*** only diff. from `while()` loop is that `i` is *only available inside
+    braces* (i.e., for loop vars *scoped* to inside the loop)
+
+* create own functions with:
++
+[source,c++]
+----
+void doSomething(void)
+{
+    // code here -- runs every time called
+}
+----
+** 1^st^ `void` = don't *return* anything, 2^nd^ void = don't accept
+   *arguments*
+** functions must be *declared* so compilers know what's up -> use *prototype*
+[source,c++]
+----
+void doSomething(void); // place at start of code
+
+int main(void)
+{
+    // entry-point here
+}
+
+void doSomething(void)
+{
+    // function code here
+}
+----
+*** *header* files (`.h`) contain *only prototypes,* while their corresponding
+    *library* files (`.c`) contain the functions themselves
+
+=== Mario
+
+* best way to get user input is with a `do { } while ();` loop
++
+[source,c++]
+----
+int n;
+do
+{
+    n = get_int("Width: ");
+}
+while (n < 1);
+----
+** i.e., does something, *then* checks condition
+
+* *nested* loops -> good for ASCII art (i.e., Mario problem)
++
+[source,c++]
+----
+// For each row
+for (int i = 0; i < n; i++)
+{
+    // For each column
+    for (int j = 0; j < n; j++)
+    {
+        // Print a brick
+        printf("#");
+    }
+
+    // Move to next row
+    printf("\n");
+}   
+----
+
+* stop loops early with `break;` statements
++
+[source,c++]
+----
+while (true)
+{
+    n = get_int("Size: ");
+    if (n > 1)
+    {
+        break;
+    }
+}
+----
+
+=== Imprecision, overflow
+
+* when printing floats or doubles with `printf()`, can specify *precision*
+  (i.e., # of decimal places)
+** `printf("%.50f\n", z);`
+
+* *floating-point imprecision* -> comps can't represent all possible real
+  numbers with a finite number of bits
+** e.g., 32 bits for a `float` -> not big enough
+** comps store closest val possible, making it *imprecise*
+
+* similar problem with *integer overflow* -> not having enough memory means
+  line of numbers will be truncated
+** e.g., `111` + 1 = `1000`, but gets trimmed to just `000`
+
+* Y2K -> dates stored with years as just `98`, `99`, etc. -> year 2000 created
+  confusion (`00` = 1900 or 2000?)
+** similar issue now -> 2038 means all the 32-bit ints tracking time will be
+   obsolete
+*** i.e., when we hit max # of ints & they start being truncated, the
+    *negative* symbol for the int will start being added, meaning all ints will
+    be assumed to be the *lowest possible value*
+*** therefore, the lowest ints will all be interpreted as the lowest common
+    date, some time in 1901
+
+* `math.h` is a library that allows us to round numbers
++
+[source,c++]
+----
+#include <cs50.h>
+#include <math.h>
+#include <stdio.h>
+
+int main(void)
+{
+    float amount = get_float("Dollar Amount: ");
+    int pennies = round(amount * 100);
+    printf("Pennies: %i\n", pennies);
+}
+----
+
+== Lecture
+
+* programming in C = same ideas as Scratch, just *text-based*
+** i.e., *pseudo-code* identical for all problems being solved, just the
+   *format for telling the computer how to do it* that changes
+
+* 3 principles for *writing code well:*
+. *correctness* (work as intended)
+. *design* (subjective, well-written)
+** like essays (correct args, poor writing)
+. *style* (aesthetic, like good punctuation, caps, indents, etc.)
+** don't change *correctness* when improving other 
+
+* CS50 IDE
+** IDE = integrated dev environment, env. for programming
+** ide.cs50.io -> course-specific, browser-based
+** terminal & text editor
+*** term = commands
+
+* text editor (edit code) + terminal window (run cmds)
+** cloud-based -> ensures everyone has same exp.
+
+* env. requires *CLI*
+** not *GUI*
+** term = blinking prompt
+
+* *code* understood by humans, *computers* understand binary (1s & 0s)
+** comps. can print on screen -> pattern of 0s & 1s
+** take source code & convert it to 0s & 1s that comps. understand using a
+   *compiler*
+** compiler = intermediary program -> cnvrt. src. to machine code
+** *make* -> compiler
+*** *no* file extension
+** run with ./hello -> no extension, bin. output has none
+*** "$" -> *prompt* (where commands are typed)
+
+* funcs. & args.
+** mini-program -> action/verb
+*** "say", "wait", etc.
+** inputs = args. (or parameters)
+** say something in say = printf()
+*** printf = print *formatted*
+** Scratch -> white ovals *mimic brackets*
+** need semicolon, quotes, brackets, etc.
+*** many lines of code need to end with semicolon
+
+* same *paradigm* as scratch
+** functions = programmed version of algorithm (implemented in code)
+
+* *programs do 2 things:* takes inputs (args.) & can have *side effects*
+*** often *visual* (text/audio)
+** return vals./variables -> functions hand back vals. (don't show/say)
+*** use output in program
+** Scratch -> say block has immediate vis. effect, ask block tucks away stuff
+   in var.
+** `get_string()` -> from *CS50 library*
+*** lib. = code others wrote
+
+* string = *text*
+** `get_string("[prompt]")` -> func. with input
+
+* have to *assign* to vars
+** e.g., `string answer = get_string("what's your name?");`
+*** `=` is *assignment* operator
+*** need to tell comp. what *type* of var, too
+** `[type] [name] = get_string("[prompt]");`
+
+* forgetting "grammar" makes code *frustrating & not interesting,*
+  pedantic/aesthetic
+** good style/grammar comes with *practice* (like writing other langs.)
+
+* can then *do something* with return val.
+** side effects = happen to you, return val. = info stored so you can use it
+** do in C -> `printf("hello, %s", answer);`
+*** `%s` = format code, printf() does formatting on placeholders (string in
+    this case)
+*** commas (outside of quotes) = separate args. to functions (ignore comma *in
+    string*)
+
+* more verbose = more readable (e.g., "answer" instead of just "a")
+** math doesn't *need* to be semantic -> no style
+
+* C = older, have to recompile every time
+** now have fancier envs. where compiles automatically (code.org, codecademy)
+
+* have to *tell* comp. to break line
+** i.e., move cursor to next line
+** `\[char]` = *escape character*, `\n` = new line
+
+* don't have to *call* get_string(), assigning to var. calls func.
+** `=` tells comp. to execute RH & *then* store, spreading 2 ops. in 1
+
+* CS50 lib. -> allows same logic as scratch (`get_string`)
+
+* Boilerplate -- needed to start writing
++
+[source,c++]
+----
+int main(void)
+{
+
+}
+----
+
+* Header files -> end with `.h`
+** `#include <stdio.h>` -> very pop. file in C that gets input/output
+*** e.g., `printf()`
+** access *more functions* than defaults
+** header files = *extensions in Scratch* (fancy buried features)
+
+* many ways to screw up prgs.
+** top of output usually gives name of file & where
+** *help50* -> prog., helps to make sense of cryptic output in term. by
+   translating
+** `make hello` = `help50 make hello`
+
+* ugly = bad *style*, hard to read
+** no errors with bad style -> use `style50` prg.
+** use comments -> good style
+*** ensure *semantic* -> purpose of code, not code itself
+
+* `check50` -> tool for labs/assignments to check *correctness* of code
+** automated tests from staff
+** enter `check50 cs50/problems/hello` -> prompts GitHub auth.
+** red = errors, yellow = couldn't run test cus prev. failed, green = tests
+   pass
+
+* CS50 IDE = own *server* in cloud
+
+* binary files in text editors -> machine lang., users can't see
+** 0s & 1s technically *misinterpreted* in ASCII chars. within *text editor*
+** i.e., machine code misinterpreted as text
+** open *source code,* not *program*
+
+* term. cmds:
+** `ls` -> list files in current directory
+*** bash green w/ asterisk = executable
+** `rm` -> remove (`rm -rf` for directories with files)
+*** `y` or `n` at prompt for yes/no
+** `mv` -> rename/move
+** `mkdir` -> make dir.
+** `cd` -> move to dir.
+** `~` -> tilde = *home* directory
+** `..` -> prev. dir.
+** `./` -> current dir.
+*** run files with `./[filename]`
+** `pwd` -> print the current dir.
+** `rmdir` -> remove dir.
+** `cp` -> copy
+
+* `make` = makes *easier* to compile but not *technically* a compiler
+
+* data types -> lots in C
+** *type* of val. to store
+** also many *funcs.* for CS50 that help you get diff. data types
+** some types have *finite bits* -> ints, floats, chars, doubles, longs,
+   strings, etc.
+*** int = 32 bits, ++~++4 billion
+*** long = 64 bits, twice as many vals.
+** `printf()` -> diff. format codes, %c (char), %f (float w/ dec), %i (int), %li
+   (long int), %s (string)
+** *operators* -> +, -, * , /, % 
+*** all math stuff -> early nerds
+
+* CS50's `get_int()` -> will reject vals. based on invalid input, like 3 & 4
+  bill.
+** 2 bill. max (4 bill. *total* but includes *negatives*)
+
+* *float* for decimals -> most division ops.
+** *however,* if other vars are ints, won't work (rounds)
+** *lose* decimals -> math done on *ints,* no matter what the result is stored
+   as
+** could change all to floats
+** *OR* convert ints to floats -> *casting*
+*** `float z = (float) x / (float) y`
+*** new datatype in parens. = *casting*
+
+* `=` is assignment operator, RH side 1^st^
+** `counter = counter + 1`
+** *OR* `counter += 1;` or `counter++;` -> *syntactic sugar*
+
+* conditions:
++
+[source,c++]
+----
+if ([condition])
+{
+    [logic]
+}
+else if ([other condition])
+{
+    [other logic]
+}
+else
+{
+    [other other logic]
+}
+----
+** try to *be succinct* -> just use else at end to reduce typing
+
+* equality = `x == y`, less than = `x < y`, greater than = `x > y`
+
+* use *single quotes* when comparing individual characters (*chars*)
+** string = `""`, char = `''`
+** use `||` for multiple options (`if ([cond1] || [cond2])`)
+
+* looping -> `for()` = specific # of times, `while()` = until condition true
++
+[source,c++]
+----
+// while loops -- check condition *then* do something
+int i = 0 // "i" = int, short
+while (i < 50)
+{
+    printf("hey!!!\n");
+    i++;
+}
+
+// do while -- do 1 thing *before* checking condition
+do
+{
+    printf("hey!!!\n");
+}
+while (i < 50);
+
+// for loops -- concise when doing something a certain # of times
+for (int i = 0; i < 50; i++) // unique to for loop -> multiple statements/semi-colons in brackets
+{
+    printf("hey!!!\n");
+}
+----
+
+* abstraction = *simplify* complicated detes underneath
+** use *functions* to hide complex code
+** custom funcs. usually at *bottom* (main/entry point at top)
+** *errors* -> compiler doesn't know where func. is
+*** can put *title* at top to tell compiler it *will* exist (`void meow(void);`
+    with actual func. at bottom)
+
+* some lines *don't* need semicolons -> function names, for loops, if
+  statements, etc.
+** *convention* -> finish most constructs with thought, others decided it
+   didn't need
+
+* *C99* -> 1999 version of C
+
+* functions -> 1^st^ = rtrn. val. & parens -> *args.*
+** `void meow(int n)` = no output, `n` input
+** `return` statement -> send value back from func.
+
+* *scope* -> if want var. outside of curly braces, need it *declared* outside
+** i.e., lines of code where a var. exists
+** *match the braces!!!*
+** *don't* need vals just to declare
+
+* what computers *can't* do:
+** *finite memory* -> limitation
+** `printf()` can print out to lots of digits
+*** `printf("%.10f\n", 1 / 10);`
+** with lots of decimal places, *incorrect result*
+** *memory* issue -> if using finite bits, can count *infinitely
+   high/precisely*
+*** i.e., *approximates* at some point
+*** big deal for math/finance -> imprecision == bad
+*** issues with floats *&* ints
+*** like y2k
+*** will happen in *2038* again -> no more bits to keep track of time, 32-bit
+    #s counting seconds from Jan. 1^st^, 1970
+*** _4 billionth second will be hit_

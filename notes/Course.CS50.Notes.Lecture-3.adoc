@@ -1,0 +1,12 @@
+= CS50 Notes
+:source-highlighter: highlightjs
+
+== Lecture 3: Algorithms
+
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* {empty}

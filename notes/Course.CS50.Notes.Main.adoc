@@ -1,0 +1,28 @@
+= CS50 Notes
+:source-highlighter: highlightjs
+:highlightjs-languages: x86asm
+
+[.normal]
+_Started doing 2021, switched to 2022 -> updated assignments & IDE._
+
+View https://cs50.harvard.edu/x/2022/[course notes] for lectures notes &
+assignments.
+
+Local dev::
+* Download C libraries/headers from the
+  https://cs50.stackexchange.com/questions/1982/downloading-cs50-h[CS50 Stack
+  Exchange].
+
+* For issues with the CLI tools, read the https://cs50.readthedocs.io/#[main
+  docs].
+
+* For cs50 utilities, read the
+  https://cs50.readthedocs.io/libraries/cs50/c/[cs50 library],
+  https://cs50.readthedocs.io/projects/check50/en/latest/[check50], &
+  https://cs50.readthedocs.io/style50/[style50] docs.
+
+* For helpful hints on configuring a local dev environment, see the
+  https://cs50.stackexchange.com/questions/1483/undefined-reference-to-getstring[linking
+  libraries thread] &
+  https://stackoverflow.com/questions/55107463/how-to-build-cs50-programs-with-make[using
+  Makefiles thread].

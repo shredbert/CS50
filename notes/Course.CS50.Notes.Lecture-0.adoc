@@ -1,0 +1,272 @@
+= Lecture 0: Scratch (Notes)
+:source-highlighter: highlightjs
+:highlightjs-languages: x86asm
+
+== Course Notes
+
+=== Welcome
+
+* CS = problem solving, not programming
+
+=== What is computer science?
+
+* precise & methodical = good problem solving
+** break down process: take *input* -> do something *(algorithm)* -> produce
+   *output*
+** how to represent inputs & outputs consistently so computers can understand?
+
+=== Representing numbers
+
+* unary = count w/ fingers as single vals of 1 (1 at a time)
+
+* decimal = higher numbers w/ ten digits
+
+* computers *simpler* -> binary = 0s & 1s
+
+* bit = a single binary digit (unit of 0 or 1)
+
+* computers run on electricity & represent by turning a switch on or off
+** comps of billions of switches called *transistors*
+** turn on/off to rep vals
+
+* decimal nums -> 123 = (10^2^ * 1) + (10^1^ * 2) + (1 * 3)
+** binary same -> 00000111 = (2^2^ * 1) + (2^1^ * 1) + (1 * 1)
+*** i.e., 7 in decimal
+
+* most computers process *8 bits at a time* -> `00000011` = 3 in decimal
+
+=== Text
+
+* since comps use nums, *map* nums to letters for comps
+** standard mapping decided on by ancestors = *ASCII*
+** nums, letters, & basic punctuation
+** e.g., A = 65 in decimal, 01000001 in binary
+** diff. contexts (i.e., file formats) = different ways to display nums/text
+
+* eight bits = 1 byte = 2^8^/256 diff. vals (255 highest, 0 inclusive)
+** kilabytes = 1,000, megabytes = 1,000,000 bytes, giga = 1,000,000,000 etc.
+
+* *unicode* -> expand ASCII to include chars w/ accents, symbols from other
+  langs, emojis, etc.
+** *descriptions* have been standardized, not images themselves,
+*** i.e., diff. software/devices have slightly diff. emojis
+
+=== Images, videos, sounds
+
+* common system for colours = *RGB*
+** i.e., 3 bytes, 1 each for R, G, & B
+** millions of colours
+
+* pixels -> make up screen so image = pixel with bytes for colour
+
+* vids = series of imgs (flipbook)
+
+* music = MIDI
+
+* *0s & 1s interpreted in ways we dictate*
+** some formats use compression (i.e., rep. data with fewer bits via math) or
+   containerization (i.e., diff. types joined, .docx files)
+** variety of formats -> not all standardized but *standards groups* help build
+   consensus (e.g., Unicode Consortium)
+
+=== Algorithms
+
+* problem solving = possible once agreed-upon ins/outs
+** algorithm = step-by-step instructions for solving a problem
+
+* e.g., find name in contacts app
+** flip through 1 by 1 = *correct* but not efficient
+** flip 2 at a time = *incorrect* (might skip)
+** flip half at a time & see which half will have name alphabetically = *most
+   efficient*
+** as # of contacts increase, most efficient solution takes less & less time to
+   solve (i.e., efficient = size of problem keep time to solve @ minimum)
+
+=== Pseudocode
+
+* pseudocode = human lang.
+** *include* computer-specific instructions like mandatory cases for quitting,
+   etc.
+** action verbs = *functions*
+** if, else, else if = *conditionals*
+** where to go = *boolean expressions*
+** go back = *loops*
+** also vars, return vals, etc. (not gen. pseudo coded)
+
+=== Scratch basics
+
+* coordinate-based system
+
+=== Abstraction
+
+* combine several ideas (in Scratch, puzzle pieces)
+
+* programming = break problem into pieces & solve 1 at time
+
+== Lecture Notes
+
+* prob. solving: input -> ??? -> output
+
+* how rep. inputs? *info*
+** representation -> count with hand? (Unary notation)
+** count #s (decimal digits = base 10)
+*** *compose* #s using digit system
+
+* comps. -> not same lang. as ppl
+** *simple* = *binary,* 0s & 1s
+
+* base 2 = other nomenclature = bits (binary digits)
+** don't use base 10 -> electricity as physical input
+** harness elec. & *rep. as info*
+*** on/off -> light switch = info
+** electricity = track info (store = 1, let go = 0)
+
+* *problem* -> counting higher than 1
+** more bulbs -> binary #s, e.g. 3 bulbs = 8 opts., 111 = 7
+
+* *transistors* -> 1's & 0's that comps. have to rep. info
+** comps. -> same system as dec. but with bin.
+** 10^0^, 10^1^, 10^2^ -> base 10 digits with numerous #'s
+** 2^0^, 2^1^, 2^2^, etc. -> base 2
+** 110010 bin = 2 + 8 + 16 = 50 dec
+
+* comps. -> started as calculators
+** modern = more sophisticated
+** how rep. letters? assign letters to unique #'s
+** a = 65 = 01000001
+** *context* differs for seeing but info same = ascii
+*** i.e., defined mapping of letters to #'s
+** 72 73 33 = hi! in ascii (asciichart.com)
+
+* getting msg = pattern of bits
+** *8-bits* -> moder std. for representing chars
+** patterns of 8-bits (8 0's & 1's) = *bytes* (kilo, giga, terra, etc.)
+
+* ascii = only english symbols & punctuation
+** 11111111 = max # of chars, 24-bits total
+*** 128 + 64 + 32 + 16 + 8 + 4 + 2 + 1 = 255 (256 opts.)
+** limiting -> bad rep. of human language (accented chars, entire chars in
+   other languages)
+** *emojis* -> also not covered, implemented as *0's/1's*
+** transition from ascii to *unicode* (support all languages)
+** face with tears of joy = most pop. emoji, rep.'d as 128514 in dec.
+** *way* more than 256 chars
+
+* electricity, #'s, letters, emojis/other langs., *colour/pics*
+** how colours rep.'d in comp. -> #'s to diff. colours, agree on mapping
+** rgb, hsl, etc. -> map 0's & 1's to diff. colours
+** every colours = blend of #'s
+** e.g., 72 73 33 bits in rgb = yellow (emoji colour)
+*** _context-specific_
+** pixels -> core building blocks of displays, images composed of lots of dots
+   (pxs.), each using 24-bits (3 bytes)
+*** why binary files so large -> tons of combinations
+
+* comps. rep. vids. similarly -> series of stored images, changing many times
+  per second
+** _flip book_
+** music -> could rep. in diff. ways, nums.? (notes, durations, etc.)
+*** music can be quantized -> just need to *agree*
+** diff. file formats -> rep. *agreed patterns* of 0's & 1's so can be
+   displayed consistently
+** all 0's & 1's
+
+* rep. inputs *consistently* to solve probs. & get outputs (conv. to
+  solutions)
+** nums, chars, imgs., vids., sound
+** algorithms = step-by-step instructions for *solving problems*
+*** i.e., *recipe* or *instructions* with *no ambiguity* (comps.)
+*** _inputs -> algorithms -> outputs_
+** *correct & precise* -> comps. take literally
+** *translate* algorithm into lang. comp. understands
+*** ensure comp. *doesn't* misinterpret
+
+* algorithm -> contacts app
+** store alphabetically
+** old-school -> phonebook
+** look through 1 page @ a time -> *correct,* not *efficient*
+*** skipping pgs. -> not *correct* (might miss) but more *efficient*
+*** fix by checking if too far & backtracking to recover if so
+*** *bug* -> mistake in program/algorithm
+** open in middle, see which section, tear down half at a time
+*** correct *&* efficient
+
+* think of algorithms on axis between *time to solve prob.* & *size of prob.*
+** 3^rd^ -> logarithmic, doesn't take (significantly) longer with more data
+*** i.e., cutting progressively in half takes larger bytes out of problem ->
+    doubling # *doesn't* double time
+* *correctness & well-designedness (efficiency)*
+** _take 1 byte, 2 bytes, or half of all bytes out of problem?_
+
+* programming -> translate programs to *pseudocode*
+** algorithm implemented in *plain language* -> correct *&* precise
+. *pick up* phonebook
+. *open to* middle
+. *look @* page
+. *if* (person on page)
+.. *call* person
+. *else if* (person earlier in book)
+.. *open to* prev. half
+.. _rpt._
+. *else if* (person later in book)
+.. *open to* next half
+.. _rpt._
+. *else* (e.g., not in book)
+.. quit
+** often cause of errors -> situations not anticipated
+** verbs/actions -> bolded text = functions
+** forks/branches -> also bolded (if, else, else if)
+** boolean expression = yes/no question to ask (brackets)
+*** _1 or 0!!!_
+** *loop* -> construct to tell comp. to repeat something (_italic_)
+
+* scratch:
+** graphical lang. with same prog. fundamentals (more friendly)
+** *then* c -> text/keyboard-based
+** function, conditions, bools, loops, vars, threads, events, & more
++
+[source,c++]
+----
+#include <stdio.h>
+
+int main(void)
+{
+    printf("hello, world\n");
+}
+----
+
+* https://scratch.mit.edu/[scratch] -> devd. at MIT's media lab
+** create proj -> scratch = cat (right)
+** sprites -> vis. reps.
+** blocks = puzzle pieces (left)
+** drag & drop canvas (middle)
+** bottom right -> more chars./sprites
+** 1^st^ prob. set -> look for ideas
+** events cat. -> green flag = go, red sign = stop
+** looks -> say = log
+** sensing -> prompt *&* wait for answer to store in var.
+*** vars. = separate components
+** wait block -> can wait for pause
+** operations blocks -> language things (join text)
+** watch for mental model -> input, algorithm, output
+** outputs of 1 func. can be input of next -> repeat the "input -> alg ->
+   output" pattern
+** control components -> conditionals
+*** sensing -> bools
+** create counter on click -> custom var.
+** scratch animation -> # of changes to animations ovr. time
+
+* build up from something simple -> applicable to all langs./problems/contexts
+
+* diff. sprites can have diff. prgs. -> marco polo games, with 2 talking to
+  another
+** pass msgs. -> *event broadcasting*
+** can use extensions for translation of text
+
+* *abstraction* -> complicated idea simplified for prob. solving
+** e.g., create own *block* -> sound of cat
+** more readable, self-descriptive, etc.
+** don't worry about *implementation detes*
+
+* iterate & build up 1 piece at a time
+** break prob. down bit by bit

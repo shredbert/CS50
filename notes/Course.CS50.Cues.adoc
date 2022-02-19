@@ -1,0 +1,103 @@
+= CS50 Cues
+
+== Lecture 0: Scratch
+
+* what 2 traits make for good problem-solving with computers? _(P & M)_
+** what 3 steps exist for solving problems with computers? _(I, A, O)_
+** what issue arises from this process? _(U)_
+
+* what do comps run on & how does this represent data for us?
+** what is binary?
+** what is a bit?
+*** how many bits do comps usually process at once & what is this called?
+
+* what standard mapping exists for translating nums to chars?
+** how many chars. does this system provide & which nums available??
+** what subsequent char. encoding system is used to expand the number of
+   available chars for comps.?
+** why might some agreed-upon symbols (e.g., emojis) differ between devices?
+
+* what 2 commmon systems exists for representing colours?
+** what *child's game* is analogous to how comps. represent videos?
+** what audio lang. exists?
+
+* what are algorithms?
+** what *2 traits* do good algorithms have? _(C & P)_
+** why are both these traits important?
+** what *real-world* algorithm could you use to find a name in a phonebook?
+*** what could you do to make this algorithm *more efficient* while also still
+    correct?
+** what is a *bug*?
+
+* what is pseudocode?
+** what are the 4 building blocks of it?
+
+* what is abstraction?
+** how can it help simplify the problem-solving process?
+
+== Lecture 1: C
+
+* what 3 principles are behind writing good code & what do they involve?
+
+* how do you translate human code so computers understand it?
+
+* what are functions & args?
+** what is *abstraction*?
+** what do functions in C require?
+** what 2 types of things can be produced by a function?
+
+* what is a *library*?
+** what do `#include` statements signify & what types of files do they use?
+
+* what are all the format codes used by `printf()`?
+** how can you round nums using `printf()`?
+** what 2 ways exist to cast ints during floatie operations?
+
+* how should you always try to end a series of conditional expressions?
+
+* what are the differences between determining *string & char* equality in C?
+
+* which loop type is best for iterating over numbers?
+** what about getting input from users?
+** what about when you don't know how many times you'll iterate?
+
+* how do you test if a val is even or odd?
+
+* what does it mean when your terminal says *C99?*
+
+* what is scope & how do you easily determine it?
+
+* what 2 limitations do float & int operations each have respectively?
+** what are at the heart of these limitations?
+** what are examples of each of these limitations impacting the real-world?
+
+== Lecture 2: Arrays
+
+* what is make & what 3 things does it mainly do for yas?
+
+* what are the *4 steps* behind compiling code?
+
+* what are the *3 approaches* to debugging?
+
+* what datatypes take up *1 byte*, which *4 bytes*, & which *8 bytes*?
+** which datatype is *dynamic?*
+** what is *RAM* & how does it store data?
+** what is *implicit casting?*
+** what is *overt casting?*
+** how can you cast with `printf()`?
+
+* what benefit do arrays provide?
+** what property is used to access thir values?
+
+* what are strings & how do comps tell them apart?
+** how do you test char conditions?
+** how do you convert a lowercase char to upper & vice versa?
+
+* how do you access the number of args to a C program?
+** what about the args themselves?
+** what's the minimum number of possible args?
+** what can a C program return, why, & how?
+
+* what are cryptography & encryption?
+** what are the steps?
+** what is a famous example?

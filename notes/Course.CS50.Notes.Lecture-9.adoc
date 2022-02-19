@@ -1,0 +1,837 @@
+= CS50 Notes
+:source-highlighter: highlightjs
+:highlightjs-languages: x86asm
+
+[.normal]
+_Started doing 2021, switched to 2022 -> updated assignments & IDE._
+
+View https://cs50.harvard.edu/x/2022/[course notes] for lectures notes &
+assignments.
+
+Local dev::
+* Download C libraries/headers from the
+  https://cs50.stackexchange.com/questions/1982/downloading-cs50-h[CS50 Stack
+  Exchange].
+
+* For issues with the CLI tools, read the https://cs50.readthedocs.io/#[main
+  docs].
+
+* For cs50 utilities, read the
+  https://cs50.readthedocs.io/libraries/cs50/c/[cs50 library],
+  https://cs50.readthedocs.io/projects/check50/en/latest/[check50], &
+  https://cs50.readthedocs.io/style50/[style50] docs.
+
+* For helpful hints on configuring a local dev environment, see the
+  https://cs50.stackexchange.com/questions/1483/undefined-reference-to-getstring[linking
+  libraries thread] &
+  https://stackoverflow.com/questions/55107463/how-to-build-cs50-programs-with-make[using
+  Makefiles thread].
+
+== Lecture 0: Scratch
+
+=== Course Notes
+
+* {empty}
+
+==== {empty}
+
+=== Course Lecture
+
+* prob. solving: input -> ??? -> output
+
+* how rep. inputs? *info*
+** representation -> count with hand? (Unary notation)
+** count #s (decimal digits = base 10)
+*** *compose* #s using digit system
+
+* comps. -> not same lang. as ppl
+** *simple* = *binary,* 0s & 1s
+
+* base 2 = other nomenclature = bits (binary digits)
+** don't use base 10 -> electricity as physical input
+** harness elec. & *rep. as info*
+*** on/off -> light switch = info
+** electricity = track info (store = 1, let go = 0)
+
+* *problem* -> counting higher than 1
+** more bulbs -> binary #s, e.g. 3 bulbs = 8 opts., 111 = 7
+
+* *transistors* -> 1's & 0's that comps. have to rep. info
+** comps. -> same system as dec. but with bin.
+** 10^0^, 10^1^, 10^2^ -> base 10 digits with numerous #'s
+** 2^0^, 2^1^, 2^2^, etc. -> base 2
+** 110010 bin = 2 + 8 + 16 = 50 dec
+
+* comps. -> started as calculators
+** modern = more sophisticated
+** how rep. letters? assign letters to unique #'s
+** a = 65 = 01000001
+** *context* differs for seeing but info same = ascii
+*** i.e., defined mapping of letters to #'s
+** 72 73 33 = hi! in ascii (asciichart.com)
+
+* getting msg = pattern of bits
+** *8-bits* -> moder std. for representing chars
+** patterns of 8-bits (8 0's & 1's) = *bytes* (kilo, giga, terra, etc.)
+
+* ascii = only english symbols & punctuation
+** 11111111 = max # of chars, 24-bits total
+*** 128 + 64 + 32 + 16 + 8 + 4 + 2 + 1 = 255 (256 opts.)
+** limiting -> bad rep. of human language (accented chars, entire chars in
+   other languages)
+** *emojis* -> also not covered, implemented as *0's/1's*
+** transition from ascii to *unicode* (support all languages)
+** face with tears of joy = most pop. emoji, rep.'d as 128514 in dec.
+** *way* more than 256 chars
+
+* electricity, #'s, letters, emojis/other langs., *colour/pics*
+** how colours rep.'d in comp. -> #'s to diff. colours, agree on mapping
+** rgb, hsl, etc. -> map 0's & 1's to diff. colours
+** every colours = blend of #'s
+** e.g., 72 73 33 bits in rgb = yellow (emoji colour)
+*** _context-specific_
+** pixels -> core building blocks of displays, images composed of lots of dots
+   (pxs.), each using 24-bits (3 bytes)
+*** why binary files so large -> tons of combinations
+
+* comps. rep. vids. similarly -> series of stored images, changing many times
+  per second
+** _flip book_
+** music -> could rep. in diff. ways, nums.? (notes, durations, etc.)
+*** music can be quantized -> just need to *agree*
+** diff. file formats -> rep. *agreed patterns* of 0's & 1's so can be
+   displayed consistently
+** all 0's & 1's
+
+* rep. inputs *consistently* to solve probs. & get outputs (conv. to
+  solutions)
+** nums, chars, imgs., vids., sound
+** algorithms = step-by-step instructions for *solving problems*
+*** i.e., *recipe* or *instructions* with *no ambiguity* (comps.)
+*** _inputs -> algorithms -> outputs_
+** *correct & precise* -> comps. take literally
+** *translate* algorithm into lang. comp. understands
+*** ensure comp. *doesn't* misinterpret
+
+* algorithm -> contacts app
+** store alphabetically
+** old-school -> phonebook
+** look through 1 page @ a time -> *correct,* not *efficient*
+*** skipping pgs. -> not *correct* (might miss) but more *efficient*
+*** fix by checking if too far & backtracking to recover if so
+*** *bug* -> mistake in program/algorithm
+** open in middle, see which section, tear down half at a time
+*** correct *&* efficient
+
+* think of algorithms on axis between *time to solve prob.* & *size of prob.*
+** 3^rd^ -> logarithmic, doesn't take (significantly) longer with more data
+*** i.e., cutting progressively in half takes larger bytes out of problem ->
+    doubling # *doesn't* double time
+* *correctness & well-designedness (efficiency)*
+** _take 1 byte, 2 bytes, or half of all bytes out of problem?_
+
+* programming -> translate programs to *pseudocode*
+** algorithm implemented in *plain language* -> correct *&* precise
+. *pick up* phonebook
+. *open to* middle
+. *look @* page
+. *if* (person on page)
+.. *call* person
+. *else if* (person earlier in book)
+.. *open to* prev. half
+.. _rpt._
+. *else if* (person later in book)
+.. *open to* next half
+.. _rpt._
+. *else* (e.g., not in book)
+.. quit
+** often cause of errors -> situations not anticipated
+** verbs/actions -> bolded text = functions
+** forks/branches -> also bolded (if, else, else if)
+** boolean expression = yes/no question to ask (brackets)
+*** _1 or 0!!!_
+** *loop* -> construct to tell comp. to repeat something (_italic_)
+
+* scratch:
+** graphical lang. with same prog. fundamentals (more friendly)
+** *then* c -> text/keyboard-based
+** function, conditions, bools, loops, vars, threads, events, & more
++
+[source,c++]
+----
+#include <stdio.h>
+
+int main(void)
+{
+    printf("hello, world\n");
+}
+----
+
+* https://scratch.mit.edu/[scratch] -> devd. at MIT's media lab
+** create proj -> scratch = cat (right)
+** sprites -> vis. reps.
+** blocks = puzzle pieces (left)
+** drag & drop canvas (middle)
+** bottom right -> more chars./sprites
+** 1^st^ prob. set -> look for ideas
+** events cat. -> green flag = go, red sign = stop
+** looks -> say = log
+** sensing -> prompt *&* wait for answer to store in var.
+*** vars. = separate components
+** wait block -> can wait for pause
+** operations blocks -> language things (join text)
+** watch for mental model -> input, algorithm, output
+** outputs of 1 func. can be input of next -> repeat the "input -> alg ->
+   output" pattern
+** control components -> conditionals
+*** sensing -> bools
+** create counter on click -> custom var.
+** scratch animation -> # of changes to animations ovr. time
+
+* build up from something simple -> applicable to all langs./problems/contexts
+
+* diff. sprites can have diff. prgs. -> marco polo games, with 2 talking to
+  another
+** pass msgs. -> *event broadcasting*
+** can use extensions for translation of text
+
+* *abstraction* -> complicated idea simplified for prob. solving
+** e.g., create own *block* -> sound of cat
+** more readable, self-descriptive, etc.
+** don't worry about *implementation detes*
+
+* iterate & build up 1 piece at a time
+** break prob. down bit by bit
+
+== Lecture 1: C
+
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* programming in C = same ideas as Scratch, just *text-based*
+** i.e., *pseudo-code* identical for all problems being solved, just the
+   *format for telling the computer how to do it* that changes
+
+* 3 principles for *writing code well:*
+. *correctness* (work as intended)
+. *design* (subjective, well-written)
+** like essays (correct args, poor writing)
+. *style* (aesthetic, like good punctuation, caps, indents, etc.)
+** don't change *correctness* when improving other 
+
+* CS50 IDE
+** IDE = integrated dev environment, env. for programming
+** ide.cs50.io -> course-specific, browser-based
+** terminal & text editor
+*** term = commands
+
+* text editor (edit code) + terminal window (run cmds)
+** cloud-based -> ensures everyone has same exp.
+
+* env. requires *CLI*
+** not *GUI*
+** term = blinking prompt
+
+* *code* understood by humans, *computers* understand binary (1s & 0s)
+** comps. can print on screen -> pattern of 0s & 1s
+** take source code & convert it to 0s & 1s that comps. understand using a
+   *compiler*
+** compiler = intermediary program -> cnvrt. src. to machine code
+** *make* -> compiler
+*** *no* file extension
+** run with ./hello -> no extension, bin. output has none
+*** "$" -> *prompt* (where commands are typed)
+
+* funcs. & args.
+** mini-program -> action/verb
+*** "say", "wait", etc.
+** inputs = args. (or parameters)
+** say something in say = printf()
+*** printf = print *formatted*
+** Scratch -> white ovals *mimic brackets*
+** need semicolon, quotes, brackets, etc.
+*** many lines of code need to end with semicolon
+
+* same *paradigm* as scratch
+** functions = programmed version of algorithm (implemented in code)
+
+* *programs do 2 things:* takes inputs (args.) & can have *side effects*
+*** often *visual* (text/audio)
+** return vals./variables -> functions hand back vals. (don't show/say)
+*** use output in program
+** Scratch -> say block has immediate vis. effect, ask block tucks away stuff
+   in var.
+** `get_string()` -> from *CS50 library*
+*** lib. = code others wrote
+
+* string = *text*
+** `get_string("[prompt]")` -> func. with input
+
+* have to *assign* to vars
+** e.g., `string answer = get_string("what's your name?");`
+*** `=` is *assignment* operator
+*** need to tell comp. what *type* of var, too
+** `[type] [name] = get_string("[prompt]");`
+
+* forgetting "grammar" makes code *frustrating & not interesting,*
+  pedantic/aesthetic
+** good style/grammar comes with *practice* (like writing other langs.)
+
+* can then *do something* with return val.
+** side effects = happen to you, return val. = info stored so you can use it
+** do in C -> `printf("hello, %s", answer);`
+*** `%s` = format code, printf() does formatting on placeholders (string in
+    this case)
+*** commas (outside of quotes) = separate args. to functions (ignore comma *in
+    string*)
+
+* more verbose = more readable (e.g., "answer" instead of just "a")
+** math doesn't *need* to be semantic -> no style
+
+* C = older, have to recompile every time
+** now have fancier envs. where compiles automatically (code.org, codecademy)
+
+* have to *tell* comp. to break line
+** i.e., move cursor to next line
+** `\[char]` = *escape character*, `\n` = new line
+
+* don't have to *call* get_string(), assigning to var. calls func.
+** `=` tells comp. to execute RH & *then* store, spreading 2 ops. in 1
+
+* CS50 lib. -> allows same logic as scratch (`get_string`)
+
+* Boilerplate -- needed to start writing
++
+[source,c++]
+----
+int main(void)
+{
+
+}
+----
+
+* Header files -> end with `.h`
+** `#include <stdio.h>` -> very pop. file in C that gets input/output
+*** e.g., `printf()`
+** access *more functions* than defaults
+** header files = *extensions in Scratch* (fancy buried features)
+
+* many ways to screw up prgs.
+** top of output usually gives name of file & where
+** *help50* -> prog., helps to make sense of cryptic output in term. by
+   translating
+** `make hello` = `help50 make hello`
+
+* ugly = bad *style*, hard to read
+** no errors with bad style -> use `style50` prg.
+** use comments -> good style
+*** ensure *semantic* -> purpose of code, not code itself
+
+* `check50` -> tool for labs/assignments to check *correctness* of code
+** automated tests from staff
+** enter `check50 cs50/problems/hello` -> prompts GitHub auth.
+** red = errors, yellow = couldn't run test cus prev. failed, green = tests
+   pass
+
+* CS50 IDE = own *server* in cloud
+
+* binary files in text editors -> machine lang., users can't see
+** 0s & 1s technically *misinterpreted* in ASCII chars. within *text editor*
+** i.e., machine code misinterpreted as text
+** open *source,* not *program*
+
+* term. cmds:
+** `ls` -> list files in current directory
+*** bash green w/ asterisk = executable
+** `rm` -> remove (`rm -rf` for directories with files)
+*** `y` or `n` at prompt for yes/no
+** `mv` -> rename/move
+** `mkdir` -> make dir.
+** `cd` -> move to dir.
+** `~` -> tilde = *home* directory
+** `..` -> prev. dir.
+** `./` -> current dir.
+*** run files with `./[filename]`
+** `pwd` -> print the current dir.
+** `rmdir` -> remove dir.
+** `cp` -> copy
+
+* `make` = makes *easier* to compile but not *technically* a compiler
+
+* data types -> lots in C
+** *type* of val. to store
+** also many *funcs.* for CS50 that help you get diff. data types
+** some types have *finite bits* -> ints, floats, chars, doubles, longs,
+   strings, etc.
+*** int = 32 bits, \~4 billion
+*** long = 64 bits, twice as many vals.
+** `printf()` -> diff. format codes, %c (char), %f (float w/ dec), %i (int), %li
+   (long int), %s (string)
+** *operators* -> +, -, * , /, % 
+*** all math stuff -> early nerds
+
+* CS50's `get_int()` -> will reject vals. based on invalid input, like 3 & 4
+  bill.
+** 2 bill. max (4 bill. *total* but includes *negatives*)
+
+* *float* for decimals -> most division ops.
+** *however,* if other vars are ints, won't work (rounds)
+** *lose* decimals -> math done on *ints,* no matter what the result is stored
+   as
+** could change all to floats
+** *OR* convert ints to floats -> *casting*
+*** `float z = (float) x / (float) y`
+*** new datatype in parens. = *casting*
+
+* `=` is assignment operator, RH side 1^st^
+** `counter = counter + 1`
+** *OR* `counter += 1;` or `counter++;` -> *syntactic sugar*
+
+* conditions:
++
+[source,c++]
+----
+if ([condition])
+{
+    [logic]
+}
+else if ([other condition])
+{
+    [other logic]
+}
+else
+{
+    [other other logic]
+}
+----
+** try to *be succinct* -> just use else at end to reduce typing
+
+* equality = `x == y`, less than = `x < y`, greater than = `x > y`
+
+* use *single quotes* when comparing individual characters (*chars*)
+** string = `""`, char = `''`
+** use `||` for multiple options (`if ([cond1] || [cond2])`)
+
+* looping -> `for()` = specific # of times, `while()` = until condition true
++
+[source,c++]
+----
+// while loops -- check condition *then* do something
+int i = 0 // "i" = int, short
+while (i < 50)
+{
+    printf("hey!!!\n");
+    i++;
+}
+
+// do while -- do 1 thing *before* checking condition
+do
+{
+    printf("hey!!!\n");
+}
+while (i < 50);
+
+// for loops -- concise when doing something a certain # of times
+for (int i = 0; i < 50; i++) // unique to for loop -> multiple statements/semi-colons in brackets
+{
+    printf("hey!!!\n");
+}
+----
+
+* abstraction = *simplify* complicated detes underneath
+** use *functions* to hide complex code
+** custom funcs. usually at *bottom* (main/entry point at top)
+** *errors* -> compiler doesn't know where func. is
+*** can put *title* at top to tell compiler it *will* exist (`void meow(void);`
+    with actual func. at bottom)
+
+* some lines *don't* need semicolons -> function names, for loops, if
+  statements, etc.
+** *convention* -> finish most constructs with thought, others decided it
+   didn't need
+
+* *C99* -> 1999 version of C
+
+* functions -> 1^st^ = rtrn. val. & parens -> *args.*
+** `void meow(int n)` = no output, `n` input
+** `return` statement -> send value back from func.
+
+* *scope* -> if want var. outside of curly braces, need it *declared* outside
+** i.e., lines of code where a var. exists
+** *match the braces!!!*
+** *don't* need vals just to declare
+
+* what computers *can't* do:
+** *finite memory* -> limitation
+** `printf()` can print out to lots of digits
+*** `printf("%.10f\n", 1 / 10);`
+** with lots of decimal places, *incorrect result*
+** *memory* issue -> if using finite bits, can count *infinitely
+   high/precisely*
+*** i.e., *approximates* at some point
+*** big deal for math/finance -> imprecision == bad
+*** issues with floats *&* ints
+*** like y2k
+*** will happen in *2038* again -> no more bits to keep track of time, 32-bit
+    #s counting seconds from Jan. 1^st^, 1970
+*** _4 billionth second will be hit_
+
+== Lecture 2: Arrays
+
+=== Course Notes
+
+==== Compiling
+
+* `make` = program that *calls* the actual compiler
+** course compiler = `clang`
+** can call that instead -> `clang hello.c`
+*** _notice file extension -> diff. than make_
+** by default, outputs `a.out`
+** make like `make` -> `clang -o hello hello.c`
+*** `-o` = *argument* to program that means *output*
+** need arg for external libraries, too -> `-lcs50`
+*** i.e., `clang -o hello hello.c -lcs50`
+** `make` = automatically do above
+
+* compiling has *4 substeps:*
+. preprocessing
+*** _take header files & replace with *prototypes* of original code (i.e.,
+    header file contents)_
+. compiling
+*** convert to *assembly language* -> mix of recognizable code from our source
+    file & binary-like instructions for computer processor
++
+[source,x86asm]
+----
+...
+main:                         # @main
+    .cfi_startproc
+# BB#0:
+    pushq    %rbp
+.Ltmp0:
+    .cfi_def_cfa_offset 16
+.Ltmp1:
+    .cfi_offset %rbp, -16
+    movq    %rsp, %rbp
+.Ltmp2:
+    .cfi_def_cfa_register %rbp
+    subq    $16, %rsp
+    xorl    %eax, %eax
+    movl    %eax, %edi
+    movabsq    $.L.str, %rsi
+    movb    $0, %al
+    callq    get_string
+    movabsq    $.L.str.1, %rdi
+    movq    %rax, -8(%rbp)
+    movq    -8(%rbp), %rsi
+    movb    $0, %al
+    callq    printf
+    ...
+----
+. assembling
+*** *then* translate to binary (called *assembly*) -> machine code that comps.
+    processor can run directly
+. linking
+*** take files from *prototypes* & combine with our code to make *single binary
+    file* (`hello`)
+** _``make`` makes it easier by taking care of it all for us with 1 cmd._
+
+==== Debugging
+
+* bugs = unintentional behaviour, debugging = *find & fix*
+** debugging often helps you see what's going on behind the scenes -> can often
+   do with more `printf()` statements to visualize
+
+* use `debug50` -> will help use debugger *built into VSCode*
+** steps:
+. click to *left of line #* on line of interest to insert a *breakpoint* (i.e.,
+  where debugger starts by *pausing code*)
+*** hit *play button* to move to next
+*** hit *step over* to run through program *line-by-line*
+. run `debug50 [filename]` in term.
+*** can view *Variables* in the *Run & Debug* window
+. step through line-by-line -> don't need to print vars. if viewing in window
+. step into -> good if bug isn't var-related, can see which line issue occurs
+  on
+** *rubber duck* -> explain step-by-step as though to inanimate object
+
+==== Memory
+
+* diff. vars take up diff. memory:
+** bool & char (256 ASCII chars) = 1 byte
+** float & int (32 bill. vals) = 4 bytes
+** double (float * 2) & long (int * 2) = 8 bytes
+** string = indetermined (variable-length, short or long)
+
+* random access memory -> bytes stored in "grid squares"
+** char = 1 square, int = 4 squares, etc.
+** abstracted away so we can build shiiiitttt
+
+==== Arrays
+
+* ints can divide but remainder is thrown away
+** divide by decimal to cast implicitly
+
+* arrays = store multiple vals. of same type
+** "index into" to assign vals -> `int var[length]` to declare, `var[0] = 5` to
+   assign
+** *for loops* good -> index already there
++
+[source,c++]
+----
+#include <cs50.h>
+#include <stdio.h>
+
+int main(void)
+{
+    int n = get_int("How many scores? ");
+
+    int scores[n];
+
+    for (int i = 0; i < n; i++)
+    {
+        scores[i] = get_int("Score: ");
+    }
+
+    printf("Average: %f\n", (scores[0] + scores[1] + scores[2]) / 3.0);
+}
+----
+
+==== Characters
+
+* `printf("%c", charVar);` to print chars
+
+* `printf()` can *print chars as ints* -> raw ASCII val.
+** or cast to int
+
+* *casting floats to ints loses decimals/other info!!!*
+
+==== Strings
+
+* *arrays* of chars, as defined by CS50's lib.
+** `string[0]`, `string[1]`, etc.
+
+* *all strings* in C end with special char to indicate ending -> `\0`
+** *null character* or NUL
+** 4 bytes needed for string with 3 chars
+** fixed-size datatypes (i.e., *other* than strings) don't need the ending char
+*** other langs/libs can store custom types with *greater precision* but likely
+    implemented by *recording* the # of bytes (i.e., build upon C-style
+    datatypes)
+
+* can count # of chars in string:
++
+[source,c++]
+----
+#include <cs50.h>
+#include <stdio.h>
+  
+int string_length(string s);
+  
+int main(void)
+{
+    string name = get_string("Name: ");
+    int length = string_length(name);
+    printf("%i\n", length);
+}
+  
+int string_length(string s)
+{
+    int i = 0;
+    while (s[i] != '\0')
+    {
+        i++;
+    }
+    return i;
+}
+----
+** don't bother if char is `\0` -> string end
+** or use the C `string` lib (`string.h`) `strlen()` func. to count
+** CS50 has a https://manual.cs50.io/[manual] for C std lib, C POSIX lib, &
+   CS50 lib, too
+*** _simpler that std. man. pages_
+*** see the https://manual.cs50.io/3/strlen[string length] page in particular
+** print each char in string using `strlen`:
++
+[source,c++]
+----
+#include <cs50.h>
+#include <stdio.h>
+#include <string.h>
+
+int main(void)
+{
+    string s = get_string("Input:  ");
+    printf("Output: \n");
+    for (int i = 0, n = strlen(s); i < n; i++)
+    {
+        printf("%c\n", s[i]);
+    }
+}
+----
+** make prg. to caps. letters:
++
+[source,c++]
+----
+#include <cs50.h>
+#include <stdio.h>
+#include <string.h>
+
+int main(void)
+{
+    string s = get_string("Before: ");
+    printf("After:  ");
+    for (int i = 0, n = strlen(s); i < n; i++)
+    {
+        // If lowercase...
+        if (s[i] >= 'a' && s[i] <= 'z')
+        {
+            // ...Convert to uppercase
+            printf("%c", s[i] - 32);
+        }
+        else
+        {
+            printf("%c", s[i]);
+        }
+    }
+    printf("\n");
+}
+----
+*** can convert char. cases by -/+ the 32 bit diff.
+** C lib. for string cases -> `ctype.h`
+*** use `islower()` to determine case or `toupper()` to convert for you
+
+==== Command-line arguments
+
+* `string argv[]` = arg. *vector* (arr. of args), `int argc` = arg *count*
+  (num.)
+** e.g., `int main(int argc, string argv[]) { }`
+** don't know # of args. before
+** `argv[0]` = name of program (i.e., *1^st^ word typed*)
+** check to make sure *2 args* before using `argv[1]` (always at least 1)
+
+* `main()` = returns *exit status*
+** 0 by default = nothing went wrong
+** `return 1;` = indicate error to sys. calling prg.
+** `return 0;` = explicit, more readability
+
+==== Applications
+
+* *cryptography* = art of scrambling info. to hide it
+** *encrypt* = process of scrambling
+** *plaintext* = source
+** *ciphertext* = output after scrambling
+** *cipher* = algorithm that does the scrambling
+** *key* = 2^nd^ (secret) input required by cipher (number) for scrambling
+** e.g., `cipher("HI!", 1)` outputs "IJ!" (forward 1)
+** e.g., `cipher("UIJT XBT DT50", -1)` outputs "THIS WAS CS50"
+
+=== Course Lecture
+
+* {empty}
+
+== Lecture 3: Algorithms
+
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* {empty}
+
+== Lecture 4: Memory
+
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* {empty}
+
+== Lecture 5: Data Structures
+
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* {empty}
+
+== Lecture 6: Python
+
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* {empty}
+
+== Lecture 7: SQL
+
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* {empty}
+
+== Lecture 8: HTML, CSS, & JavaScript
+
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* {empty}
+
+== Lecture 9: Flask
+
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* {empty}
+
+== Lecture 10: Emoji
+
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* {empty}
+
+== Bonus: Cybersecurity
+
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* {empty}
+
+== Bonus: Seminars
+
+=== {empty}
+
+* {empty}
+
+== Bonus: Educator Workshop
+
+=== {empty}
+
+* {empty}
+

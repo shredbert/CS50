@@ -1,36 +1,51 @@
-= CS50 (2020)
+= CS50 Notes
+:source-highlighter: highlightjs
+:highlightjs-languages: x86asm
 
-View https://cs50.harvard.edu/x/2021/[course notes] &
-https://ide.cs50.io[IDE].
+[.normal]
+_Started doing 2021, switched to 2022 -> updated assignments & IDE._
 
-For local dev, download the libraries/headers from the
-https://cs50.stackexchange.com/questions/1982/downloading-cs50-h[CS50 Stack
-Exchange].
+View https://cs50.harvard.edu/x/2022/[course notes] for lectures notes &
+assignments.
 
-For issues with the CLI tools, read the https://cs50.readthedocs.io/#[main
-docs].
+Local dev::
+* Download C libraries/headers from the
+  https://cs50.stackexchange.com/questions/1982/downloading-cs50-h[CS50 Stack
+  Exchange].
 
-For cs50 utilities, read the https://cs50.readthedocs.io/libraries/cs50/c/[cs50
-library], https://cs50.readthedocs.io/projects/check50/en/latest/[check50], &
-https://cs50.readthedocs.io/style50/[style50] docs.
+* For issues with the CLI tools, read the https://cs50.readthedocs.io/#[main
+  docs].
 
-For helpful hints on configuring a local dev environment, see the
-https://cs50.stackexchange.com/questions/1483/undefined-reference-to-getstring[linking
-libraries thread] &
-https://stackoverflow.com/questions/55107463/how-to-build-cs50-programs-with-make[using
-Makefiles thread].
+* For cs50 utilities, read the
+  https://cs50.readthedocs.io/libraries/cs50/c/[cs50 library],
+  https://cs50.readthedocs.io/projects/check50/en/latest/[check50], &
+  https://cs50.readthedocs.io/style50/[style50] docs.
+
+* For helpful hints on configuring a local dev environment, see the
+  https://cs50.stackexchange.com/questions/1483/undefined-reference-to-getstring[linking
+  libraries thread] &
+  https://stackoverflow.com/questions/55107463/how-to-build-cs50-programs-with-make[using
+  Makefiles thread].
 
 == Lecture 0: Scratch
 
-* prob. solving -> input -> ??? -> output
+=== Course Notes
+
+* {empty}
+
+==== {empty}
+
+=== Course Lecture
+
+* prob. solving: input -> ??? -> output
 
 * how rep. inputs? *info*
 ** representation -> count with hand? (Unary notation)
-** count #s (Decimal digits = base 10)
+** count #s (decimal digits = base 10)
 *** *compose* #s using digit system
 
 * comps. -> not same lang. as ppl
-** *simple* = *binary,* 0's & 1's
+** *simple* = *binary,* 0s & 1s
 
 * base 2 = other nomenclature = bits (binary digits)
 ** don't use base 10 -> electricity as physical input
@@ -142,7 +157,7 @@ Makefiles thread].
 ** *then* c -> text/keyboard-based
 ** function, conditions, bools, loops, vars, threads, events, & more
 +
-[source, c]
+[source,c++]
 ----
 #include <stdio.h>
 
@@ -152,7 +167,7 @@ int main(void)
 }
 ----
 
-* https://scratch.mit.edu/[scratch] -> devd. at mit's media lab
+* https://scratch.mit.edu/[scratch] -> devd. at MIT's media lab
 ** create proj -> scratch = cat (right)
 ** sprites -> vis. reps.
 ** blocks = puzzle pieces (left)
@@ -188,13 +203,13 @@ int main(void)
 * iterate & build up 1 piece at a time
 ** break prob. down bit by bit
 
-=== Problem Set
-
-https://cs50.harvard.edu/x/2021/psets/0/scratch/[Scratch problem]
-
 == Lecture 1: C
 
-View the https://cs50.harvard.edu/x/2021/weeks/1/[lecture website].
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
 
 * programming in C = same ideas as Scratch, just *text-based*
 ** i.e., *pseudo-code* identical for all problems being solved, just the
@@ -290,6 +305,7 @@ View the https://cs50.harvard.edu/x/2021/weeks/1/[lecture website].
 
 * Boilerplate -- needed to start writing
 +
+[source,c++]
 ----
 int main(void)
 {
@@ -376,6 +392,7 @@ int main(void)
 
 * conditions:
 +
+[source,c++]
 ----
 if ([condition])
 {
@@ -390,7 +407,6 @@ else
     [other other logic]
 }
 ----
-+
 ** try to *be succinct* -> just use else at end to reduce typing
 
 * equality = `x == y`, less than = `x < y`, greater than = `x > y`
@@ -401,6 +417,7 @@ else
 
 * looping -> `for()` = specific # of times, `while()` = until condition true
 +
+[source,c++]
 ----
 // while loops -- check condition *then* do something
 int i = 0 // "i" = int, short
@@ -462,25 +479,11 @@ for (int i = 0; i < 50; i++) // unique to for loop -> multiple statements/semi-c
     #s counting seconds from Jan. 1^st^, 1970
 *** _4 billionth second will be hit_
 
-=== Labs
-
-https://cs50.harvard.edu/x/2021/labs/1/hello/[Hello]
-
-https://cs50.harvard.edu/x/2021/labs/1/population/[Population]
-
-=== Problem Sets
-
-https://cs50.harvard.edu/x/2021/psets/1/mario/less/[Mario (intermediate)]
-
-https://cs50.harvard.edu/x/2021/psets/1/mario/more/[Mario (advanced)]
-
-https://cs50.harvard.edu/x/2021/psets/1/cash/[Cash (intermediate)]
-
-https://cs50.harvard.edu/x/2021/psets/1/credit/[Credit (advanced)]
-
 == Lecture 2: Arrays
 
-=== Compiling
+=== Course Notes
+
+==== Compiling
 
 * `make` = program that *calls* the actual compiler
 ** course compiler = `clang`
@@ -498,10 +501,10 @@ https://cs50.harvard.edu/x/2021/psets/1/credit/[Credit (advanced)]
 *** _take header files & replace with *prototypes* of original code (i.e.,
     header file contents)_
 . compiling
-*** convert to *assembly language* -> mix of recognizable from our code &
-    binary-like instructions for computer processor
+*** convert to *assembly language* -> mix of recognizable code from our source
+    file & binary-like instructions for computer processor
 +
-[src,assembly]
+[source,x86asm]
 ----
 ...
 main:                         # @main
@@ -532,11 +535,11 @@ main:                         # @main
 *** *then* translate to binary (called *assembly*) -> machine code that comps.
     processor can run directly
 . linking
-*** take files from *link* step (above) & combine with our code to make *single
-    binary file* (`hello`)
-** _`make` makes it easier by taking care of it all for us with 1 cmd._
+*** take files from *prototypes* & combine with our code to make *single binary
+    file* (`hello`)
+** _``make`` makes it easier by taking care of it all for us with 1 cmd._
 
-=== Debugging
+==== Debugging
 
 * bugs = unintentional behaviour, debugging = *find & fix*
 ** debugging often helps you see what's going on behind the scenes -> can often
@@ -555,7 +558,7 @@ main:                         # @main
   on
 ** *rubber duck* -> explain step-by-step as though to inanimate object
 
-=== Memory
+==== Memory
 
 * diff. vars take up diff. memory:
 ** bool & char (256 ASCII chars) = 1 byte
@@ -567,7 +570,7 @@ main:                         # @main
 ** char = 1 square, int = 4 squares, etc.
 ** abstracted away so we can build shiiiitttt
 
-=== Arrays
+==== Arrays
 
 * ints can divide but remainder is thrown away
 ** divide by decimal to cast implicitly
@@ -577,7 +580,7 @@ main:                         # @main
    assign
 ** *for loops* good -> index already there
 +
-[src,c]
+[source,c++]
 ----
 #include <cs50.h>
 #include <stdio.h>
@@ -597,7 +600,7 @@ int main(void)
 }
 ----
 
-=== Characters
+==== Characters
 
 * `printf("%c", charVar);` to print chars
 
@@ -606,21 +609,22 @@ int main(void)
 
 * *casting floats to ints loses decimals/other info!!!*
 
-=== Strings
+==== Strings
 
 * *arrays* of chars, as defined by CS50's lib.
 ** `string[0]`, `string[1]`, etc.
 
-* *alls strings* in C end with special char to indicate ending -> `\0`
+* *all strings* in C end with special char to indicate ending -> `\0`
 ** *null character* or NUL
 ** 4 bytes needed for string with 3 chars
-** fixed-size datatypes don't need
-** other langs/libs might have variable length datatypes but can also be
-   implemented by *recording* the # of bytes somehow?
+** fixed-size datatypes (i.e., *other* than strings) don't need the ending char
+*** other langs/libs can store custom types with *greater precision* but likely
+    implemented by *recording* the # of bytes (i.e., build upon C-style
+    datatypes)
 
 * can count # of chars in string:
 +
-[src,c]
+[source,c++]
 ----
 #include <cs50.h>
 #include <stdio.h>
@@ -652,7 +656,7 @@ int string_length(string s)
 *** see the https://manual.cs50.io/3/strlen[string length] page in particular
 ** print each char in string using `strlen`:
 +
-[src,c]
+[source,c++]
 ----
 #include <cs50.h>
 #include <stdio.h>
@@ -670,7 +674,7 @@ int main(void)
 ----
 ** make prg. to caps. letters:
 +
-[src,c]
+[source,c++]
 ----
 #include <cs50.h>
 #include <stdio.h>
@@ -700,7 +704,7 @@ int main(void)
 ** C lib. for string cases -> `ctype.h`
 *** use `islower()` to determine case or `toupper()` to convert for you
 
-=== Command-line arguments
+==== Command-line arguments
 
 * `string argv[]` = arg. *vector* (arr. of args), `int argc` = arg *count*
   (num.)
@@ -714,7 +718,7 @@ int main(void)
 ** `return 1;` = indicate error to sys. calling prg.
 ** `return 0;` = explicit, more readability
 
-=== Applications
+==== Applications
 
 * *cryptography* = art of scrambling info. to hide it
 ** *encrypt* = process of scrambling
@@ -725,45 +729,109 @@ int main(void)
 ** e.g., `cipher("HI!", 1)` outputs "IJ!" (forward 1)
 ** e.g., `cipher("UIJT XBT DT50", -1)` outputs "THIS WAS CS50"
 
+=== Course Lecture
+
+* {empty}
+
 == Lecture 3: Algorithms
 
-* 
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* {empty}
 
 == Lecture 4: Memory
 
-* 
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* {empty}
 
 == Lecture 5: Data Structures
 
-* 
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* {empty}
 
 == Lecture 6: Python
 
-* 
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* {empty}
 
 == Lecture 7: SQL
 
-* 
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* {empty}
 
 == Lecture 8: HTML, CSS, & JavaScript
 
-* 
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* {empty}
 
 == Lecture 9: Flask
 
-* 
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* {empty}
 
 == Lecture 10: Emoji
 
-* 
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* {empty}
 
 == Bonus: Cybersecurity
 
-* 
+=== Course Notes
+
+* {empty}
+
+=== Course Lecture
+
+* {empty}
 
 == Bonus: Seminars
 
-* 
+=== {empty}
+
+* {empty}
 
 == Bonus: Educator Workshop
+
+=== {empty}
+
+* {empty}
 

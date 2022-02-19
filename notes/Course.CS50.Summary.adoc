@@ -1,0 +1,187 @@
+= CS50 Summary
+
+== Lecture 0: Scratch
+
+* programming = solve problems with computers by giving them precise,
+  methodical instructions
+** input -> algorithm (solve problem) -> output
+** need to standardize communication ops so we can interact w/ comps (help them
+   understand)
+
+* use binary -> easily communicate w/ comps
+** comps use *electricity* to turn *transistors* on or off, which then
+   *represent data*
+** bit = binary digit (single transistor state), byte = group of 8 binary
+   digits/transistors
+*** bytes = 256 vals (0 - 255)
+** most computers use *bytes* for each piece of info
+
+* binary = base 2
+** ######## = 2^7^ + 2^6^ + 2^5^ + 2^4^ + 2^3^ + 2^2^ + 2^1^ + 2^0^ 
+
+* standardized mapping for representing human-lang chars = *ASCII*
+** only 256 vals available so expanded over time with *Unicode* (emojis,
+   non-english symbols, etc.)
+*** unicode = *standard descriptions,* implementation vary slightly
+
+* similar w/ colours -> RGB has 3 bytes, each representing a spectrum
+  of colours types
+** sim. w/ HSL (hue, saturation, lightness)
+** images = groups of colours
+** vids = groups of images (flipbook)
+** audio = sometimes MIDI
+
+* algorithm = precise instructions for problem-solving
+** exist on axis of correctness & efficiency/preciseness/well-designedness
+*** efficiency is particularly evident over time as problem gets more complex
+** ensure comps *don't misinterpret*
+** e.g., contacts app -> flip through 1 pg at a time vs biting off half at a
+   time & filtering based on alphabet
+** avoid bugs -> unexpected behaviours so give very precise instructions
+
+* pseudocode = problem-solving steps described in human language
+** actions (functions), conditions (if/else), booleans (true/false tests for
+   conditions), & loops (go back & do `x`)
+
+* abstraction = complicated idea simplified for use by us (e.g., functions can
+  *abstract away* ideas)
+** helpful when breaking problems into steps -> abstract logic through
+   functions
+
+== Lecture 1: C
+
+* the 3 aspects of good code are that it's correct (solves problem),
+  well-designed (understandable & efficient), & formatted well (styled)
+** *never* sacrifice correctness
+
+* compilers convert source code to machine code
+** comps only understand 0s & 1s
+** `make` compiles but *isn't* a compiler -> build tool to automate
+
+* functions = action to execute, arguments = inputs to execute action
+** functions -> 1^st^ the return datatype, then the arg datatype(s)
+*** use to abstract away implementation detes
+*** need to add prototypes for funcs
+*** header files contain *only prototypes*
+*** `math.h` = std lib w/ func for rounding nums
+** side effect = change that can be *observed*
+*** return vals = stored for later
+
+* import libraries to reuse other code
+** use `#include <[path]>` in C to include `.h` files -> like a *menu* of
+   options
+
+* variable types all take up different amounts of memory (i.e., diff. #s of
+  *bytes*)
+** data types -> chars & strings, bools, ints & longs, floats & doubles
+** `printf()` placeholders -> `%c`, `%s`, `%i` (bools & ints?), `%li`, `%f`
+   (floats & doubles?)
+** need to *cast* to operate on diff. datatypes
+*** e.g., add decimal to 1 int in operation to divide *OR* incorporate
+    `(float)`
+** `printf()` precision = `"%.50f", n`
+
+* *don't* assign val to var unless reusing later
+** *consts should be capital case in C*
+
+* all data types have some memory constraints that impact programming decisions
+** ints have ++~++4 bill vals *but* positive & negative so really ++~++2 bill
+   each way
+
+* with conditions, good to use `else { }` at end -> often don't need to be
+  verbose with final condition if all others accounted for
+** when comparing chars, use `'a'`, not `"a"`
+
+* tell even/odd using `n % 2 == 0` operator
+
+* `while ()` = loop if condition true
+** `do while ()` = get input
+** `for ()` = counter shorthand
+
+* C99 = 1999 version of C
+
+* *scope* -> vars only available in the braces (`{ }`) where they've been
+  declared
+
+* comps *imprecise* -> store closest possible val but *can't* rep all real nums
+  (esp. w/ ints)
+** *floating-point imprecision* = decimals
+*** big deal in finance & math
+** *integer overflow* = whole nums
+*** reason behing Y2K & upcoming date issues (2038) -- 32-bit ints tracking
+    time will be truncated over time, meaning they will start defaulting to the
+    lowest ints possible, therefore indicating all dates are sometime in
+    ++~++1901
+
+== Lecture 2: Arrays
+
+* `make` = *build tool,* automates use of `clang` (in course)
+** good cus don't have to link libs, customize output name, or specify source
+** default filename = `a.out` (assembler out)
+** *note:* `stdio` linked automatically by `clang`, other libs not so much
+
+* "compiling" really 4 steps:
+. preprocessing -- look up prototypes for linked libs
+. compiling -- convert to assembly lang
+*** assembly = lowest-level code humans can read, maps easily to machine code
+    instructions for CPU
+. assembling -- convert assembly to machine code
+. linking -- join lib machine code into single executable
+
+* 3 approaches to debugging:
+. use print statements to read values of interest
+. use debugger -- set breakpoints to pause execution at, play to execute, step
+  over to execute line-by-line, step into to see functions, & see vals of all
+  vars in VSCode
+*** `debug50` -> starts VSCode debugger?
+. rubber ducking -- explain logic step-by-step as tho someone is there (but
+  really just to inanimate object)
+
+* each datatype has diff. memory:
+** char & bools = 1 byte (8-bit)
+*** bools *could* be just 1 bit (0 or 1) but langs don't usually go that
+    low-level
+** int & float = 4 bytes (32-bit)
+** long & double = (64-bit)
+** string = indeterminate, depends
+** *RAM* = random access memory
+*** place where data in vars stored, like grid of squares with each square = 1
+    byte
+** for greater precision, *cast* ints to floats
+*** implicit = convert 1 num to decimal (easiest)
+*** overt = use `(float)` on all ints
+*** *or* use `printf()` & placeholder symbols for chars
+**** cast to ints using placeholder symbols (i.e., `%c` or `%i`)
+
+* arrays = vars that can store multiple of same datatype
+** cleaner code -> no repeating arbitrary var names
+** access values through *index* -> zero-counting
+** for loops = designed for, counters lend selves to index
+
+* strings = *arrays* of chars
+** always *1 extra byte* -> need NUL char to end (`\0`), else never know where
+   1 string ends & other begins
+** count non-NUL w/ `string.h` -> `strlen()` or manually by iterating through
+** convert case -> lowercase to upper = `-32`, uppercase to lower = `+32`
+** check case w/ *single quotes* -> `if (var[i] >= ++'++a++'++ || var[i] <=
+    ++'++z++'++) { }`
+** or convert/check w/ `ctype.h` -> `toupper()`, `islower()`
+** `get_string()` uses *dynamic memory allocation* to grow/shrink size of var
+  automatically
+
+* `int main (int argc, string argv[]) { }`
+** `argc` = *argument count*
+** `argv[]` = *argument vector*, array of CLI args
+*** always at least 1 -> `[0]` = cmd name
+** `main` *always* returns exit status -> `0` for no error, `1` or more for
+   exit
+*** returns `0` by default but *explicitness good*
+
+* cryptography = art of scrambling info, encryption = process of scrambling
+** steps:
+. inputs
+.. plaintext = source to scramble
+.. key = number of chars to scramble away from
+. cipher = algorithm for scrambling
+. ciphertext = scrambled output
+** caesar cipher = add 1

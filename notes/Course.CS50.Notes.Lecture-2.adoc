@@ -1,0 +1,370 @@
+= Lecture 2: Arrays (Notes)
+:source-highlighter: highlightjs
+:highlightjs-languages: x86asm
+
+== Course Notes
+
+=== Compiling
+
+* `make` = program that *calls* the actual compiler
+** course compiler = `clang`
+** can call that instead -> `clang hello.c`
+*** _notice file extension -> diff. than make_
+** by default, outputs `a.out`
+** make like `make` -> `clang -o hello hello.c`
+*** `-o` = *argument* to program that means *output*
+** need arg for external libraries, too -> `-lcs50`
+*** i.e., `clang -o hello hello.c -lcs50`
+** `make` = automatically do above
+
+* compiling has *4 substeps:*
+. preprocessing
+*** _take header files & replace with *prototypes* of original code (i.e.,
+    header file contents)_
+. compiling
+*** convert to *assembly language* -> mix of recognizable code from our source
+    file & binary-like instructions for computer processor
++
+[source,x86asm]
+----
+...
+main:                         # @main
+    .cfi_startproc
+# BB#0:
+    pushq    %rbp
+.Ltmp0:
+    .cfi_def_cfa_offset 16
+.Ltmp1:
+    .cfi_offset %rbp, -16
+    movq    %rsp, %rbp
+.Ltmp2:
+    .cfi_def_cfa_register %rbp
+    subq    $16, %rsp
+    xorl    %eax, %eax
+    movl    %eax, %edi
+    movabsq    $.L.str, %rsi
+    movb    $0, %al
+    callq    get_string
+    movabsq    $.L.str.1, %rdi
+    movq    %rax, -8(%rbp)
+    movq    -8(%rbp), %rsi
+    movb    $0, %al
+    callq    printf
+    ...
+----
+. assembling
+*** *then* translate to binary (called *assembly*) -> machine code that comps.
+    processor can run directly
+. linking
+*** take files from *prototypes* & combine with our code to make *single binary
+    file* (`hello`)
+** _``make`` makes it easier by taking care of it all for us with 1 cmd._
+
+=== Debugging
+
+* bugs = unintentional behaviour, debugging = *find & fix*
+** debugging often helps you see what's going on behind the scenes -> can often
+   do with more `printf()` statements to visualize
+
+* use `debug50` -> will help use debugger *built into VSCode*
+** steps:
+. click to *left of line #* on line of interest to insert a *breakpoint* (i.e.,
+  where debugger starts by *pausing code*)
+*** hit *play button* to move to next
+*** hit *step over* to run through program *line-by-line*
+. run `debug50 [filename]` in term.
+*** can view *Variables* in the *Run & Debug* window
+. step through line-by-line -> don't need to print vars. if viewing in window
+. step into -> good if bug isn't var-related, can see which line issue occurs
+  on
+** *rubber duck* -> explain step-by-step as though to inanimate object
+
+=== Memory
+
+* diff. vars take up diff. memory:
+** bool & char (256 ASCII chars) = 1 byte
+** float & int (32 bill. vals) = 4 bytes
+** double (float * 2) & long (int * 2) = 8 bytes
+** string = indetermined (variable-length, short or long)
+
+* random access memory -> bytes stored in "grid squares"
+** char = 1 square, int = 4 squares, etc.
+** abstracted away so we can build shiiiitttt
+
+=== Arrays
+
+* ints can divide but remainder is thrown away
+** divide by decimal to cast implicitly
+
+* arrays = store multiple vals. of same type
+** "index into" to assign vals -> `int var[length]` to declare, `var[0] = 5` to
+   assign
+** *for loops* good -> index already there
++
+[source,c++]
+----
+#include <cs50.h>
+#include <stdio.h>
+
+int main(void)
+{
+    int n = get_int("How many scores? ");
+
+    int scores[n];
+
+    for (int i = 0; i < n; i++)
+    {
+        scores[i] = get_int("Score: ");
+    }
+
+    printf("Average: %f\n", (scores[0] + scores[1] + scores[2]) / 3.0);
+}
+----
+
+=== Characters
+
+* `printf("%c", charVar);` to print chars
+
+* `printf()` can *print chars as ints* -> raw ASCII val.
+** or cast to int
+
+* *casting floats to ints loses decimals/other info!!!*
+
+=== Strings
+
+* *arrays* of chars, as defined by CS50's lib.
+** `string[0]`, `string[1]`, etc.
+
+* *all strings* in C end with special char to indicate ending -> `\0`
+** *null character* or NUL
+** 4 bytes needed for string with 3 chars
+** fixed-size datatypes (i.e., *other* than strings) don't need the ending char
+*** other langs/libs can store custom types with *greater precision* but likely
+    implemented by *recording* the # of bytes (i.e., build upon C-style
+    datatypes)
+
+* can count # of chars in string:
++
+[source,c++]
+----
+#include <cs50.h>
+#include <stdio.h>
+  
+int string_length(string s);
+  
+int main(void)
+{
+    string name = get_string("Name: ");
+    int length = string_length(name);
+    printf("%i\n", length);
+}
+  
+int string_length(string s)
+{
+    int i = 0;
+    while (s[i] != '\0')
+    {
+        i++;
+    }
+    return i;
+}
+----
+** don't bother if char is `\0` -> string end
+** or use the C `string` lib (`string.h`) `strlen()` func. to count
+** CS50 has a https://manual.cs50.io/[manual] for C std lib, C POSIX lib, &
+   CS50 lib, too
+*** _simpler that std. man. pages_
+*** see the https://manual.cs50.io/3/strlen[string length] page in particular
+** print each char in string using `strlen`:
++
+[source,c++]
+----
+#include <cs50.h>
+#include <stdio.h>
+#include <string.h>
+
+int main(void)
+{
+    string s = get_string("Input:  ");
+    printf("Output: \n");
+    for (int i = 0, n = strlen(s); i < n; i++)
+    {
+        printf("%c\n", s[i]);
+    }
+}
+----
+** make prg. to caps. letters:
++
+[source,c++]
+----
+#include <cs50.h>
+#include <stdio.h>
+#include <string.h>
+
+int main(void)
+{
+    string s = get_string("Before: ");
+    printf("After:  ");
+    for (int i = 0, n = strlen(s); i < n; i++)
+    {
+        // If lowercase...
+        if (s[i] >= 'a' && s[i] <= 'z')
+        {
+            // ...Convert to uppercase
+            printf("%c", s[i] - 32);
+        }
+        else
+        {
+            printf("%c", s[i]);
+        }
+    }
+    printf("\n");
+}
+----
+*** can convert char. cases by -/+ the 32 bit diff.
+** C lib. for string cases -> `ctype.h`
+*** use `islower()` to determine case or `toupper()` to convert for you
+
+=== Command-line arguments
+
+* `string argv[]` = arg. *vector* (arr. of args), `int argc` = arg *count*
+  (num.)
+** e.g., `int main(int argc, string argv[]) { }`
+** don't know # of args. before
+** `argv[0]` = name of program (i.e., *1^st^ word typed*)
+** check to make sure *2 args* before using `argv[1]` (always at least 1)
+
+* `main()` = returns *exit status*
+** 0 by default = nothing went wrong
+** `return 1;` = indicate error to sys. calling prg.
+** `return 0;` = explicit, more readability
+
+=== Applications
+
+* *cryptography* = art of scrambling info. to hide it
+** *encrypt* = process of scrambling
+** *plaintext* = source
+** *key* = 2^nd^ (secret) input required by cipher (number) for scrambling
+** *ciphertext* = output after scrambling
+** *cipher* = algorithm that does the scrambling
+** e.g., `cipher("HI!", 1)` outputs "IJ!" (forward 1)
+** e.g., `cipher("UIJT XBT DT50", -1)` outputs "THIS WAS CS50"
+
+== Course Lecture
+
+* `make` = utility to make compiling easier
+** on CS50 machines, runs through `clang`
+** `a.out` = assembler output, default for `clang`
+
+* command-line args -> additional cmds to mod behaviour of programs
+
+* `make` automatically includes libs
+** need to tell `clang` directly -- `-lcs50`, `-lm` for math library, etc.
+*** separate process for including headers/libs
+** don't have to link `stdio` -> works for free
+*** some left out for efficiency reasons, some non-standard
+
+* 4 steps to "compiling":
+. preprocess -- imports @ top, getting prototypes in `.h` files ready after
+  finding files
+. compile -- *real* compiling, convert to assembly language, lowest-level
+  before 0s & 1s, & instructs CPUs step-by-step
+*** each CPU has own instructions -> partly why Mac software can't run on
+    Windows, although can sometimes compile to 2 targets
+. assemble -- convert assembly lang to 0s & 1s
+. link -- import `.c` files related to `.h` files (i.e., join all the 0s & 1s)
+  into output executable
+
+* `a.out` = "assembler output", generic name
+
+* *can* matter order of linking libraries (`make` handles for course tho)
+
+* try to diagnose problem proactively through *debugging*
+** look inside vals of vars w/ `printf()`
+** debuggers like `debug50 ./[executable]` -> starts VSCode's debugger to walk
+   through code step-by-step at comfortable pace
+*** step over = continue execution on next line, step into = jump into
+    internally called function
+** rubber duck -> *talk through* code
+
+* memory of diff. vals
+** bools & chars use 1 byte or 4 bits
+*** bools technically only need 1 bit but use bytes instead for simplicity
+** 4 bytes (32-bits) for ints & floats
+** longs & doubles = 8 bytes (64-bits)
+** strings = indetermined bits
+
+* to get precise result, need to *cast* ints to floats
+** easiest is to add decimal to treat 1 val in equation
+
+* to store multiple of same datatype in C, use *arrays*
+** still use same variable name but with `[x]` added when accessing individual
+   vals
+** eliminate multiple vars, *not* more space-friendly
+*** could use char or short to save space but overly-restrictive because
+    memory much more available these days
+
+* chars can be *implicitly* cast to ints to show their numeric ASCII values
+** "HI!" = 72, 73, 33
+** use `printf()` & print as ints instead of chars -> `%i` instead of `%c`
+
+* can use *overt* type casting with (datatype) -> `(int) "A"`
+
+* arrays of chars are *strings*
+** can call on vals in string with `var[x]`
+** strings = 1 byte per char
+
+* how can comps tell where 1 string ends & another begins?
+** distinguish end with *nul* -> special symbol for 8 0 bits (`\0`)
+** i.e., all strings end in `\0` with the nul value
+** easy to distinguish other datatypes -> predictable lengths/space in memory
+
+* how does `get_string()` work with uncertain # of chars?
+** _dynamic memory allocation_ -> grow/shrink array automatically
+
+* some langs make all datatypes variable sizes -> C old so memory & performance
+  benefits w/ predictable lengths
+** i.e., comps have to *look* at more locations in memory to tell if not preset
+
+* i.e., can tell how much of string you care about by logging length *not*
+  including `\0`
+
+* CS50 has https://manual.cs50.io/[man pages] -> std ones aren't that friendly,
+  these better
+
+* *don't* need to link libs -> `make` does automatically for course
+
+* higher-level libs can track larger datatypes but often *dynamic* (i.e., see
+  how long it is before storing???)
+
+* *remember* answer to question & *store in memory* to reuse
+** more efficient -> store `strlen()` in memory instead of calling for each
+   iteration
+** can declare *2 vars* in for loops, too -> 1 for `i`, other for `strlen()`
+   result
+
+* C progs can take command-line args
+** reason for typing `int main(void) { }` -> return exit status & accept cli
+   args
+** `int main(int argc, string argv[]) { }`
+** `argc` = count, `argv[]` = array of typed args
+** do error handling by checking for args w/ `argc` count
+*** *always 1 arg* -> filename being called
+
+* *exit codes* -> `return 1` when something goes wrong (go-to as long as non-0
+  exit status)
+** ints returned in C -> can be billions of error codes
+** when see, generally seeing exit statuses like we're using here
+** *can't* loop CLI programs -> returned to parent process & redo
+** main *always* returns 0 automatically -> good to explicitly to return 0 when
+   no errors
+
+* *readability* problem set -> find vocabulary level of text
+
+* *cryptography* -> scramble to hide contents of msg
+** plaintext -> algorithm -> ciphertext
+** need to know algorithm used to de-scramble
+** cyphers take *multiple args* -> also *key,* which is what cipher algorithm
+   uses to rotate/change letters by
+*** need to know to decipher consistently
+** caesar cipher = + 1
