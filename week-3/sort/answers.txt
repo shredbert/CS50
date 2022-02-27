@@ -1,11 +1,37 @@
-sort1 uses: TODO
+sort1 uses: bubble sort
 
-How do you know?: TODO
+How do you know?:
 
-sort2 uses: TODO
+- *Upper bound:* The time to complete is 0.06s in random5000.txt & 7.05s in
+  random50000.txt 
+    - This is more than a 100% increase, meaning the upper bound is O(n^2)
+- *Lower bound:* The time to complete is 0s in both sorted5000.txt &
+  sorted50000.txt
+    - This means that the algorithm is Ω(n)
 
-How do you know?: TODO
+sort2 uses: merge
 
-sort3 uses: TODO
+How do you know?:
 
-How do you know?: TODO
+- *Upper bound:* The time to complete is 0.00s in random5000.txt & 0.01s in
+  random50000.txt 
+    - This is a very minimal increase, meaning the upper bound is between O(n
+      log n) & O(log n)
+- *Lower bound:* The time to complete is 0.00s in random5000.txt & 0.01s in
+  random50000.txt 
+    - This is the same as the upper bound, meaning the lower bound is between
+      Ω(n log n) & Ω(log n)
+- i.e., this is between *Θ(n log n) Θ(log n)*
+
+sort3 uses: selection
+
+How do you know?:
+
+- *Upper bound:* The time to complete is 0.02s in random5000.txt & 2.64s in
+  random50000.txt 
+    - This is more than a 100% increase, meaning the upper bound is O(n^2)
+- *Lower bound:* The time to complete is 0.02s in random5000.txt & 2.67s in
+  random50000.txt 
+    - This is almost the same as the upper bound, meaning the lower bound is
+      Ω(n^2)
+- i.e., this is *Θ(n^2)*

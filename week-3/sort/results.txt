@@ -1,120 +1,63 @@
 **********Executing sort1**********
-
-Time for sort1 -- sorted5000.txt:
-0:00.00
-
-
-Time for sort1 -- sorted10000.txt:
-0:00.00
-
-
-Time for sort1 -- sorted50000.txt:
-0:00.01
-
-
-Time for sort1 -- reversed5000.txt:
-0:00.21
-
-
-Time for sort1 -- reversed10000.txt:
-0:00.38
-
-
-Time for sort1 -- reversed50000.txt:
-0:09.46
-
-
-Time for sort1 -- random5000.txt:
-0:00.07
-
-
-Time for sort1 -- random10000.txt:
-0:00.54
-
-
-Time for sort1 -- random50000.txt:
-0:12.22
-
-
+Time for sort1 -- sorted5000.txt in ms:
+0.00
+Time for sort1 -- reversed5000.txt in ms:
+0.05
+Time for sort1 -- random5000.txt in ms:
+0.06
+Time for sort1 -- sorted10000.txt in ms:
+0.00
+Time for sort1 -- reversed10000.txt in ms:
+0.19
+Time for sort1 -- random10000.txt in ms:
+0.25
+Time for sort1 -- sorted50000.txt in ms:
+0.00
+Time for sort1 -- reversed50000.txt in ms:
+5.03
+Time for sort1 -- random50000.txt in ms:
+7.05
 **********sort1 complete.**********
 
 **********Executing sort2**********
-
-Time for sort2 -- sorted5000.txt:
-0:00.00
-
-
-Time for sort2 -- sorted10000.txt:
-0:00.00
-
-
-Time for sort2 -- sorted50000.txt:
-0:00.01
-
-
-Time for sort2 -- reversed5000.txt:
-0:00.00
-
-
-Time for sort2 -- reversed10000.txt:
-0:00.00
-
-
-Time for sort2 -- reversed50000.txt:
-0:00.01
-
-
-Time for sort2 -- random5000.txt:
-0:00.00
-
-
-Time for sort2 -- random10000.txt:
-0:00.00
-
-
-Time for sort2 -- random50000.txt:
-0:00.02
-
-
+Time for sort2 -- sorted5000.txt in ms:
+0.00
+Time for sort2 -- reversed5000.txt in ms:
+0.00
+Time for sort2 -- random5000.txt in ms:
+0.00
+Time for sort2 -- sorted10000.txt in ms:
+0.00
+Time for sort2 -- reversed10000.txt in ms:
+0.00
+Time for sort2 -- random10000.txt in ms:
+0.00
+Time for sort2 -- sorted50000.txt in ms:
+0.01
+Time for sort2 -- reversed50000.txt in ms:
+0.01
+Time for sort2 -- random50000.txt in ms:
+0.01
 **********sort2 complete.**********
 
 **********Executing sort3**********
-
-Time for sort3 -- sorted5000.txt:
-0:00.04
-
-
-Time for sort3 -- sorted10000.txt:
-0:00.25
-
-
-Time for sort3 -- sorted50000.txt:
-0:05.27
-
-
-Time for sort3 -- reversed5000.txt:
-0:00.06
-
-
-Time for sort3 -- reversed10000.txt:
-0:00.25
-
-
-Time for sort3 -- reversed50000.txt:
-0:05.36
-
-
-Time for sort3 -- random5000.txt:
-0:00.06
-
-
-Time for sort3 -- random10000.txt:
-0:00.24
-
-
-Time for sort3 -- random50000.txt:
-0:04.68
-
-
+Time for sort3 -- sorted5000.txt in ms:
+0.02
+Time for sort3 -- reversed5000.txt in ms:
+0.02
+Time for sort3 -- random5000.txt in ms:
+0.02
+Time for sort3 -- sorted10000.txt in ms:
+0.10
+Time for sort3 -- reversed10000.txt in ms:
+0.11
+Time for sort3 -- random10000.txt in ms:
+0.10
+Time for sort3 -- sorted50000.txt in ms:
+2.67
+Time for sort3 -- reversed50000.txt in ms:
+2.74
+Time for sort3 -- random50000.txt in ms:
+2.64
 **********sort3 complete.**********
 

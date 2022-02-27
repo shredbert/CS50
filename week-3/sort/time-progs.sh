@@ -23,19 +23,17 @@ touch "$rslts" &&\
 echo -e "Timing sort programs in $rslts..."
 for s in sort*; do
     if [[ "$s" == "sort1" || "$s" == "sort2" || "$s" == "sort3" ]]; then
-        echo -e "**********Executing $s**********\n" >> "$rslts"
-        data=("sorted5000" "sorted10000" "sorted50000" \
-              "reversed5000" "reversed10000" "reversed50000" \
-              "random5000" "random10000" "random50000")
+        echo -e "**********Executing $s**********" >> "$rslts"
+        data=("sorted5000" "reversed5000" "random5000" \
+              "sorted10000" "reversed10000" "random10000" \
+              "sorted50000" "reversed50000" "random50000")
         for n in ${data[@]}; do
             f="$n.txt"
             if [[ -e "$f" ]]; then
-                echo "Time for $s -- $f:" >> "$rslts"
-                /usr/bin/time -f "%E" -a -o "$rslts" ./"$s" "$f" > /dev/null
-                echo -e "\n" >> "$rslts"
+                echo "Time for $s -- $f in ms:" >> "$rslts"
+                /usr/bin/time -f "%e" -a -o "$rslts" ./"$s" "$f" > /dev/null
             fi
         done;
-        # echo -e "\n" #>> "$rslts"
         echo -e "**********$s complete.**********\n" >> "$rslts"
     fi
 done;
