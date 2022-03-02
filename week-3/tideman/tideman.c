@@ -107,7 +107,7 @@ bool vote(int rank, string name, int ranks[])
         if (strcmp(candidates[i], name) == 0)
         {
             ranks[rank] = i;
-            // printf("rank %i: candidate %i\n", rank, i);
+            printf("rank %i: candidate %i\n", rank, i);
             return true;
         }
     }
@@ -118,17 +118,19 @@ bool vote(int rank, string name, int ranks[])
 // Update preferences given one voter's ranks
 void record_preferences(int ranks[])
 {
-    // TODO: Iterate through all ranks of candidates to get higher pref
+    // Iterate through all ranks of candidates to get higher pref
     for (int i = 0; i < candidate_count; i++)
     {
-        // TODO: Iterate through all ranks of candidates to get lower pref &
-        // ensure j never out-of-bounds
-        for (int j = i + 1; j < candidate_count - i; j++)
+        // printf("%i (i) wins over: ", ranks[i]);
+        // Iterate through all ranks of candidates to get lower pref
+        for (int j = i + 1; j < candidate_count; j++)
         {
-            // TODO: Update preferences[] for candidate rank[i] over rank[j]
+            // printf("%i (j) loses,", ranks[j]);
+            // Update preference for candidate rank[i] over rank[j]
             preferences[ranks[i]][ranks[j]]++;
-            printf("%i\n", preferences[ranks[i]][ranks[j]]);
+            printf("pref %i > %i count: %i\n", ranks[i], ranks[j], preferences[ranks[i]][ranks[j]]);
         }
+        // printf("\n");
     }
     return;
 }
@@ -136,7 +138,27 @@ void record_preferences(int ranks[])
 // Record pairs of candidates where one is preferred over the other
 void add_pairs(void)
 {
-    // TODO
+    // TODO: Init pair_count so can increment
+    pair_count = 0;
+    // TODO: Iterate through all preferences to get upper pref
+    for (int i = 0; i < candidate_count; i++)
+    {
+        // TODO: Iterate through all preferences to get lower pref
+        for (int j = 0; j < candidate_count; j++)
+        {
+            // TODO: Check if pref is > 0
+            if (preferences[i][j] > 0)
+            {
+                // TODO: Add each pref to pairs[], specifying winner & loser
+                // index???
+                pairs[pair_count].winner = i;
+                pairs[pair_count].loser = j;
+                // TODO: Increment pair_count
+                pair_count++;
+                printf("pair %i: winner = %i, loser = %i\n", pair_count, i, j);
+            }
+        }
+    }
     return;
 }
 
