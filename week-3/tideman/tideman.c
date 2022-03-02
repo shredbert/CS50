@@ -107,7 +107,7 @@ bool vote(int rank, string name, int ranks[])
         if (strcmp(candidates[i], name) == 0)
         {
             ranks[rank] = i;
-            printf("rank %i: candidate %i\n", rank, i);
+            // printf("rank %i: candidate %i\n", rank, i);
             return true;
         }
     }
@@ -123,12 +123,13 @@ void record_preferences(int ranks[])
     {
         // printf("%i (i) wins over: ", ranks[i]);
         // Iterate through all ranks of candidates to get lower pref
+        // NOTE: Why no segmentation fault? can't j be out of bounds here?
         for (int j = i + 1; j < candidate_count; j++)
         {
             // printf("%i (j) loses,", ranks[j]);
             // Update preference for candidate rank[i] over rank[j]
             preferences[ranks[i]][ranks[j]]++;
-            printf("pref %i > %i count: %i\n", ranks[i], ranks[j], preferences[ranks[i]][ranks[j]]);
+            // printf("pref %i > %i count: %i\n", ranks[i], ranks[j], preferences[ranks[i]][ranks[j]]);
         }
         // printf("\n");
     }
@@ -154,18 +155,52 @@ void add_pairs(void)
                 pairs[pair_count].winner = i;
                 pairs[pair_count].loser = j;
                 // TODO: Increment pair_count
+                // printf("pair %i: winner = %i, loser = %i\n", pair_count, i, j);
                 pair_count++;
-                printf("pair %i: winner = %i, loser = %i\n", pair_count, i, j);
             }
         }
     }
+    // printf("\n");
     return;
 }
 
 // Sort pairs in decreasing order by strength of victory
 void sort_pairs(void)
 {
-    // TODO
+    // testins
+    printf("OG list:\n");
+    for (int i = 0; i < pair_count; i++)
+    {
+        printf("%i", preferences[pairs[i].winner][pairs[i].loser]);
+    }
+    printf("\n");
+    printf("Sorted list:\n");
+    // TODO: Reverse selection sort
+    // TODO: Create var for idx & temp pair so can swap
+    int high_idx;
+    pair high_pair;
+    // TODO: Iterate over pair_count for swapping
+    for (int i = 0; i < pair_count; i++)
+    {
+        // TODO: Iterate over pair_count for checking
+        for (int j = i + 1; j < pair_count; j++)
+        {
+            // TODO: Check if pref has highest count
+            if (preferences[pairs[j].winner][pairs[j].loser] >= preferences[pairs[i].winner][pairs[i].loser])
+            {
+                // TODO: If so, assign swap idx & temp pairs
+                high_idx = j;
+                high_pair = pairs[j];
+            }
+        }
+        pairs[high_idx] = pairs[i];
+        pairs[i] = high_pair;
+        printf("%i", preferences[pairs[i].winner][pairs[i].loser]);
+    }
+    printf("\n");
+
+    // TODO: Reverse bubble sort
+    // TODO: Reverse merge sort -- can't unless provide args to decrement?
     return;
 }
 
