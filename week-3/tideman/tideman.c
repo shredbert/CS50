@@ -168,83 +168,97 @@ void add_pairs(void)
 void sort_pairs(void)
 {
     // testins
-    printf("prefs list:\n");
-    for (int i = 0; i < pair_count; i++)
-    {
-        printf("%i", preferences[pairs[i].winner][pairs[i].loser]);
-    }
-    printf("\n");
+    // printf("Prefs list:\n");
+    // for (int i = 0; i < pair_count; i++)
+    // {
+    //     printf("%i ", preferences[pairs[i].winner][pairs[i].loser]);
+    // }
+    // printf("\n");
 
-    // TODO: Selection sort
-    // TODO: Iterate over pair_count for base val
+    // Selection sort
+    // Iterate over pair_count for base val
     for (int i = 0; i < pair_count; i++)
     {
-        // TODO: vars to swap higher pair with [i] -- reset each cycle
-        int high_idx;
-        pair high_pair;
-        printf("comparing %i:\n", preferences[pairs[i].winner][pairs[i].loser]);
-        // TODO: Iterate over pair_count for check val
+        // vars to swap higher pair with [i] -- reset each cycle
+        int high_idx = i;
+        pair swap_pair;
+        // printf("comparing %i...\n", preferences[pairs[i].winner][pairs[i].loser]);
+
+        // Iterate over pair_count for check val
         for (int j = i + 1; j < pair_count; j++)
         {
-            printf("%i\n", preferences[pairs[j].winner][pairs[j].loser]);
-            // TODO: Check if pref has higher count
+            // Check if pref has higher count
             if (preferences[pairs[j].winner][pairs[j].loser] > preferences[pairs[high_idx].winner][pairs[high_idx].loser])
             {
-                // TODO: If so, reassign highest idx/pair to swap with pairs[i]
+                // If so, reassign highest idx/pair to swap with pairs[i]
                 high_idx = j;
-                high_pair = pairs[j];
+                swap_pair = pairs[j];
             }
         }
 
-        if (high_idx)
+        // Don't reassign if not changing
+        // NOTE: Slightly more efficient? Or unnecessary?
+        if (high_idx != i)
         {
-            printf("index %i is highest!\n", high_idx);
+            // printf("index %i is highest!\n", high_idx);
             // Assign pairs[i] in place of highest idx
             pairs[high_idx] = pairs[i];
             // Assign highest pair to pairs[i]
-            pairs[i] = high_pair;
+            pairs[i] = swap_pair;
         }
-        else
-        {
-            printf("idx not higher!");
-        }
-
-        // testins
-        printf("\nnew prefs list:\n");
-        for (; i < pair_count; i++)
-        {
-            printf("%i", preferences[pairs[i].winner][pairs[i].loser]);
-        }
-        printf("\n");
     }
+
+    // testins
+    // printf("\nnew prefs list:\n");
+    // for (int i = 0; i < pair_count; i++)
+    // {
+    //     printf("preference: %i\n", preferences[pairs[i].winner][pairs[i].loser]);
+    // }
+    // printf("\n");
     return;
 }
 
 // Lock pairs into the candidate graph in order, without creating cycles
 void lock_pairs(void)
 {
-    // TODO: Iterate over pairs (now sorted)
     for (int i = 0; i < pair_count; i++)
     {
-        // TODO: If locked[pairs[i].loser][pairs[i].winner] != true
+        printf("%s over %s: %i\n", candidates[pairs[i].winner], candidates[pairs[i].loser], preferences[pairs[i].winner][pairs[i].loser]);
+        printf("locked: %i\n", locked[pairs[i].winner][pairs[i].loser]);
+    }
+    printf("\n");
+
+    // Iterate over sorted pairs
+    for (int i = 0; i < pair_count; i++)
+    {
+        // If inverse of pair isn't already locked, lock
         if (!locked[pairs[i].loser][pairs[i].winner])
         {
-            // TODO: Lock
             locked[pairs[i].winner][pairs[i].loser] = true;
         }
     }
 
     // testins
-    // for (int i = 0; i < pair_count; i++)
-    // {
-    //     printf("locked: %i\n", locked[pairs[i].winner][pairs[i].loser]);
-    // }
+    for (int i = 0; i < pair_count; i++)
+    {
+        printf("%s over %s: %i\n", candidates[pairs[i].winner], candidates[pairs[i].loser], preferences[pairs[i].winner][pairs[i].loser]);
+        printf("locked: %i\n", locked[pairs[i].winner][pairs[i].loser]);
+    }
+    printf("\n");
     return;
 }
 
 // Print the winner of the election
 void print_winner(void)
 {
-    // TODO
+    // Take winning pair & print name if locked
+    for (int i = 0; i < pair_count; i++)
+    {
+        if (locked[pairs[i].winner][pairs[i].loser])
+        {
+            printf("%s\n", candidates[pairs[i].winner]);
+            break;
+        }
+    }
     return;
 }

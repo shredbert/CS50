@@ -1,0 +1,17 @@
+#!/usr/bin/bash
+5
+Alice
+Charlie
+Bob
+Alice
+Charlie
+Bob
+Bob
+Charlie
+Alice
+Bob
+Charlie
+Alice
+Charlie
+Alice
+Bob
