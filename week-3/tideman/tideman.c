@@ -107,7 +107,6 @@ bool vote(int rank, string name, int ranks[])
         if (strcmp(candidates[i], name) == 0)
         {
             ranks[rank] = i;
-            // printf("rank %i: candidate %i\n", rank, i);
             return true;
         }
     }
@@ -121,17 +120,12 @@ void record_preferences(int ranks[])
     // Iterate through all ranks of candidates to get higher pref
     for (int i = 0; i < candidate_count; i++)
     {
-        // printf("%i (i) wins over: ", ranks[i]);
         // Iterate through all ranks of candidates to get lower pref
-        // NOTE: Why no segmentation fault? can't j be out of bounds here?
         for (int j = i + 1; j < candidate_count; j++)
         {
-            // printf("%i (j) loses,", ranks[j]);
             // Update preference for candidate rank[i] over rank[j]
             preferences[ranks[i]][ranks[j]]++;
-            // printf("pref %i > %i count: %i\n", ranks[i], ranks[j], preferences[ranks[i]][ranks[j]]);
         }
-        // printf("\n");
     }
     return;
 }
@@ -139,50 +133,37 @@ void record_preferences(int ranks[])
 // Record pairs of candidates where one is preferred over the other
 void add_pairs(void)
 {
-    // TODO: Init pair_count so can increment
+    // Init pair_count so can increment
     pair_count = 0;
-    // TODO: Iterate through all preferences to get upper pref
+    // Iterate through all preferences to get upper pref
     for (int i = 0; i < candidate_count; i++)
     {
-        // TODO: Iterate through all preferences to get lower pref
+        // Iterate through all preferences to get lower pref
         for (int j = 0; j < candidate_count; j++)
         {
-            // TODO: Check if pref is > 0
-            if (preferences[i][j] > 0)
+            // Check if pref is > 0
+            if (preferences[i][j] > 0 && preferences[i][j] != preferences[j][i])
             {
-                // TODO: Add each pref to pairs[], specifying winner & loser
-                // index???
+                // Add each pref to pairs[], specifying winner & loser index
                 pairs[pair_count].winner = i;
                 pairs[pair_count].loser = j;
-                // TODO: Increment pair_count
-                // printf("pair %i: winner = %i, loser = %i\n", pair_count, i, j);
+                // Increment pair_count
                 pair_count++;
             }
         }
     }
-    // printf("\n");
     return;
 }
 
 // Sort pairs in decreasing order by strength of victory
 void sort_pairs(void)
 {
-    // testins
-    // printf("Prefs list:\n");
-    // for (int i = 0; i < pair_count; i++)
-    // {
-    //     printf("%i ", preferences[pairs[i].winner][pairs[i].loser]);
-    // }
-    // printf("\n");
-
-    // Selection sort
-    // Iterate over pair_count for base val
+    // Selection sort: Iterate over pair_count for base val
     for (int i = 0; i < pair_count; i++)
     {
         // vars to swap higher pair with [i] -- reset each cycle
         int high_idx = i;
         pair swap_pair;
-        // printf("comparing %i...\n", preferences[pairs[i].winner][pairs[i].loser]);
 
         // Iterate over pair_count for check val
         for (int j = i + 1; j < pair_count; j++)
@@ -196,11 +177,9 @@ void sort_pairs(void)
             }
         }
 
-        // Don't reassign if not changing
-        // NOTE: Slightly more efficient? Or unnecessary?
+        // Don't reassign if not changing -- strength of victory doesn't matter
         if (high_idx != i)
         {
-            // printf("index %i is highest!\n", high_idx);
             // Assign pairs[i] in place of highest idx
             pairs[high_idx] = pairs[i];
             // Assign highest pair to pairs[i]
@@ -208,41 +187,42 @@ void sort_pairs(void)
         }
     }
 
-    // testins
-    // printf("\nnew prefs list:\n");
-    // for (int i = 0; i < pair_count; i++)
-    // {
-    //     printf("preference: %i\n", preferences[pairs[i].winner][pairs[i].loser]);
-    // }
-    // printf("\n");
     return;
 }
 
 // Lock pairs into the candidate graph in order, without creating cycles
 void lock_pairs(void)
 {
+    printf("Sorted:\n");
     for (int i = 0; i < pair_count; i++)
     {
-        printf("%s over %s: %i\n", candidates[pairs[i].winner], candidates[pairs[i].loser], preferences[pairs[i].winner][pairs[i].loser]);
-        printf("locked: %i\n", locked[pairs[i].winner][pairs[i].loser]);
+        printf("%s over %s: %i votes\n", candidates[pairs[i].winner], candidates[pairs[i].loser], preferences[pairs[i].winner][pairs[i].loser]);
     }
     printf("\n");
 
     // Iterate over sorted pairs
     for (int i = 0; i < pair_count; i++)
     {
-        // If inverse of pair isn't already locked, lock
-        if (!locked[pairs[i].loser][pairs[i].winner])
+        // Find # of locks
+        int locks = 0;
+        for (int j = 0; j < pair_count; j++)
+        {
+            if (locked[pairs[j].winner][pairs[j].loser])
+            {
+                locks++;
+            }
+        }
+
+        // Check if # of locks < # of candidates
+        if (locks < pair_count / 2 - 1)
         {
             locked[pairs[i].winner][pairs[i].loser] = true;
         }
     }
 
-    // testins
     for (int i = 0; i < pair_count; i++)
     {
-        printf("%s over %s: %i\n", candidates[pairs[i].winner], candidates[pairs[i].loser], preferences[pairs[i].winner][pairs[i].loser]);
-        printf("locked: %i\n", locked[pairs[i].winner][pairs[i].loser]);
+        printf("%s over %s: locked = %i \n", candidates[pairs[i].winner], candidates[pairs[i].loser], locked[pairs[i].winner][pairs[i].loser]);
     }
     printf("\n");
     return;
@@ -251,13 +231,13 @@ void lock_pairs(void)
 // Print the winner of the election
 void print_winner(void)
 {
-    // Take winning pair & print name if locked
+    // Iterate through candidates
     for (int i = 0; i < pair_count; i++)
     {
-        if (locked[pairs[i].winner][pairs[i].loser])
+        // If candidate doesn't have lock against them, winner -- HOW TO CHECK???
+        if (!locked[pairs[i].winner][pairs[i].loser])
         {
             printf("%s\n", candidates[pairs[i].winner]);
-            break;
         }
     }
     return;
