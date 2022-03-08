@@ -133,16 +133,17 @@ void record_preferences(int ranks[])
 // Record pairs of candidates where one is preferred over the other
 void add_pairs(void)
 {
-    // Init pair_count so can increment
+    // Need idx of pair count
     pair_count = 0;
-    // Iterate through all preferences to get upper pref
+    // Iterate through all preferences for winner index
     for (int i = 0; i < candidate_count; i++)
     {
-        // Iterate through all preferences to get lower pref
+        // Iterate through all preferences for loser index
         for (int j = 0; j < candidate_count; j++)
         {
-            // Check if pref is > 0
-            if (preferences[i][j] > 0 && preferences[i][j] != preferences[j][i])
+            // Check if pref has vote but no ties
+            if (preferences[i][j] > 0 &&
+                preferences[i][j] != preferences[j][i])
             {
                 // Add each pref to pairs[], specifying winner & loser index
                 pairs[pair_count].winner = i;
@@ -152,13 +153,20 @@ void add_pairs(void)
             }
         }
     }
+
+    for (int i = 0; i < pair_count; i++)
+    {
+        printf("%s > %s: %i votes\n", candidates[pairs[i].winner], candidates[pairs[i].loser], preferences[pairs[i].winner][pairs[i].loser]);
+    }
+
     return;
 }
 
 // Sort pairs in decreasing order by strength of victory
 void sort_pairs(void)
 {
-    // Selection sort: Iterate over pair_count for base val
+    // Sort algorithm -- selection sort
+    // Iterate over pair_count for base val
     for (int i = 0; i < pair_count; i++)
     {
         // vars to swap higher pair with [i] -- reset each cycle
@@ -193,13 +201,6 @@ void sort_pairs(void)
 // Lock pairs into the candidate graph in order, without creating cycles
 void lock_pairs(void)
 {
-    printf("Sorted:\n");
-    for (int i = 0; i < pair_count; i++)
-    {
-        printf("%s over %s: %i votes\n", candidates[pairs[i].winner], candidates[pairs[i].loser], preferences[pairs[i].winner][pairs[i].loser]);
-    }
-    printf("\n");
-
     // Iterate over sorted pairs
     for (int i = 0; i < pair_count; i++)
     {
@@ -219,25 +220,35 @@ void lock_pairs(void)
             locked[pairs[i].winner][pairs[i].loser] = true;
         }
     }
-
-    for (int i = 0; i < pair_count; i++)
-    {
-        printf("%s over %s: locked = %i \n", candidates[pairs[i].winner], candidates[pairs[i].loser], locked[pairs[i].winner][pairs[i].loser]);
-    }
-    printf("\n");
     return;
 }
 
 // Print the winner of the election
 void print_winner(void)
 {
-    // Iterate through candidates
+    // Search algorithm -- linear search???
+    // Iterate through all pairs to compare winners
     for (int i = 0; i < pair_count; i++)
     {
-        // If candidate doesn't have lock against them, winner -- HOW TO CHECK???
-        if (!locked[pairs[i].winner][pairs[i].loser])
+        // Count # of edges where i is loser -- if 0, winner
+        int losing_edges = 0;
+        // Iterate through all pairs to compare losers
+        for (int j = i; j < pair_count; j++)
+        {
+            // If winner of i is same as loser of j, increment losing edges if
+            // locked
+            if (pairs[i].winner == pairs[j].loser &&
+                locked[pairs[j].winner][pairs[j].loser])
+            {
+                losing_edges++;
+            }
+        }
+
+        // If didn't find any losing edges, winner & break (only 1)
+        if (losing_edges == 0)
         {
             printf("%s\n", candidates[pairs[i].winner]);
+            break;
         }
     }
     return;
