@@ -143,7 +143,7 @@ void add_pairs(void)
         {
             // Check if pref has vote but no ties
             if (preferences[i][j] > 0 &&
-                preferences[i][j] != preferences[j][i])
+                preferences[i][j] > preferences[j][i])
             {
                 // Add each pref to pairs[], specifying winner & loser index
                 pairs[pair_count].winner = i;
@@ -152,11 +152,6 @@ void add_pairs(void)
                 pair_count++;
             }
         }
-    }
-
-    for (int i = 0; i < pair_count; i++)
-    {
-        printf("%s > %s: %i votes\n", candidates[pairs[i].winner], candidates[pairs[i].loser], preferences[pairs[i].winner][pairs[i].loser]);
     }
 
     return;
@@ -201,25 +196,36 @@ void sort_pairs(void)
 // Lock pairs into the candidate graph in order, without creating cycles
 void lock_pairs(void)
 {
+
+    // test -- skip final pair if cycle
+    pair_count = 7;
+    pairs[0].winner = 0; pairs[0].loser = 1;
+    pairs[1].winner = 1; pairs[1].loser = 4;
+    pairs[2].winner = 4; pairs[2].loser = 2;
+    pairs[3].winner = 4; pairs[3].loser = 3;
+    pairs[4].winner = 3; pairs[4].loser = 5;
+    pairs[5].winner = 5; pairs[5].loser = 1;
+    pairs[6].winner = 2; pairs[6].loser = 1;
+
+    // // test -- skip middle pair if cycle
+    // pair_count = 5;
+    // pairs[0].winner = 2; pairs[0].loser = 0;
+    // pairs[1].winner = 4; pairs[1].loser = 1;
+    // pairs[2].winner = 1; pairs[2].loser = 3;
+    // pairs[3].winner = 3; pairs[3].loser = 4;
+    // pairs[4].winner = 4; pairs[4].loser = 2;
+
     // Iterate over sorted pairs
     for (int i = 0; i < pair_count; i++)
     {
-        // Find # of locks
-        int locks = 0;
-        for (int j = 0; j < pair_count; j++)
-        {
-            if (locked[pairs[j].winner][pairs[j].loser])
-            {
-                locks++;
-            }
-        }
-
-        // Check if # of locks < # of candidates
-        if (locks < pair_count / 2 - 1)
-        {
-            locked[pairs[i].winner][pairs[i].loser] = true;
-        }
+        locked[pairs[i].winner][pairs[i].loser] = true;
     }
+
+    // test
+    for (int i = 0; i < candidate_count; i++)
+        for (int j = 0; j < candidate_count; j++)
+            printf("%s ", locked[i][j] ? "true" : "false");
+
     return;
 }
 
