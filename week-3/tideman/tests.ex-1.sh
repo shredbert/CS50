@@ -27,6 +27,3 @@ Bob
 Charlie
 Alice
 Bob
-Charlie
-Alice
-Bob
