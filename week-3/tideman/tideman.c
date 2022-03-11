@@ -199,25 +199,32 @@ void lock_pairs(void)
     // Linear search algorithm to find if, for each candidate, they are the
     // loser of an edge
 
-    // use i to lock all pairs unless winner is existing source of graph
-    // if source, check # of locks???
-    // and that doesn't have locked edge as loser?
     for (int i = 0; i < pair_count; i++)
     {
-        // use j to cycle through all candidates to test if the loser has ever
-        // won an edge
+        printf("%s > %s\n", candidates[pairs[i].winner], candidates[pairs[i].loser]);
+    }
+
+    // use i to lock all pairs unless winner is existing source of graph
+    // if source, check # of locks and that doesn't have locked edge as loser?
+    for (int i = 0; i < pair_count; i++)
+    {
+        // iterate through all pairs
+        // if new pair's LOSER was winner of prev winner over new pair's
+        // WINNER, creates cycle
+        // starting from new winner, iterate through all locked pairs 
         bool cycle = false;
-        for (int j = 0; j < pair_count; j++)
+        int test_lsr = pairs[i].loser;
+        // store losers of new losers to check if new winner was ever a loser?
+        pair losers[MAX];
+        for (int j = pair_count; j > 0; j--)
         {
-            if (locked[pairs[j].winner][pairs[j].loser] &&
-                pairs[j].winner == pairs[i].loser)
+            if (locked[pairs[i].winner][pairs[j].loser])
             {
-                printf("cycle for %i > %i!!!\n", pairs[j].winner, pairs[j].loser);
                 cycle = true;
             }
         }
 
-        // if isn't current source of graph, lock
+        // if no cycle, lock
         if (!cycle)
             locked[pairs[i].winner][pairs[i].loser] = true;
     }
@@ -254,7 +261,7 @@ void print_winner(void)
         // If didn't find any losing edges, winner & break (only 1)
         if (losing_edges == 0)
         {
-            // printf("%s\n", candidates[pairs[i].winner]);
+            printf("%s\n", candidates[pairs[i].winner]);
             break;
         }
     }

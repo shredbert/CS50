@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+./tideman Alice Bob Charlie << EOF
 9
 Alice
 Bob
@@ -27,3 +28,4 @@ Bob
 Charlie
 Alice
 Bob
+EOF
