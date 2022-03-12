@@ -199,40 +199,98 @@ void lock_pairs(void)
     // Linear search algorithm to find if, for each candidate, they are the
     // loser of an edge
 
-    for (int i = 0; i < pair_count; i++)
-    {
-        printf("%s > %s\n", candidates[pairs[i].winner], candidates[pairs[i].loser]);
-    }
+    // // tests
+    // for (int i = 0; i < pair_count; i++)
+    // {
+    //     printf("%s > %s\n", candidates[pairs[i].winner], candidates[pairs[i].loser]);
+    // }
 
-    // use i to lock all pairs unless winner is existing source of graph
-    // if source, check # of locks and that doesn't have locked edge as loser?
+    pair_count = 7;
+    pairs[0].winner = 0; pairs[0].loser = 1;
+    pairs[1].winner = 1; pairs[1].loser = 4;
+    pairs[2].winner = 4; pairs[2].loser = 2;
+    pairs[3].winner = 4; pairs[3].loser = 3;
+    pairs[4].winner = 3; pairs[4].loser = 5;
+    pairs[5].winner = 5; pairs[5].loser = 1;
+    pairs[6].winner = 2; pairs[6].loser = 1;
+
+    // iterate through pairs to lock
     for (int i = 0; i < pair_count; i++)
     {
-        // iterate through all pairs
-        // if new pair's LOSER was winner of prev winner over new pair's
-        // WINNER, creates cycle
-        // starting from new winner, iterate through all locked pairs 
+        // store test for cycle
         bool cycle = false;
-        int test_lsr = pairs[i].loser;
-        // store losers of new losers to check if new winner was ever a loser?
-        pair losers[MAX];
-        for (int j = pair_count; j > 0; j--)
+
+        // iterate through pairs to find if source
+        for (int j = 0; j < pair_count; j++)
         {
-            if (locked[pairs[i].winner][pairs[j].loser])
+            // check if source
+            if (locked[pairs[j].winner][pairs[j].loser] &&
+                pairs[j].loser == pairs[i].winner)
             {
-                cycle = true;
+                printf("\npair %i winner not source of graph!!!\n", i);
+                // store winner of predecessor to i so can iterate backwards
+                int check_win = pairs[j].winner;
+                printf("winning predecessor to check: %i\n", check_win);
+                // iterate through existing pairs again to find predecessors
+                for (int k = 0; k < pair_count; k++)
+                {
+                    // check if predecessor edge winner has loser of i
+                    if (locked[pairs[k].winner][pairs[k].loser] &&
+                        pairs[k].loser == check_win)
+                    {
+                        // if winner of predecessor pair is the new loser,
+                        // cycle
+                        if (pairs[i].loser == pairs[k].winner)
+                        {
+                            printf("cycle at pair %i!!!\n", k);
+                            cycle = true;
+                        }
+                        // if not, assign new val to predecessor pair winner to
+                        // check
+                        else
+                        {
+                            check_win = pairs[k].winner;
+                            printf("no cycle, checking %i\n", check_win);
+                        }
+                    }
+                }
             }
+            else
+                printf("\npair %i winner source of graph!!!\n", i);
+                break;
         }
 
         // if no cycle, lock
         if (!cycle)
+            printf("no cycle at all!!!\n");
             locked[pairs[i].winner][pairs[i].loser] = true;
+
+        printf("\n");
     }
 
+    // tests
     for (int i = 0; i < pair_count; i++)
     {
         printf("%i > %i = %i\n", pairs[i].winner, pairs[i].loser, locked[pairs[i].winner][pairs[i].loser]);
     }
+
+/*
+false  true   false  false  false  false
+false  false  false  false  true   false
+false  false  false  false  false  false
+false  false  false  false  false  true
+false  false  true   true   false  false
+false  false  false  false  false  false
+*/
+    // // tests
+    // for (int i = 0; i < pair_count; i++)
+    // {
+    //     for (int j = 0; j < pair_count; j++)
+    //     {
+    //         printf("%s ", locked[i][j] ? "true" : "false");
+    //     }
+    // }
+    // printf("\n");
 
     return;
 }
@@ -261,7 +319,7 @@ void print_winner(void)
         // If didn't find any losing edges, winner & break (only 1)
         if (losing_edges == 0)
         {
-            printf("%s\n", candidates[pairs[i].winner]);
+            // printf("%s\n", candidates[pairs[i].winner]);
             break;
         }
     }
