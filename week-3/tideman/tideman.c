@@ -347,39 +347,72 @@ void print_winner(void)
     // locked[2][3] = true;
     // locked[3][0] = locked[3][1] = locked[3][2] = locked[3][3] = false;
 
-    // Test -- some ties, should be Charlie only
-    pair_count = 4;
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-            locked[i][j] = false;
-    locked[2][0] = true;
-    locked[0][1] = true;
-    locked[0][3] = true;
-    locked[1][3] = true;
+    // // Test -- some ties, should be Charlie only
+    // pair_count = 4;
+    // for (int i = 0; i < 4; i++)
+    //     for (int j = 0; j < 4; j++)
+    //         locked[i][j] = false;
+    // locked[2][0] = true;
+    // locked[0][1] = true;
+    // locked[0][3] = true;
+    // locked[1][3] = true;
 
-    // Store winner cus need to check so not repeated
-    pair winner;
+    // Datatype to store winner idxs, # of parents, & whether source
+    typedef struct
+    {
+        int candidate;
+        int parents;
+    }
+    winner;
+
+    winner winners[pair_count];
+    bool has_src = false;
+    int lowest_prnt_cnt = pair_count, src_idx;
+
     // Iterate through all pairs to compare winners
     for (int i = 0; i < pair_count; i++)
     {
-        // Count # of edges where i is loser
-        int losing_edges = 0;
-        // Iterate through all pairs to compare losers
+        // Iterate through all pairs to count parents
+        winners[i].candidate = pairs[i].winner;
+        winners[i].parents = 0;
         for (int j = 0; j < pair_count; j++)
         {
             if (locked[pairs[j].winner][pairs[j].loser] &&
-                pairs[j].loser == pairs[i].winner)
+                pairs[j].loser == winners[i].candidate)
             {
-                losing_edges++;
+                winners[i].parents++;
             }
         }
 
-        // If no losing edges, source
-        if (losing_edges == 0)
+        // If no parent edges, source
+        if (winners[i].parents == 0)
         {
-            winner = pairs[i];
+            has_src = true;
+            src_idx = winners[i].candidate;
+        }
+        else
+        {
+            if (winners[i].parents < lowest_prnt_cnt)
+            {
+                lowest_prnt_cnt = winners[i].parents;
+            }
         }
     }
-    printf("%s\n", candidates[winner.winner]);
+
+    if (has_src)
+    {
+        printf("%s\n", candidates[src_idx]);
+    }
+    else
+    {
+        for (int i = 0; i < pair_count; i++)
+        {
+            if (winners[i].parents == lowest_prnt_cnt)
+            {
+                printf("%s\n", candidates[winners[i].candidate]);
+            }
+        }
+    }
+
     return;
 }
