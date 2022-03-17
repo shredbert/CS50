@@ -377,12 +377,12 @@ void print_winner(void)
     winner;
 	
     // Store winners, determine if a source exists, & store idx if so
-    winner winners[candidate_count];
-    int winners_cnt = 0, lowest_pred_cnt = candidate_count;
+    winner winners[pair_count];
+    int winners_cnt = 0, lowest_pred_cnt = pair_count;
 
     // For each *distinct* winner of an edge, find winning candidate idx & # of
     // direct predecessors & store
-    for (int i = 0; i < candidate_count; i++)
+    for (int i = 0; i < pair_count; i++)
     {
         // Must be locked to have winning edge
         if (locked[pairs[i].winner][pairs[i].loser])
