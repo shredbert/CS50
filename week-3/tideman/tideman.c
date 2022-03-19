@@ -337,12 +337,12 @@ void lock_pairs(void)
 void print_winner(void)
 {
 
-    // // Test setup (both)
-    // candidate_count = 4;
-    // candidates[0] = "Alice";
-    // candidates[1] = "Bob";
-    // candidates[2] = "Charlie";
-    // candidates[3] = "David";
+    // Test setup (both)
+    candidate_count = 4;
+    candidates[0] = "Alice";
+    candidates[1] = "Bob";
+    candidates[2] = "Charlie";
+    candidates[3] = "David";
 
     // // Test -- single winner, should be Alice only
     // pair_count = 6;
@@ -354,86 +354,103 @@ void print_winner(void)
     // locked[2][3] = true;
     // locked[3][0] = locked[3][1] = locked[3][2] = locked[3][3] = false;
 
-    // // Test -- some ties, should be Charlie only
-    // pair_count = 4;
-    // for (int i = 0; i < 4; i++)
-    //     for (int j = 0; j < 4; j++)
-    //         locked[i][j] = false;
-    // pairs[0].winner = 2; pairs[0].loser = 0;
-    // locked[2][0] = true;
-    // pairs[1].winner = 0; pairs[1].loser = 1;
-    // locked[0][1] = true;
-    // pairs[2].winner = 0; pairs[2].loser = 3;
-    // locked[0][3] = true;
-    // pairs[3].winner = 1; pairs[3].loser = 3;
-    // locked[1][3] = true;
+    // Test -- some ties, should be Charlie only
+    pair_count = 4;
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+            locked[i][j] = false;
+    pairs[0].winner = 2; pairs[0].loser = 0;
+    locked[2][0] = true;
+    pairs[1].winner = 0; pairs[1].loser = 1;
+    locked[0][1] = true;
+    pairs[2].winner = 0; pairs[2].loser = 3;
+    locked[0][3] = true;
+    pairs[3].winner = 1; pairs[3].loser = 3;
+    locked[1][3] = true;
 
-    // Datatype to store # of preds & candidate idx
-    typedef struct
-    {
-        int candidate;
-        int preds;
-    }
-    winner;
+    // // Datatype to store # of preds & candidate idx
+    // typedef struct
+    // {
+    //     int candidate;
+    //     int preds;
+    // }
+    // winner;
 	
-    // Store winners, determine if a source exists, & store idx if so
-    winner winners[pair_count];
-    int winners_cnt = 0, lowest_pred_cnt = pair_count;
+    // // Store winners, determine if a source exists, & store idx if so
+    // winner winners[pair_count];
+    // int winners_cnt = 0, lowest_pred_cnt = pair_count;
 
-    // For each *distinct* winner of an edge, find winning candidate idx & # of
-    // direct predecessors & store
-    for (int i = 0; i < pair_count; i++)
+    // // For each *distinct* winner of an edge, find winning candidate idx & # of
+    // // direct predecessors & store
+    // for (int i = 0; i < pair_count; i++)
+    // {
+    //     // Must be locked to have winning edge
+    //     if (locked[pairs[i].winner][pairs[i].loser])
+    //     {
+    //         // Flag to check if already won before adding to winners[]
+    //         bool has_already_won = false;
+    //         for (int j = 0; j < winners_cnt; j++)
+    //         {
+    //             if (winners[j].candidate == pairs[i].winner)
+    //             {
+    //                 has_already_won = true;
+    //                 break;
+    //             }
+    //         }
+    //         // If hasn't won yet, add to winners[] with # of direct preds
+    //         if (!has_already_won)
+    //         {
+    //             // Add winning candidate to winners[]
+    //             winners[winners_cnt].candidate = pairs[i].winner;
+    //             // Set predecessors to 0 so can add
+    //             winners[winners_cnt].preds = 0;
+    //             // Count # of direct preds
+    //             for (int j = 0; j < candidate_count; j++)
+    //             {
+    //                 if (locked[pairs[j].winner][pairs[j].loser] &&
+    //                     pairs[j].loser == winners[winners_cnt].candidate)
+    //                 {
+    //                     winners[winners_cnt].preds++;
+    //                 }
+    //             }
+    //             winners_cnt++;
+    //         }
+    //     }
+    // }
+
+    // // Store lowest # of predecessors
+    // for (int i = 0; i < winners_cnt; i++)
+    // {
+    //     if (winners[i].preds < lowest_pred_cnt)
+    //     {
+    //         lowest_pred_cnt = winners[i].preds;
+    //     }
+    // }
+
+    // // Print names of candidates with # of predecessors matching lowest #
+    // for (int i = 0; i < winners_cnt; i++)
+    // {
+    //     if (winners[i].preds == lowest_pred_cnt)
+    //     {
+    //         printf("%s\n", candidates[winners[i].candidate]);
+    //     }
+    // }
+
+    // Test sltn
+    for (int i = 0; i < candidate_count; i++)
     {
-        // Must be locked to have winning edge
-        if (locked[pairs[i].winner][pairs[i].loser])
+        int losses_cnt = 0;
+
+        for (int j = 0; j< candidate_count; j++)
         {
-            // Flag to check if already won before adding to winners[]
-            bool has_already_won = false;
-            for (int j = 0; j < winners_cnt; j++)
+            if (!locked[j][i])
             {
-                if (winners[j].candidate == pairs[i].winner)
+                losses_cnt++;
+                if (losses_cnt == candidate_count)
                 {
-                    has_already_won = true;
-                    break;
+                    printf("%s\n", candidates[i]);
                 }
             }
-            // If hasn't won yet, add to winners[] with # of direct preds
-            if (!has_already_won)
-            {
-                // Add winning candidate to winners[]
-                winners[winners_cnt].candidate = pairs[i].winner;
-                // Set predecessors to 0 so can add
-                winners[winners_cnt].preds = 0;
-                // Count # of direct preds
-                for (int j = 0; j < candidate_count; j++)
-                {
-                    if (locked[pairs[j].winner][pairs[j].loser] &&
-                        pairs[j].loser == winners[winners_cnt].candidate)
-                    {
-                        winners[winners_cnt].preds++;
-                    }
-                }
-                winners_cnt++;
-            }
-        }
-    }
-
-    // Store lowest # of predecessors
-    for (int i = 0; i < winners_cnt; i++)
-    {
-        if (winners[i].preds < lowest_pred_cnt)
-        {
-            lowest_pred_cnt = winners[i].preds;
-        }
-    }
-
-    // Print names of candidates with # of predecessors matching lowest #
-    for (int i = 0; i < winners_cnt; i++)
-    {
-        if (winners[i].preds == lowest_pred_cnt)
-        {
-            printf("%s\n", candidates[winners[i].candidate]);
-            break;
         }
     }
 
