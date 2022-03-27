@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-void swap(*x, *y);
+void swap(int *x, int *y);
 
 int main(void)
 {
@@ -16,5 +16,7 @@ int main(void)
 
 void swap(int *x, int *y)
 {
-
+    int tmp = *x;
+    *x = *y;
+    *y = tmp;
 }
