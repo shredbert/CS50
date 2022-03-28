@@ -11,10 +11,7 @@ int main(void)
     int l = strlen(s1) + 1;
     char *s2 = malloc(l);
 
-    for (int i = 0; i < l; i++)
-    {
-        s2[i] = s1[i];
-    }
+    strcpy(s2, s1);
 
     s2[0] = toupper(s2[0]);
 
