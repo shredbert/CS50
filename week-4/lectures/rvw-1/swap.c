@@ -1,18 +1,17 @@
 #include <stdio.h>
-#include <cs50.h>
 
 void swap(int *x, int *y);
 
 int main(void)
 {
-    int x = get_int("x: ");
-    int y = get_int("y: ");
+    int x = 3;
+    int y = 17;
 
-    printf("OG: %i & %i\n", x, y);
+    printf("OG: x = %i, y = %i\n", x, y);
 
     swap(&x, &y);
 
-    printf("Swapped: %i & %i\n", x, y);
+    printf("New: x = %i, y = %i\n", x, y);
 }
 
 void swap(int *x, int *y)

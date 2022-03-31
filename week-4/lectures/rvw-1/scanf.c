@@ -3,19 +3,22 @@
 
 int main(void)
 {
-    int a;
-    printf("int a: ");
-    scanf("%i", &a);
-    printf("You entered %i & stored it at %p\n", a, &a);
+    int i;
+    printf("Enter int: ");
+    scanf("%i", &i);
+    printf("Int val: %i\n", i);
+    printf("Int location: %p\n", &i);
 
-    char *b = malloc(sizeof(char) * 3);
-    printf("3 chars b: ");
-    scanf("%s", b);
-    printf("You entered %s & stored it at %p\n", b, b);
-    free(b);
+    char *s = malloc(4);
+    printf("Enter 3 char string: ");
+    scanf("%s", s);
+    printf("String val: %s\n", s);
+    printf("String starting location: %p\n", &s);
 
-    char c[3];
-    printf("3 chars c: ");
+    char c[4];
+    printf("Enter 3 char string: ");
     scanf("%s", c);
-    printf("You entered %s & stored it at %p\n", c, c);
+    printf("String val: ");
+    printf("%s\n", c);
+    printf("String location: %s\n", &c[0]);
 }

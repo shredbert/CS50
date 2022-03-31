@@ -4,15 +4,15 @@
 
 int main(void)
 {
-    char *x = get_string("Val 1: ");
-    char *y = get_string("Val 2: ");
+    char *s1 = get_string("s1: ");
+    char *s2 = get_string("s2: ");
 
-    if (strcmp(x, y) == 0)
+    if (strcmp(s1, s2) == 0)
     {
         printf("Same same!!!\n");
     }
     else
     {
-        printf("Different!!!\n");
+        printf("Diff diff!!!\n");
     }
 }
