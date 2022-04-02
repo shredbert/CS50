@@ -34,51 +34,24 @@ int main(int argc, char *argv[])
     float factor = atof(argv[3]);
 
     // Copy header from input file to output file
-    // Store # of items read to track place in header
-    int items = 0;
-    // Store header in array before writing
+
+    // Store header as array to write & copy over
     uint8_t header[HEADER_SIZE];
-    // Read header
-    while(items < HEADER_SIZE)
-    {
-        // Copy each header byte to output file
-        items += fread(&header, sizeof(uint8_t), 1, input);
-    }
+    fread(header, sizeof(uint8_t), HEADER_SIZE, input);
+    fwrite(header, sizeof(uint8_t), HEADER_SIZE, output);
 
-    for (int i = 0; i < HEADER_SIZE; i++)
-    {
-        printf("%i\n", header[i]);
-    }
+    // Read samples from input file and write updated data to output file
 
-    // // Read samples from input file and write updated data to output file
-    // // Store each item temporarily
-    // int16_t buffer;
-    // // Read 1 at a time
-    // while (fread(&header, sizeof(int16_t), 1, input))
-    // {
-    //     fwrite(&header, sizeof(int16_t), 1, input);
-    // }
+    // Store each item temporarily
+    int16_t buffer;
+    // Read 1 at a time
+    while (fread(&buffer, sizeof(int16_t), 1, input))
+    {
+        buffer = buffer * factor;
+        fwrite(&buffer, sizeof(int16_t), 1, output);
+    }
 
     // Close files
     fclose(input);
     fclose(output);
-
-    // printf("Bytes written:\n");
-    // FILE *test_in = fopen("./input.wav", "r");
-    // FILE *test_out = fopen("./output.wav", "r");
-    // uint8_t print_byte_in, print_byte_out;
-    // for (int i = 0; i < HEADER_SIZE;
-    //         i++,
-    //         fread(&print_byte_in, sizeof(uint8_t), 1, test_in)
-    //         // fread(&print_byte_out, sizeof(uint8_t), 1, test_out)
-    //     )
-    // {
-    //     printf("in: %i, out: %i\n", print_byte_in, header[i]);
-    //     // if (print_byte_in != print_byte_out)
-    //     // {
-    //     //     printf("Didn't write header correctly!\n");
-    //     // }
-    // }
-    // fclose(test_in);
-    // fclose(test_out);
 }
