@@ -82,11 +82,25 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
 // Blur image
 void blur(int height, int width, RGBTRIPLE image[height][width])
 {
+    // Copy over pxs
+    RGBTRIPLE copy[height][width];
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            copy[i][j] = image[i][j];
+        }
+    }
+
+    height = 10, width = 10;
     // Iterate rows/pxs
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
         {
+
+            // Test:
+            printf("\nRow %i, px %i:\n", i, j);
 
             // // Test:
             // printf("OG px: ");
@@ -94,7 +108,19 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
             // printf("Green: %i, ", image[i][j].rgbtGreen);
             // printf("Blue: %i\n", image[i][j].rgbtBlue);
 
-            // TODO: Box blur -- avg of pxs in 9 px radius
+            printf("Grid vals:\n");
+            // TODO: Get surrounding pxs from copied img
+            int avg_rd, avg_grn, avg_bl;
+            for (int k = i - 1; k < i + 2; k++)
+            {
+                for (int l = j - 1; l < j + 2; l++)
+                {
+                    if (k >= 0 && l >= 0 && k < height && l < width)
+                    {
+                        printf("row %i, px %i\n", k, l);
+                    }
+                }
+            }
 
             // // Test:
             // printf("NU px: ");
