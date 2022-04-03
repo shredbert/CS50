@@ -6,6 +6,7 @@
 
 # Unignore all dirs
 !*/
+**/*test*
 
 # Unignore Makefile
 !**/Makefile
