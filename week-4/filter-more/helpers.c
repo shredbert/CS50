@@ -101,24 +101,39 @@ void edges(int height, int width, RGBTRIPLE image[height][width])
     {
         for (int j = 0; j < width; j++)
         {
-            // TODO: Create vars for gx/gy???
+            // Create vars for gx/gy vals for current grid
+            int gx_red = 0, gx_green = 0, gx_blue = 0, gx_factor,
+                gy_red = 0, gy_green = 0, gy_blue = 0, gy_factor;
             for (int k = i - 1; k < i + 2; k++)
             {
                 for (int l = j - 1; l < j + 2; l++)
                 {
-                    // TODO: Treat edges as black (0s)
-                    if (k >= 0 && l >= 0 && k < height && l < width)
+                    // TODO: Assign px val based on vals or leave at 0 if edge
+                    /*
+                        Gx:
+                        -1  0  1
+                        -2  0  2
+                        -1  0  1
+                        Gy:
+                        -1 -2 -1
+                         0  0  0
+                         1  2  1
+                    */
+                    // TODO: Figure out factor
+                    switch (k):
                     {
-
+                        case 1:
+                            break;
+                        default:
+                            gx_factor = 0;
+                            gy_factor = 0;
+                            break;
                     }
-                    else
-                    {
-                        // TODO: Do maths
-                    }
+                    // TODO: Implement factor
                 }
             }
-
-            // TODO: Assign vals to image
+            // TODO: Calculate square root of Gx^2 + Gy^2, assign, & ensure ! >
+            // 255 & rounded to nearest int
         }
     }
     return;
