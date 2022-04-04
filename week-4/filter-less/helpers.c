@@ -49,12 +49,6 @@ void sepia(int height, int width, RGBTRIPLE image[height][width])
     return;
 }
 
-// Return lesser of 2 ints so never > 255 for pxs
-int return_lesser(int max, int test)
-{
-    return test > max ? max : test;
-}
-
 // Reflect image horizontally
 void reflect(int height, int width, RGBTRIPLE image[height][width])
 {
@@ -115,4 +109,10 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
         }
     }
     return;
+}
+
+// Return lesser of 2 ints so never > 255 for pxs
+int return_lesser(int max, int test)
+{
+    return test > max ? max : test;
 }
