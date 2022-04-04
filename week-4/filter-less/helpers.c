@@ -1,9 +1,6 @@
 #include "helpers.h"
 #include <math.h>
 
-// Test--remove
-#include <stdio.h>
-
 int return_lesser(int max, int test);
 
 // Convert image to grayscale
@@ -33,18 +30,16 @@ void sepia(int height, int width, RGBTRIPLE image[height][width])
         for (int j = 0; j < width; j++)
         {
             // Apply sepia filter, rounding to nearest int, & !> 255
-            int sepia_red = return_lesser(255, round(
-                        0.393 * image[i][j].rgbtRed +
-                        0.769 * image[i][j].rgbtGreen +
-                        0.189 * image[i][j].rgbtBlue));
-            int sepia_green = return_lesser(255, round(
-                        0.349 * image[i][j].rgbtRed +
-                        0.686 * image[i][j].rgbtGreen +
-                        0.168 * image[i][j].rgbtBlue));
-            int sepia_blue = return_lesser(255, round(
-                        0.272* image[i][j].rgbtRed +
-                        0.534 * image[i][j].rgbtGreen +
-                        0.131 * image[i][j].rgbtBlue));
+            int sepia_red = return_lesser(255, 
+                                          round(0.393 * image[i][j].rgbtRed +
+                                                0.769 * image[i][j].rgbtGreen +
+                                                0.189 * image[i][j].rgbtBlue));
+
+            int sepia_green = return_lesser(255, round(0.349 * image[i][j].rgbtRed + 0.686 * image[i][j].rgbtGreen + 0.168 *
+                                            image[i][j].rgbtBlue));
+
+            int sepia_blue = return_lesser(255, round(0.272 * image[i][j].rgbtRed + 0.534 * image[i][j].rgbtGreen + 0.131 *
+                                           image[i][j].rgbtBlue));
 
             image[i][j].rgbtRed = sepia_red;
             image[i][j].rgbtGreen = sepia_green;
@@ -82,7 +77,7 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
 // Blur image
 void blur(int height, int width, RGBTRIPLE image[height][width])
 {
-    // Copy over pxs
+    // Copy over pxs to retain OG vals
     RGBTRIPLE copy[height][width];
     for (int i = 0; i < height; i++)
     {
@@ -92,43 +87,31 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
         }
     }
 
-    height = 10, width = 10;
     // Iterate rows/pxs
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
         {
-
-            // Test:
-            printf("\nRow %i, px %i:\n", i, j);
-
-            // // Test:
-            // printf("OG px: ");
-            // printf("Red: %i, ", image[i][j].rgbtRed);
-            // printf("Green: %i, ", image[i][j].rgbtGreen);
-            // printf("Blue: %i\n", image[i][j].rgbtBlue);
-
-            printf("Grid vals:\n");
-            // TODO: Get surrounding pxs from copied img
-            int avg_rd, avg_grn, avg_bl;
+            // Add all surrounding px vals & count # of vals in grid
+            int num_sqrs = 0, total_red = 0, total_green = 0, total_blue = 0;
             for (int k = i - 1; k < i + 2; k++)
             {
                 for (int l = j - 1; l < j + 2; l++)
                 {
+                    // Only add if valid grid value
                     if (k >= 0 && l >= 0 && k < height && l < width)
                     {
-                        printf("row %i, px %i\n", k, l);
+                        total_red += copy[k][l].rgbtRed;
+                        total_green += copy[k][l].rgbtGreen;
+                        total_blue += copy[k][l].rgbtBlue;
+                        num_sqrs++;
                     }
                 }
             }
 
-            // // Test:
-            // printf("NU px: ");
-            // printf("Red: %i, ", image[i][j].rgbtRed);
-            // printf("Green: %i, ", image[i][j].rgbtGreen);
-            // printf("Blue: %i\n", image[i][j].rgbtBlue);
-            // printf("\n");
-
+            image[i][j].rgbtRed = round(total_red / (float) num_sqrs);
+            image[i][j].rgbtGreen = round(total_green / (float) num_sqrs);
+            image[i][j].rgbtBlue = round(total_blue / (float) num_sqrs);
         }
     }
     return;
