@@ -1,6 +1,9 @@
 #include "helpers.h"
 #include <math.h>
 
+// Test
+#include <stdio.h>
+
 int return_lesser(int max, int test);
 
 // Convert image to grayscale
@@ -108,32 +111,112 @@ void edges(int height, int width, RGBTRIPLE image[height][width])
             {
                 for (int l = j - 1; l < j + 2; l++)
                 {
-                    // TODO: Assign px val based on vals or leave at 0 if edge
                     /*
-                        Gx:
-                        -1  0  1
-                        -2  0  2
-                        -1  0  1
                         Gy:
                         -1 -2 -1
                          0  0  0
                          1  2  1
+                        Gx:
+                        -1  0  1
+                        -2  0  2
+                        -1  0  1
                     */
-                    // TODO: Figure out factor
-                    switch (k):
+                    // Determine factor based on above
+                    // Positive Gy
+                    if (k > i)
                     {
-                        case 1:
-                            break;
-                        default:
+                        // Positive Gx
+                        if (l > j)
+                        {
+                            gy_factor = 1;
+                            gx_factor = 1;
+                        }
+                        // Negative Gx
+                        else if (l < j)
+                        {
+                            gy_factor = 1;
+                            gx_factor = -1;
+                        }
+                        // Zero Gx
+                        else
+                        {
+                            gy_factor = 2;
                             gx_factor = 0;
-                            gy_factor = 0;
-                            break;
+                        }
                     }
-                    // TODO: Implement factor
+                    // Negative Gy
+                    else if (k < i)
+                    {
+                        // Positive Gx
+                        if (l > j)
+                        {
+                            gy_factor = -1;
+                            gx_factor = 1;
+                        }
+                        // Negative Gx
+                        else if (l < j)
+                        {
+                            gy_factor = -1;
+                            gx_factor = -1;
+                        }
+                        // Zero Gx
+                        else
+                        {
+                            gy_factor = -2;
+                            gx_factor = 0;
+                        }
+                    }
+                    // Zero Gy
+                    else
+                    {
+                        gy_factor = 0;
+                        // Positive Gx
+                        if (l > j)
+                        {
+                            gx_factor = 2;
+                        }
+                        // Negative Gx
+                        else if (l < j)
+                        {
+                            gx_factor = -2;
+                        }
+                        // Zero Gx
+                        else
+                        {
+                            gx_factor = 0;
+                        }
+                    }
+                    // Horizontal border
+                    if (k < 0 || k > height)
+                    {
+                        gy_factor = 0;
+                    }
+                    // Vertical border
+                    if (l < 0 || l > width)
+                    {
+                        gx_factor = 0;
+                    }
                 }
             }
-            // TODO: Calculate square root of Gx^2 + Gy^2, assign, & ensure ! >
-            // 255 & rounded to nearest int
+            // Assign factor for RGB of both X & Y using square root of Gx^2 +
+            // Gy^2, assign, & ensuring ! > 255 & rounded to nearest int
+            gx_red = (float) copy[i][j].rgbtRed * gx_factor;
+            gy_red = (float) copy[i][j].rgbtRed * gy_factor;
+            image[i][j].rgbtRed = return_lesser(255,
+                                                round(sqrt(pow(gx_red, 2) +
+                                                        pow(gy_red, 2))));
+
+            gx_green = (float) copy[i][j].rgbtGreen * gx_factor;
+            gy_green = (float) copy[i][j].rgbtGreen * gy_factor;
+            image[i][j].rgbtGreen = return_lesser(255,
+                                                  round(sqrt(pow(gx_green, 2) +
+                                                          pow(gy_green, 2))));
+
+            gx_blue = (float) copy[i][j].rgbtBlue * gx_factor;
+            gy_blue = (float) copy[i][j].rgbtBlue * gy_factor;
+            image[i][j].rgbtBlue = return_lesser(255,
+                                                 round(sqrt(pow(gx_blue, 2) +
+                                                         pow(gy_blue, 2))));
         }
     }
     return;
@@ -142,5 +225,6 @@ void edges(int height, int width, RGBTRIPLE image[height][width])
 // Return lesser of 2 ints so never > 255 for pxs
 int return_lesser(int max, int test)
 {
+    // printf("%i\n", test);
     return test > max ? max : test;
 }
