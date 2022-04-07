@@ -1,9 +1,6 @@
 #include "helpers.h"
 #include <math.h>
 
-// Test
-#include <stdio.h>
-
 int return_lesser(int max, int test);
 
 // Convert image to grayscale
@@ -186,34 +183,31 @@ void edges(int height, int width, RGBTRIPLE image[height][width])
                             gx_factor = 0;
                         }
                     }
-                    // Horizontal border
-                    if (k < 0 || k > height)
+                    // Borders
+                    if (k < 0 || l < 0 || k >= height || l >= width)
                     {
                         gy_factor = 0;
-                    }
-                    // Vertical border
-                    if (l < 0 || l > width)
-                    {
                         gx_factor = 0;
                     }
+                    // Maths
+                    gx_red += copy[k][l].rgbtRed * (float) gx_factor;
+                    gy_red += copy[k][l].rgbtRed * (float) gy_factor;
+                    gx_green += copy[k][l].rgbtGreen * (float) gx_factor;
+                    gy_green += copy[k][l].rgbtGreen * (float) gy_factor;
+                    gx_blue += copy[k][l].rgbtBlue * (float) gx_factor;
+                    gy_blue += copy[k][l].rgbtBlue * (float) gy_factor;
                 }
             }
             // Assign factor for RGB of both X & Y using square root of Gx^2 +
-            // Gy^2, assign, & ensuring ! > 255 & rounded to nearest int
-            gx_red = (float) copy[i][j].rgbtRed * gx_factor;
-            gy_red = (float) copy[i][j].rgbtRed * gy_factor;
+            // Gy^2, assign, & ensure ! > 255 & rounded to nearest int
             image[i][j].rgbtRed = return_lesser(255,
                                                 round(sqrt(pow(gx_red, 2) +
                                                         pow(gy_red, 2))));
 
-            gx_green = (float) copy[i][j].rgbtGreen * gx_factor;
-            gy_green = (float) copy[i][j].rgbtGreen * gy_factor;
             image[i][j].rgbtGreen = return_lesser(255,
                                                   round(sqrt(pow(gx_green, 2) +
                                                           pow(gy_green, 2))));
 
-            gx_blue = (float) copy[i][j].rgbtBlue * gx_factor;
-            gy_blue = (float) copy[i][j].rgbtBlue * gy_factor;
             image[i][j].rgbtBlue = return_lesser(255,
                                                  round(sqrt(pow(gx_blue, 2) +
                                                          pow(gy_blue, 2))));
@@ -225,6 +219,5 @@ void edges(int height, int width, RGBTRIPLE image[height][width])
 // Return lesser of 2 ints so never > 255 for pxs
 int return_lesser(int max, int test)
 {
-    // printf("%i\n", test);
     return test > max ? max : test;
 }
