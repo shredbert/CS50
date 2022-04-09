@@ -22,51 +22,58 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    // Track # of files for naming & allocate space for name string
-    int files = 0;
+    // Track # of files for naming & whether have started writing yet
+    int files = 0, jpeg_fnd = 0;
+    // Allocate space for filename string
     char *filename = malloc(sizeof(char) * 8);
-    BYTE buffer[512];
+    // Put block size in var
+    int BLOCK_SIZE = 512;
+    // Buffer for reading images
+    BYTE buffer[BLOCK_SIZE];
 
-    // TODO: Iterate in 512 byte blocks into buffer
-    while (fread(&buffer, sizeof(BYTE), 512, data) == 512)
+    // Iterate over bytes the size of the img blocks
+    while (fread(&buffer, sizeof(BYTE), BLOCK_SIZE, data) == BLOCK_SIZE)
     {
-        // TODO: Search bytes for headers 0xff, 0xd8, 0xff, &
-        // (buffer[3] & 0xf0) == 0xe0, & track # of files
-        // If true, start of new JPEG
+        // Check for start of JPEG file
         if (buffer[0] == 0xff && buffer[1] == 0xd8 && buffer[2] == 0xff &&
             (buffer[3] & 0xf0) == 0xe0)
         {
-            // When found & first file, change filename & open for writing
+            // Turn to true--avoid first bytes
+            jpeg_fnd = 1;
+            // Set new filename
             sprintf(filename, "%03i.jpg", files);
-            printf("JPEG found!!!\n%s\n", filename);
-            FILE *new = fopen(filename, "w");
-            if (!new)
+            // Increment # of files for next go around--won't impact current
+            // name
+            files++;
+            // Open file for writing
+            FILE *new_img = fopen(filename, "w");
+            if (!new_img)
             {
-                printf("Error writing file\n");
+                printf("Error opening write file for image %i\n", files);
                 return 1;
             }
-
-            // TODO: If not first file, close prev & start next
-            // To check, create vars for prev & crnt files & compare?
-            // TODO: Write each block until next header
-            // TODO: Check if fread() returning 512 -- if not, no more images?
-            // Check length of buffer[] -- how???
-            // Use fwrite() to write new JPEG files in current directory
-            // fwrite(&buffer, sizeof(BYTE), 512, new);
-            // fclose(new);
-            // TODO: Reset to new block when found again
-            // Increment files for next
-            files++;
+            // Write & close
+            fwrite(&buffer, sizeof(BYTE), BLOCK_SIZE, new_img);
+            fclose(new_img);
         }
-        // TODO: If not new JPEG, keep writing
+        // If not new JPEG, append
         else
         {
-            // TODO: Check if started writing yet? (else will write vals before
-            // JPEG found
+            if (jpeg_fnd)
+            {
+                FILE *new_img = fopen(filename, "a");
+                if (!new_img)
+                {
+                    printf("Error opening write file for image %i\n", files);
+                    return 1;
+                }
+                fwrite(&buffer, sizeof(BYTE), BLOCK_SIZE, new_img);
+                fclose(new_img);
+            }
         }
     }
     
-    // TODO: Close all files & free memory
+    // Close all files & free memory
     free(filename);
     fclose(data);
 }
