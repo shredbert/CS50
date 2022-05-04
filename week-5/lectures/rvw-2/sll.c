@@ -69,6 +69,8 @@ int main(void)
     while (list != NULL)
     {
         node *tmp = list->next;
+        free(list);
+        list = tmp;
     }
 
     return 0;
