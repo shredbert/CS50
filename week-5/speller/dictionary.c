@@ -14,6 +14,7 @@ typedef struct node
 node;
 
 // TODO: Choose number of buckets in hash table
+// i.e., should be customized based on hash function???
 const unsigned int N = 26;
 
 // Hash table
