@@ -106,7 +106,7 @@ void free_family(person *p)
     // Iterate through 2 parents & free each
     for (int i = 0; i < 2; i++)
     {
-        free(p->parents[i]);
+        free_family(p->parents[i]);
     }
 
     // TODO: Free child
