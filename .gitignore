@@ -3,6 +3,8 @@
 
 # Unignore all with extensions
 !*.*
+# Ignore output binary files
+*.o
 
 # Unignore all dirs
 !*/
