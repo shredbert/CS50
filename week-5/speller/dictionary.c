@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 // Represents a node in a hash table
 typedef struct node
@@ -56,17 +57,17 @@ bool check(const char *word)
 unsigned int hash(const char *word)
 {
     // TODO: Improve this hash function
-    // Return key for input word--hash function
+
+    // Return key for input word
     // Return same hash value regardless of case
     // Take word, return idx of hash table for finding/inserting
     // Return non-negative int
-    // Word have alphabetical chars & maybe apostrophes
+    // Words have alphabetical chars & maybe apostrophes
     // Output idx between 0 & N - 1 (num of buckets)
     // *Deterministic* -> consistent
     // Can use val % N to keep idx in appropriate range
     // Can use 1^st^ letter of word = 26, 1^st^ 2 = 676, Math formula using all
     // vals of letters
-    // *Write own function*
     return toupper(word[0]) - 'A';
 }
 
@@ -75,42 +76,52 @@ bool load(const char *dictionary)
 {
     // TODO -- read lists of dictionary words
 
-    // Open file--fopen, check for NULL
+    // Open file
+    FILE *dictionary_file = fopen(dictionary, "r");
 
-    // Read strings from file line-by-line
-    // fscanf(file pointer, "%s" for string, word from dictionary)
-    // returns EOF when reached--loop & check for EOF
-
-    // Each word gets new node
-    // Allocate with malloc(), check for NULL
-    // Copy with strcpy()
-
-    // Hash each word to get key
-    // Use word as param & get key back from hash func
-
-    // Insert node into hash table at that location
-    // Add node to list & set pointers correctly
-    // Point new node to current list
-    // THEN point list to new node to make it the new head
-
-    // Read word into memory & load into hash table
-
-    // At least 1, alphabetical, 1/line, line breaks end lines, none longer
-    // than LENGTH (45), words all lowercase, only punctuation is apostraphes
-    // but none start with them
-    // Return true if successful, false if error
-    // Use hash to find key -- hash = array of linked lists, hash function
-    // assigns number to each input
-    node *n = malloc(sizeof(node));
-
-    if (n == NULL)
+    if (dictionary_file == NULL)
     {
+        printf("Error opening dictionary\n");
         return false;
     }
 
-    strcpy(n->word, dictionary);
-    n->next = NULL;
-    return false;
+    // Read word into memory
+    // At least 1/line, alphabetical, line breaks end lines, none longer than
+    // LENGTH, words all lowercase, only punctuation is apostraphes but none
+    // start with them
+
+    char buffer[LENGTH + 1];
+    node *n = NULL;
+
+    while(fscanf(dictionary_file, "%s", buffer) != EOF)
+    {
+        // Hash each word to get key
+
+        // Each word gets new node -- allocate with malloc(), check for NULL
+        n = malloc(sizeof(node));
+
+        if (n == NULL)
+        {
+            printf("Error allocating memory for list node\n");
+            return false;
+        }
+
+        // Copy word to node
+        strcpy(n->word, buffer);
+
+        // Get key back from hash func
+        unsigned int word_key = hash(buffer);
+
+        // Point new node to current list head to set next location
+        n->next = table[word_key];
+
+        // Point list to new node to make it the new head
+        table[word_key] = n;
+    }
+
+    fclose(dictionary_file);
+
+    return true;
 }
 
 // Returns number of words in dictionary if loaded, else 0 if not yet loaded
