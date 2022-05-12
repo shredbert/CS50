@@ -21,9 +21,7 @@ node;
 
 // TODO: Choose number of buckets in hash table
 // Can change based on hash function--hard-code indexes
-const unsigned int N = 26;
-// If doing first 2 chars of each word:
-// const unsigned int N = 676;
+const unsigned int N = 17576;
 
 // Hash table
 node *table[N];
@@ -57,18 +55,24 @@ bool check(const char *word)
 unsigned int hash(const char *word)
 {
     // TODO: Improve this hash function
-
     // Return key for input word
-    // Return same hash value regardless of case
-    // Take word, return idx of hash table for finding/inserting
-    // Return non-negative int
     // Words have alphabetical chars & maybe apostrophes
-    // Output idx between 0 & N - 1 (num of buckets)
-    // *Deterministic* -> consistent
-    // Can use val % N to keep idx in appropriate range
-    // Can use 1^st^ letter of word = 26, 1^st^ 2 = 676, Math formula using all
-    // vals of letters
-    return toupper(word[0]) - 'A';
+    // Positive int idx between 0 & N - 1 (num of buckets)
+    // Some words only contain 1 or 2 letters -- how to handle?
+    // At least 1/line, alphabetical, line breaks end lines, none longer than
+    // LENGTH, words all lowercase, only punctuation is apostraphes but none
+    // start with them
+    unsigned int first_char, second_char, third_char, key;
+
+    key = toupper(word[0]) % 26;
+
+    // first_char = toupper(word[0]) % 26 * 1000;
+    // second_char = toupper(word[1]) % 26 * 100;
+    // third_char = toupper(word[2]) % 26 * 10;
+
+    // key = (first_char + second_char + third_char) % N;
+
+    return key;
 }
 
 // Loads dictionary into memory, returning true if successful, else false
@@ -86,17 +90,16 @@ bool load(const char *dictionary)
     }
 
     // Read word into memory
-    // At least 1/line, alphabetical, line breaks end lines, none longer than
-    // LENGTH, words all lowercase, only punctuation is apostraphes but none
-    // start with them
-
     char buffer[LENGTH + 1];
     node *n = NULL;
+
+    // Test
+    unsigned int keys[N];
+    int num_keys = 0;
 
     while(fscanf(dictionary_file, "%s", buffer) != EOF)
     {
         // Hash each word to get key
-
         // Each word gets new node -- allocate with malloc(), check for NULL
         n = malloc(sizeof(node));
 
@@ -112,6 +115,22 @@ bool load(const char *dictionary)
         // Get key back from hash func
         unsigned int word_key = hash(buffer);
 
+        // Test
+        bool exists = false;
+        for (int i = 0; i < N; i++)
+        {
+            if (keys[i] == word_key)
+            {
+                exists = true;
+            }
+        }
+
+        if (!exists)
+        {
+            keys[num_keys] = word_key;
+            num_keys++;
+        }
+
         // Point new node to current list head to set next location
         n->next = table[word_key];
 
@@ -120,6 +139,13 @@ bool load(const char *dictionary)
     }
 
     fclose(dictionary_file);
+
+    for (int i = 0; i < num_keys; i++)
+    {
+        printf("%i\n", keys[i]);
+    }
+
+    printf("\n# of keys: %i\n", num_keys);
 
     return true;
 }
