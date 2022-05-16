@@ -21,10 +21,14 @@ node;
 
 // TODO: Choose number of buckets in hash table
 // Can change based on hash function--hard-code indexes
-const unsigned int N = 17576;
+const unsigned int N = 26;
+// const unsigned int N = 17576;
 
 // Hash table
 node *table[N];
+
+// Mine -- track size
+unsigned int SIZE = 0;
 
 // Returns true if word is in dictionary, else false
 bool check(const char *word)
@@ -63,6 +67,7 @@ unsigned int hash(const char *word)
     // LENGTH, words all lowercase, only punctuation is apostraphes but none
     // start with them
     unsigned int first_char, second_char, third_char, key;
+    // printf("%s\n", word);
 
     key = toupper(word[0]) % 26;
 
@@ -93,10 +98,6 @@ bool load(const char *dictionary)
     char buffer[LENGTH + 1];
     node *n = NULL;
 
-    // Test
-    unsigned int keys[N];
-    int num_keys = 0;
-
     while(fscanf(dictionary_file, "%s", buffer) != EOF)
     {
         // Hash each word to get key
@@ -115,37 +116,17 @@ bool load(const char *dictionary)
         // Get key back from hash func
         unsigned int word_key = hash(buffer);
 
-        // Test
-        bool exists = false;
-        for (int i = 0; i < N; i++)
-        {
-            if (keys[i] == word_key)
-            {
-                exists = true;
-            }
-        }
-
-        if (!exists)
-        {
-            keys[num_keys] = word_key;
-            num_keys++;
-        }
-
         // Point new node to current list head to set next location
         n->next = table[word_key];
 
         // Point list to new node to make it the new head
         table[word_key] = n;
+
+        // Mine -- increment size
+        SIZE++;
     }
 
     fclose(dictionary_file);
-
-    for (int i = 0; i < num_keys; i++)
-    {
-        printf("%i\n", keys[i]);
-    }
-
-    printf("\n# of keys: %i\n", num_keys);
 
     return true;
 }
@@ -157,7 +138,18 @@ unsigned int size(void)
     // Return num of words in dictionary
     // Count manually?
     // As loading, can keep track in global?
-    return 0;
+
+    // Test correct keys being stored in dictionary:
+    int buckets = 0;
+    int keys[N];
+    for (int i = 0; i < SIZE; i++)
+    {
+        
+    }
+
+    // Dictionary size:
+    printf("size: %i\n", SIZE);
+    return SIZE;
 }
 
 // Unloads dictionary from memory, returning true if successful, else false
