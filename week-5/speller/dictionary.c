@@ -22,27 +22,23 @@ node;
 // TODO: Choose number of buckets in hash table
 // Can change based on hash function--hard-code indexes
 const unsigned int N = 26;
-// const unsigned int N = 17576;
+// const unsigned int N = 702 // 26 * 27
+// const unsigned int N = 18594 // 26 * 27 * 27;
 
 // Hash table
 node *table[N];
-
-// Mine -- track size
-unsigned int SIZE = 0;
 
 // Returns true if word is in dictionary, else false
 bool check(const char *word)
 {
     // CASE-INSENSITIVE!!!
     // Is this word in dictionary?
-    // Has to match exactly--possessives don't count
-    // No hard-coding words--has to exactly match
-    // Passed only alphabetical words, maybe with apostrophes
-    // Can use strcasecmp for case-insensitive comparisons
+    // Alphabetical & apostraphes (apostraphes don't start tho)
+    // Use strcasecmp() for case-insensitive comparisons
+
     // TODO
 
     // Determine if word is in dictionary
-    // *Case-insensitive*
 
     // Hash the word for idx
 
@@ -60,19 +56,16 @@ unsigned int hash(const char *word)
 {
     // TODO: Improve this hash function
     // Return key for input word
-    // Words have alphabetical chars & maybe apostrophes
     // Positive int idx between 0 & N - 1 (num of buckets)
-    // Some words only contain 1 or 2 letters -- how to handle?
-    // At least 1/line, alphabetical, line breaks end lines, none longer than
-    // LENGTH, words all lowercase, only punctuation is apostraphes but none
-    // start with them
+    // At least 1 char/line, alphabetical, line breaks end lines, none longer
+    // than LENGTH, words all lowercase
     unsigned int first_char, second_char, third_char, key;
     // printf("%s\n", word);
 
     key = toupper(word[0]) % 26;
 
     // first_char = toupper(word[0]) % 26 * 1000;
-    // second_char = toupper(word[1]) % 26 * 100;
+    // second_char = word[1] == "\'" ? 270 : toupper(word[1]) % 26 * 100;
     // third_char = toupper(word[2]) % 26 * 10;
 
     // key = (first_char + second_char + third_char) % N;
@@ -121,12 +114,38 @@ bool load(const char *dictionary)
 
         // Point list to new node to make it the new head
         table[word_key] = n;
-
-        // Mine -- increment size
-        SIZE++;
     }
 
     fclose(dictionary_file);
+
+    int key_count = 0;
+    char keys[N];
+    node *cursor = &table[0];
+    while (cursor)
+    {
+        printf("%s\n", cursor->word);
+        // printf("%c\n", cursor->word[0]);
+        // bool exists = false;
+        // for (int i = 0; i < N; i++)
+        // {
+        //     if (keys[i] == cursor->word[0])
+        //     {
+        //         exists = true;
+        //     }
+        // }
+
+        // if (!exists)
+        // {
+        //     keys[key_count] = cursor->word[0];
+        //     key_count++;
+        // }
+        cursor = cursor->next;
+    }
+
+    // for (int i = 0; i < N; i++)
+    // {
+    //     printf("%c\n", keys[i]);
+    // }
 
     return true;
 }
@@ -138,18 +157,14 @@ unsigned int size(void)
     // Return num of words in dictionary
     // Count manually?
     // As loading, can keep track in global?
+    int size = 0;
 
     // Test correct keys being stored in dictionary:
     int buckets = 0;
     int keys[N];
-    for (int i = 0; i < SIZE; i++)
-    {
-        
-    }
 
     // Dictionary size:
-    printf("size: %i\n", SIZE);
-    return SIZE;
+    return size;
 }
 
 // Unloads dictionary from memory, returning true if successful, else false
