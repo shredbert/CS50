@@ -9,7 +9,11 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <stdio.h>
+
+// Test
+void print_keys();
 
 // Represents a node in a hash table
 typedef struct node
@@ -22,8 +26,8 @@ node;
 // TODO: Choose number of buckets in hash table
 // Can change based on hash function--hard-code indexes
 const unsigned int N = 26;
-// const unsigned int N = 702 // 26 * 27
-// const unsigned int N = 18594 // 26 * 27 * 27;
+// const unsigned int N = 702; // 26 * 27
+// const unsigned int N = 18594; // 26 * 27 * 27;
 
 // Hash table
 node *table[N];
@@ -31,23 +35,34 @@ node *table[N];
 // Returns true if word is in dictionary, else false
 bool check(const char *word)
 {
-    // CASE-INSENSITIVE!!!
-    // Is this word in dictionary?
-    // Alphabetical & apostraphes (apostraphes don't start tho)
-    // Use strcasecmp() for case-insensitive comparisons
+    /*
+     *  TODO CASE-INSENSITIVE!!! Is this word in dictionary? Alphabetical &
+     *  apostraphes (apostraphes don't start tho) Use strcasecmp() for
+     *  case-insensitive comparisons Determine if word is in dictionary Hash
+     *  the word for idx Access list using idx Traverse & use strcasecmp() to
+     *  check case-insensitively Traversing: Use tmp var from 1^st^ item in
+     *  list, move to next node based on cursor->next, & loop until
+     *  cursor->next == NULL
+     */
 
-    // TODO
+    // Get key of word for idx
+    unsigned int key = hash(word);
 
-    // Determine if word is in dictionary
+    // Iterate over dictionary nodes @ idx
+    node *cursor = table[key];
+    while (cursor)
+    {
+        // Check if matches word
+        if (strcasecmp(cursor->word, word) == 0)
+        {
+            // If found, return true
+            return true;
+        }
 
-    // Hash the word for idx
+        cursor = cursor->next;
+    }
 
-    // Access list using idx
-
-    // Traverse & use strcasecmp() to check case-insensitively
-
-    // Traversing: Use tmp var from 1^st^ item in list, move to next node based
-    // on cursor->next, & loop until cursor->next == NULL
+    // Else return true
     return false;
 }
 
@@ -59,11 +74,18 @@ unsigned int hash(const char *word)
     // Positive int idx between 0 & N - 1 (num of buckets)
     // At least 1 char/line, alphabetical, line breaks end lines, none longer
     // than LENGTH, words all lowercase
-    unsigned int first_char, second_char, third_char, key;
-    // printf("%s\n", word);
 
-    key = toupper(word[0]) % 26;
+    // 1 key:
+    unsigned int key;
+    key = (toupper(word[0]) - 65) % 26;
 
+    // 2 keys:
+    // unsigned int first_char, second_char, key;
+    // first_char = (toupper(word[0]) - 65) % 26;
+    // second_char = word[1] == "'" ? 27 : (toupper(word[0]) - 65) % 26;
+
+    // 3 keys:
+    // unsigned int first_char, second_char, third_char, key;
     // first_char = toupper(word[0]) % 26 * 1000;
     // second_char = word[1] == "\'" ? 270 : toupper(word[1]) % 26 * 100;
     // third_char = toupper(word[2]) % 26 * 10;
@@ -118,34 +140,8 @@ bool load(const char *dictionary)
 
     fclose(dictionary_file);
 
-    int key_count = 0;
-    char keys[N];
-    node *cursor = &table[0];
-    while (cursor)
-    {
-        printf("%s\n", cursor->word);
-        // printf("%c\n", cursor->word[0]);
-        // bool exists = false;
-        // for (int i = 0; i < N; i++)
-        // {
-        //     if (keys[i] == cursor->word[0])
-        //     {
-        //         exists = true;
-        //     }
-        // }
-
-        // if (!exists)
-        // {
-        //     keys[key_count] = cursor->word[0];
-        //     key_count++;
-        // }
-        cursor = cursor->next;
-    }
-
-    // for (int i = 0; i < N; i++)
-    // {
-    //     printf("%c\n", keys[i]);
-    // }
+    // Test
+    // print_keys();
 
     return true;
 }
@@ -153,15 +149,23 @@ bool load(const char *dictionary)
 // Returns number of words in dictionary if loaded, else 0 if not yet loaded
 unsigned int size(void)
 {
-    // TODO
-    // Return num of words in dictionary
-    // Count manually?
-    // As loading, can keep track in global?
-    int size = 0;
+    /*
+    * Return num of words in dictionary
+    * Count manually
+    */
 
-    // Test correct keys being stored in dictionary:
-    int buckets = 0;
-    int keys[N];
+    // Iterate through all idxs
+    int size = 0;
+    for (int i = 0; i < N; i++)
+    {
+        // Iterate through all words @ idx
+        node *cursor = table[i];
+        while (cursor)
+        {
+            size++;
+            cursor = cursor->next;
+        }
+    }
 
     // Dictionary size:
     return size;
@@ -170,14 +174,65 @@ unsigned int size(void)
 // Unloads dictionary from memory, returning true if successful, else false
 bool unload(void)
 {
-    // TODO
-    // free() all memory previously allocated with malloc()
+    /*
+     * free() all memory previously allocated with malloc()
+     * Return true if successful, false if not
+     * Loop using cursor var to iterate through all indexes & related lists
+     * Don't lose access to other important nodes
+     * Use tmp var to hold pointer to next item--NOT recursive??
+     * Can stop when cursor is null
+     */
 
-    // Return true if successful, false if not
+    // Iterate over all indexes
+    for (int i = 0; i < N; i++)
+    {
+        // Iterate over nodes with cursor & store next position in tmp
+        node *cursor = table[i], *tmp;
+        while (cursor)
+        {
+            tmp = cursor->next;
+            free(cursor);
+            cursor = tmp;
+        }
+    }
 
-    // Loop using cursor var to iterate through all indexes & related lists
-    // Don't lose access to other important nodes
-    // Use tmp var to hold pointer to next item--NOT recursive??
-    // Can stop when cursor is null
-    return false;
+    return true;
+}
+
+// Test
+void print_keys()
+{
+    // 1 key:
+    int key_count = 0;
+    char keys[N];
+    for (int i = 0; i < N; i++)
+    {
+        node *cursor = table[i];
+        while (cursor)
+        {
+            // printf("%s\n", cursor->word);
+            // printf("%c\n", cursor->word[0]);
+            bool exists = false;
+            for (int j = 0; j < N; j++)
+            {
+                if (keys[j] == cursor->word[0])
+                {
+                    exists = true;
+                }
+            }
+
+            if (!exists)
+            {
+                keys[key_count] = cursor->word[0];
+                key_count++;
+            }
+            cursor = cursor->next;
+        }
+    }
+
+    printf("keys: %i\n", key_count);
+    for (int i = 0; i < N; i++)
+    {
+        printf("%c\n", keys[i]);
+    }
 }
