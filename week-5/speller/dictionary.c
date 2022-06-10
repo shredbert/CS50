@@ -23,11 +23,9 @@ typedef struct node
 }
 node;
 
-// TODO: Choose number of buckets in hash table
-// Can change based on hash function--hard-code indexes
-const unsigned int N = 26;
-// const unsigned int N = 702; // 26 * 27
-// const unsigned int N = 18594; // 26 * 27 * 27;
+// Choose number of buckets in hash table
+// const unsigned int N = 26;
+const unsigned int N = 702;
 
 // Hash table
 node *table[N];
@@ -75,22 +73,29 @@ unsigned int hash(const char *word)
     // At least 1 char/line, alphabetical, line breaks end lines, none longer
     // than LENGTH, words all lowercase
 
-    // 1 key:
-    unsigned int key;
-    key = (toupper(word[0]) - 65) % 26;
+    // // First letter
+    // unsigned int key;
+    // key = (toupper(word[0]) - 65) % N;
+    // key = (toupper(word[0]) - 65) % 26;
 
-    // 2 keys:
-    // unsigned int first_char, second_char, key;
-    // first_char = (toupper(word[0]) - 65) % 26;
-    // second_char = word[1] == "'" ? 27 : (toupper(word[0]) - 65) % 26;
+    // // First 2 letters
+    unsigned int first_char, second_char, key;
+    first_char = (toupper(word[0]) - 64);
 
-    // 3 keys:
-    // unsigned int first_char, second_char, third_char, key;
-    // first_char = toupper(word[0]) % 26 * 1000;
-    // second_char = word[1] == "\'" ? 270 : toupper(word[1]) % 26 * 100;
-    // third_char = toupper(word[2]) % 26 * 10;
+    // Check if second char null & just assign first char to key if so
+    if (strcmp(&word[1], "\\") == 0)
+    {
+        second_char = 0;
+    }
+    else
+    {
+        second_char = strcmp(&word[1], "'") ? 27 :
+                      (toupper(word[1]) - 64);
+    }
 
-    // key = (first_char + second_char + third_char) % N;
+    key = (first_char + second_char);
+
+    // // Math using all chars
 
     return key;
 }
@@ -98,7 +103,7 @@ unsigned int hash(const char *word)
 // Loads dictionary into memory, returning true if successful, else false
 bool load(const char *dictionary)
 {
-    // TODO -- read lists of dictionary words
+    // Read lists of dictionary words
 
     // Open file
     FILE *dictionary_file = fopen(dictionary, "r");
@@ -113,7 +118,7 @@ bool load(const char *dictionary)
     char buffer[LENGTH + 1];
     node *n = NULL;
 
-    while(fscanf(dictionary_file, "%s", buffer) != EOF)
+    while (fscanf(dictionary_file, "%s", buffer) != EOF)
     {
         // Hash each word to get key
         // Each word gets new node -- allocate with malloc(), check for NULL
@@ -141,7 +146,7 @@ bool load(const char *dictionary)
     fclose(dictionary_file);
 
     // Test
-    // print_keys();
+    print_keys();
 
     return true;
 }
@@ -231,8 +236,8 @@ void print_keys()
     }
 
     printf("keys: %i\n", key_count);
-    for (int i = 0; i < N; i++)
+    for (int i = 0; i < key_count; i++)
     {
-        printf("%c\n", keys[i]);
+        printf("%i\n", keys[i]);
     }
 }
