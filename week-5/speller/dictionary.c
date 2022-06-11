@@ -24,8 +24,8 @@ typedef struct node
 node;
 
 // Choose number of buckets in hash table
-// const unsigned int N = 26;
-const unsigned int N = 702;
+// const unsigned int N = 26; // single char key
+const unsigned int N = 18954; // triple char key
 
 // Hash table
 node *table[N];
@@ -67,59 +67,45 @@ bool check(const char *word)
 // Hashes word to a number
 unsigned int hash(const char *word)
 {
+    /*
+     First 3 letters = ((first letter - 97) * 27^2) + ((second letter - 97) * 27) + (third letter - 97)
+     First 2 letters = ((first letter - 97) * 27) + (second letter - 97)
+     First 1 letter = first letter - 97
+     */
+
     // TODO: Improve this hash function
     // Return key for input word
     // Positive int idx between 0 & N - 1 (num of buckets)
     // At least 1 char/line, alphabetical, line breaks end lines, none longer
     // than LENGTH, words all lowercase
 
-    // // First letter
-    // unsigned int key;
-    // key = (toupper(word[0]) - 65);
+    unsigned int key;
 
-    /*
-     First 2 letters = ((first letter - 65) * 27) + (second letter - 65)
-     aa = 0 (0 * 27 + 0)
-     ab = 1 (0 * 27 + 1)
-     ac = 2 (0 * 27 + 2)
-     ad = 3 (0 * 27 + 3)
-     ae = 4 (0 * 27 + 4)
-     ...
-     ba = 27 (1 * 27 + 0)
-     bb = 28 (1 * 27 + 1)
-     bc = 29 (1 * 27 + 2)
-     bd = 30 (1 * 27 + 3)
-     be = 31 (1 * 27 + 4)
-     ...
-     cx = 76 (2 * 27 + 22)
-     cy = 77 (2 * 27 + 23)
-     cx = 78 (2 * 27 + 24)
-     cz = 79 (2 * 27 + 25)
-     c' = 80 (2 * 27 + 26)
-     ...
-     zv = 697 (25 * 27 + 22)
-     zx = 698 (25 * 27 + 23)
-     zy = 699 (25 * 27 + 24)
-     zz = 700 (25 * 27 + 25)
-     z' = 701 (25 * 27 + 26)
-     */
+    // Single letter key
+    // key = (word[0] - 97);
 
-    unsigned int first_char, second_char, key;
-    first_char = (toupper(word[0]) - 65) * 27;
-
-    // Check if second char null & just assign first char to key if so
+    // Three letter key
+    // 1 char words only subtract
     if (strcmp(&word[1], "\\") == 0)
     {
-        second_char = 0;
+        // Single char is same as "a..." preceding
+        key = (word[0] - 97);
     }
+    // Check if word is 2 chars
+    else if (strcmp(&word[2], "\\") == 0)
+    {
+        // Double char is same as "aa..." preceding
+        key = ((word[0] - 97) * 27) +
+              strcmp(&word[1], "'") ? 27 : (word[1] - 97);
+    }
+    // Else word is 3+ chars
     else
     {
-        second_char = strcmp(&word[1], "'") ? 27 : (toupper(word[1]) - 65);
+        key = ((word[0] - 97) * 27^2) +
+              (strcmp(&word[1], "'") ? 27 : ((word[1] - 97) * 27)) +
+              (strcmp(&word[2], "'") ? 27 : (word[2] - 97));
     }
 
-    key = first_char + second_char;
-
-    // return key;
     return key % N;
 }
 
@@ -168,8 +154,8 @@ bool load(const char *dictionary)
 
     fclose(dictionary_file);
 
-    // Test
-    print_keys();
+    // // Test
+    // print_keys();
 
     return true;
 }
@@ -232,23 +218,29 @@ void print_keys()
 {
     int key_count = 0;
     char keys[N];
+    // Iterate through all possible keys to check words for their keys
     for (int i = 0; i < N; i++)
     {
+        // Buffer node
         node *cursor = table[i];
         while (cursor)
         {
             bool exists = false;
-            for (int j = 0; j < N; j++)
+            unsigned int key = hash(cursor->word);
+
+            // Iterate through keys to check if in use for existing word
+            for (int j = 0; j < key_count; j++)
             {
-                if (keys[j] == hash(cursor->word))
+                if (keys[j] == key)
                 {
                     exists = true;
                 }
             }
 
+            // Add keys to array of keys if not existing
             if (!exists)
             {
-                keys[key_count] = hash(cursor->word);
+                keys[key_count] = key;
                 key_count++;
             }
             cursor = cursor->next;
