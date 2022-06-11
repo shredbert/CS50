@@ -73,11 +73,12 @@ unsigned int hash(const char *word)
      First 2 letters = ((first letter upper - 65) * 27) + (second letter upper
          - 65)
      First 1 letter upper = first letter upper - 65
-     e.g. cat/caterpillar: 67 - 65 = 2, 65 - 65 = 0, 84 - 65 = 19
-     2 * 27^2 = 1458
-     0 * 27 = 0
-     19
-     idx = 1477???
+     Any preceding digits = 0 are treated as 1
+     e.g. cat/caterpillar:
+     (67 - 65 = 2 * 27^2 = *1458*) +
+     (65 - 65 = 0 * 27 = *27*) +
+     (84 - 65 = *19*) =
+     *1504*
      */
 
     // TODO: Improve this hash function
@@ -86,39 +87,52 @@ unsigned int hash(const char *word)
     // At least 1 char/line, alphabetical, line breaks end lines, none longer
     // than LENGTH, words all lowercase IN DICTIONARY (not in text)
 
-
-    // Store key
-    unsigned int key;
-
     // // Single letter key
-
+    // unsigned int key;
     // key = (toupper(word[0]) - 65);
     // return key;
 
-    // Three letter key
+    // Two letter key
+    unsigned int key, first, second;
 
-    // 1 char words only subtract
-    if (strcmp(&word[1], "\\") == 0)
+    // If first is A, hard-code to 27^2
+    first = toupper(word[0]) - 65 == 0 ? 27^2 : (toupper(word[0]) - 65) * 27^2;
+
+    // If second is blank, terminating, or A, hard-code to 27
+    if (!(&word[1]) || strcmp(&word[1], "\\") == 0 ||
+        toupper(word[1]) - 65 == 0)
     {
-        // Single char is same as "a..." preceding
-        key = (toupper(word[0] - 65));
+        second = 27;
     }
-    // Check if word is 2 chars
-    else if (strcmp(&word[2], "\\") == 0)
+    // If second is "'", hard-code to 26 & multiply
+    else if (strcmp(&word[1], "'") == 0)
     {
-        // Double char is same as "aa..." preceding
-        key = ((toupper(word[0] - 65)) * 27) +
-              strcmp(&word[1], "'") ? 26 : (word[1] - 97);
+        second = 26 * 27;
     }
-    // Else word is 3+ chars
+    // If second normal, multiply
     else
     {
-        key = ((toupper(word[0] - 65)) * 27^2) +
-              (strcmp(&word[1], "'") ? 26 : ((word[1] - 97) * 27)) +
-              (strcmp(&word[2], "'") ? 26 : (word[2] - 97));
+        second = (toupper(word[1]) - 65) * 27;
     }
-    return key;
 
+    // If third is NUL or empty, hard-code to 0
+    if (!(&word[1]) || strcmp(&word[1], "\\") == 0)
+    {
+        third = 0;
+    }
+    // If third is "'", hard-code to 26
+    else if (strcmp(&word[1], "'") == 0)
+    {
+        third = 26;
+    }
+    // If third normal, do ASCII math
+    else
+    {
+        third = (toupper(word[1]) - 65);
+    }
+
+    key = first + second + third;
+    return key;
 }
 
 // Loads dictionary into memory, returning true if successful, else false
