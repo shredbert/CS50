@@ -1,3 +1,30 @@
+keys: 26
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
 
 MISSPELLED WORDS
 
@@ -17068,8 +17095,8 @@ WORDS MISSPELLED:     17062
 WORDS IN DICTIONARY:  143091
 WORDS IN TEXT:        376904
 TIME IN load:         0.02
-TIME IN check:        15.49
+TIME IN check:        10.93
 TIME IN size:         0.00
 TIME IN unload:       0.00
-TIME IN TOTAL:        15.51
+TIME IN TOTAL:        10.95
 

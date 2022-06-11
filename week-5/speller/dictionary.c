@@ -68,45 +68,57 @@ bool check(const char *word)
 unsigned int hash(const char *word)
 {
     /*
-     First 3 letters = ((first letter - 97) * 27^2) + ((second letter - 97) * 27) + (third letter - 97)
-     First 2 letters = ((first letter - 97) * 27) + (second letter - 97)
-     First 1 letter = first letter - 97
+     First 3 letters = ((first letter upper - 65) * 27^2) + ((second letter
+         upper - 65) * 27) + (third letter upper - 65)
+     First 2 letters = ((first letter upper - 65) * 27) + (second letter upper
+         - 65)
+     First 1 letter upper = first letter upper - 65
+     e.g. cat/caterpillar: 67 - 65 = 2, 65 - 65 = 0, 84 - 65 = 19
+     2 * 27^2 = 1458
+     0 * 27 = 0
+     19
+     idx = 1477???
      */
 
     // TODO: Improve this hash function
     // Return key for input word
     // Positive int idx between 0 & N - 1 (num of buckets)
     // At least 1 char/line, alphabetical, line breaks end lines, none longer
-    // than LENGTH, words all lowercase
+    // than LENGTH, words all lowercase IN DICTIONARY (not in text)
 
+
+    // Store key
     unsigned int key;
 
-    // Single letter key
-    // key = (word[0] - 97);
+    // // Single letter key
+
+    // key = (toupper(word[0]) - 65);
+    // return key;
 
     // Three letter key
+
     // 1 char words only subtract
     if (strcmp(&word[1], "\\") == 0)
     {
         // Single char is same as "a..." preceding
-        key = (word[0] - 97);
+        key = (toupper(word[0] - 65));
     }
     // Check if word is 2 chars
     else if (strcmp(&word[2], "\\") == 0)
     {
         // Double char is same as "aa..." preceding
-        key = ((word[0] - 97) * 27) +
-              strcmp(&word[1], "'") ? 27 : (word[1] - 97);
+        key = ((toupper(word[0] - 65)) * 27) +
+              strcmp(&word[1], "'") ? 26 : (word[1] - 97);
     }
     // Else word is 3+ chars
     else
     {
-        key = ((word[0] - 97) * 27^2) +
-              (strcmp(&word[1], "'") ? 27 : ((word[1] - 97) * 27)) +
-              (strcmp(&word[2], "'") ? 27 : (word[2] - 97));
+        key = ((toupper(word[0] - 65)) * 27^2) +
+              (strcmp(&word[1], "'") ? 26 : ((word[1] - 97) * 27)) +
+              (strcmp(&word[2], "'") ? 26 : (word[2] - 97));
     }
+    return key;
 
-    return key % N;
 }
 
 // Loads dictionary into memory, returning true if successful, else false
@@ -143,19 +155,19 @@ bool load(const char *dictionary)
         strcpy(n->word, buffer);
 
         // Get key back from hash func
-        unsigned int word_key = hash(buffer);
+        unsigned int key = hash(buffer);
 
         // Point new node to current list head to set next location
-        n->next = table[word_key];
+        n->next = table[key];
 
         // Point list to new node to make it the new head
-        table[word_key] = n;
+        table[key] = n;
     }
 
     fclose(dictionary_file);
 
-    // // Test
-    // print_keys();
+    // Test
+    print_keys();
 
     return true;
 }
