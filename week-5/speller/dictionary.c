@@ -1,19 +1,13 @@
 // Implements a dictionary's functionality
-// No altering prototypes but can add globals/funcs & otherwise alter
-// dictionary files as needed
 
 #include <ctype.h>
 #include <stdbool.h>
-
-#include "dictionary.h"
-
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
 #include <stdio.h>
-
-// Test
-void print_keys();
+#include <math.h>
+#include "dictionary.h"
 
 // Represents a node in a hash table
 typedef struct node
@@ -24,8 +18,7 @@ typedef struct node
 node;
 
 // Choose number of buckets in hash table
-// const unsigned int N = 26; // single char key
-const unsigned int N = 18954; // triple char key
+const unsigned int N = 18954;
 
 // Hash table
 node *table[N];
@@ -33,16 +26,6 @@ node *table[N];
 // Returns true if word is in dictionary, else false
 bool check(const char *word)
 {
-    /*
-     *  TODO CASE-INSENSITIVE!!! Is this word in dictionary? Alphabetical &
-     *  apostraphes (apostraphes don't start tho) Use strcasecmp() for
-     *  case-insensitive comparisons Determine if word is in dictionary Hash
-     *  the word for idx Access list using idx Traverse & use strcasecmp() to
-     *  check case-insensitively Traversing: Use tmp var from 1^st^ item in
-     *  list, move to next node based on cursor->next, & loop until
-     *  cursor->next == NULL
-     */
-
     // Get key of word for idx
     unsigned int key = hash(word);
 
@@ -68,70 +51,45 @@ bool check(const char *word)
 unsigned int hash(const char *word)
 {
     /*
-     First 3 letters = ((first letter upper - 65) * 27^2) + ((second letter
-         upper - 65) * 27) + (third letter upper - 65)
-     First 2 letters = ((first letter upper - 65) * 27) + (second letter upper
-         - 65)
-     First 1 letter upper = first letter upper - 65
-     Any preceding digits = 0 are treated as 1
-     e.g. cat/caterpillar:
-     (67 - 65 = 2 * 27^2 = *1458*) +
-     (65 - 65 = 0 * 27 = *27*) +
-     (84 - 65 = *19*) =
-     *1504*
+      Three letter key:
+      (27^2 * char 1) + (27 * char 2) + char 3
+      e.g. cat/caterpillar = 1458 + 0 + 19 = 1477
      */
 
-    // TODO: Improve this hash function
-    // Return key for input word
-    // Positive int idx between 0 & N - 1 (num of buckets)
-    // At least 1 char/line, alphabetical, line breaks end lines, none longer
-    // than LENGTH, words all lowercase IN DICTIONARY (not in text)
+    unsigned int key, first = 0, second = 0, third = 0;
 
-    // // Single letter key
-    // unsigned int key;
-    // key = (toupper(word[0]) - 65);
-    // return key;
+    // Always at least 1 digit
+    first = (toupper(word[0]) - 65) * pow(27, 2);
 
-    // Two letter key
-    unsigned int key, first, second;
-
-    // If first is A, hard-code to 27^2
-    first = toupper(word[0]) - 65 == 0 ? 27^2 : (toupper(word[0]) - 65) * 27^2;
-
-    // If second is blank, terminating, or A, hard-code to 27
-    if (!(&word[1]) || strcmp(&word[1], "\\") == 0 ||
-        toupper(word[1]) - 65 == 0)
+    if (strlen(word) >= 2)
     {
-        second = 27;
-    }
-    // If second is "'", hard-code to 26 & multiply
-    else if (strcmp(&word[1], "'") == 0)
-    {
-        second = 26 * 27;
-    }
-    // If second normal, multiply
-    else
-    {
-        second = (toupper(word[1]) - 65) * 27;
+        // If second is "'", hard-code to 26
+        if (strcmp(&word[1], "'") == 0)
+        {
+            second = 26;
+        }
+        else
+        {
+            second = (toupper(word[1]) - 65);
+        }
+        second = second * 27;
     }
 
-    // If third is NUL or empty, hard-code to 0
-    if (!(&word[1]) || strcmp(&word[1], "\\") == 0)
+    if (strlen(word) >= 3)
     {
-        third = 0;
-    }
-    // If third is "'", hard-code to 26
-    else if (strcmp(&word[1], "'") == 0)
-    {
-        third = 26;
-    }
-    // If third normal, do ASCII math
-    else
-    {
-        third = (toupper(word[1]) - 65);
+        // If third is "'", hard-code to 26
+        if (strcmp(&word[2], "'") == 0)
+        {
+            third = 26;
+        }
+        else
+        {
+            third = (toupper(word[2]) - 65);
+        }
     }
 
-    key = first + second + third;
+    key = (first + second + third) % N;
+
     return key;
 }
 
@@ -140,7 +98,7 @@ bool load(const char *dictionary)
 {
     // Read lists of dictionary words
 
-    // Open file
+    // Open file with NULL check
     FILE *dictionary_file = fopen(dictionary, "r");
 
     if (dictionary_file == NULL)
@@ -180,19 +138,13 @@ bool load(const char *dictionary)
 
     fclose(dictionary_file);
 
-    // Test
-    print_keys();
-
     return true;
 }
 
 // Returns number of words in dictionary if loaded, else 0 if not yet loaded
 unsigned int size(void)
 {
-    /*
-    * Return num of words in dictionary
-    * Count manually
-    */
+    // Return num of words in dictionary
 
     // Iterate through all idxs
     int size = 0;
@@ -214,15 +166,6 @@ unsigned int size(void)
 // Unloads dictionary from memory, returning true if successful, else false
 bool unload(void)
 {
-    /*
-     * free() all memory previously allocated with malloc()
-     * Return true if successful, false if not
-     * Loop using cursor var to iterate through all indexes & related lists
-     * Don't lose access to other important nodes
-     * Use tmp var to hold pointer to next item--NOT recursive??
-     * Can stop when cursor is null
-     */
-
     // Iterate over all indexes
     for (int i = 0; i < N; i++)
     {
@@ -239,43 +182,3 @@ bool unload(void)
     return true;
 }
 
-// Test
-void print_keys()
-{
-    int key_count = 0;
-    char keys[N];
-    // Iterate through all possible keys to check words for their keys
-    for (int i = 0; i < N; i++)
-    {
-        // Buffer node
-        node *cursor = table[i];
-        while (cursor)
-        {
-            bool exists = false;
-            unsigned int key = hash(cursor->word);
-
-            // Iterate through keys to check if in use for existing word
-            for (int j = 0; j < key_count; j++)
-            {
-                if (keys[j] == key)
-                {
-                    exists = true;
-                }
-            }
-
-            // Add keys to array of keys if not existing
-            if (!exists)
-            {
-                keys[key_count] = key;
-                key_count++;
-            }
-            cursor = cursor->next;
-        }
-    }
-
-    printf("keys: %i\n", key_count);
-    for (int i = 0; i < key_count; i++)
-    {
-        printf("%i\n", keys[i]);
-    }
-}
