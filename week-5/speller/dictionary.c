@@ -75,12 +75,37 @@ unsigned int hash(const char *word)
 
     // // First letter
     // unsigned int key;
-    // key = (toupper(word[0]) - 65) % N;
-    // key = (toupper(word[0]) - 65) % 26;
+    // key = (toupper(word[0]) - 65);
 
-    // // First 2 letters
+    /*
+     First 2 letters = ((first letter - 65) * 27) + (second letter - 65)
+     aa = 0 (0 * 27 + 0)
+     ab = 1 (0 * 27 + 1)
+     ac = 2 (0 * 27 + 2)
+     ad = 3 (0 * 27 + 3)
+     ae = 4 (0 * 27 + 4)
+     ...
+     ba = 27 (1 * 27 + 0)
+     bb = 28 (1 * 27 + 1)
+     bc = 29 (1 * 27 + 2)
+     bd = 30 (1 * 27 + 3)
+     be = 31 (1 * 27 + 4)
+     ...
+     cx = 76 (2 * 27 + 22)
+     cy = 77 (2 * 27 + 23)
+     cx = 78 (2 * 27 + 24)
+     cz = 79 (2 * 27 + 25)
+     c' = 80 (2 * 27 + 26)
+     ...
+     zv = 697 (25 * 27 + 22)
+     zx = 698 (25 * 27 + 23)
+     zy = 699 (25 * 27 + 24)
+     zz = 700 (25 * 27 + 25)
+     z' = 701 (25 * 27 + 26)
+     */
+
     unsigned int first_char, second_char, key;
-    first_char = (toupper(word[0]) - 64);
+    first_char = (toupper(word[0]) - 65) * 27;
 
     // Check if second char null & just assign first char to key if so
     if (strcmp(&word[1], "\\") == 0)
@@ -89,15 +114,13 @@ unsigned int hash(const char *word)
     }
     else
     {
-        second_char = strcmp(&word[1], "'") ? 27 :
-                      (toupper(word[1]) - 64);
+        second_char = strcmp(&word[1], "'") ? 27 : (toupper(word[1]) - 65);
     }
 
-    key = (first_char + second_char);
+    key = first_char + second_char;
 
-    // // Math using all chars
-
-    return key;
+    // return key;
+    return key % N;
 }
 
 // Loads dictionary into memory, returning true if successful, else false
@@ -207,7 +230,6 @@ bool unload(void)
 // Test
 void print_keys()
 {
-    // 1 key:
     int key_count = 0;
     char keys[N];
     for (int i = 0; i < N; i++)
@@ -215,12 +237,10 @@ void print_keys()
         node *cursor = table[i];
         while (cursor)
         {
-            // printf("%s\n", cursor->word);
-            // printf("%c\n", cursor->word[0]);
             bool exists = false;
             for (int j = 0; j < N; j++)
             {
-                if (keys[j] == cursor->word[0])
+                if (keys[j] == hash(cursor->word))
                 {
                     exists = true;
                 }
@@ -228,7 +248,7 @@ void print_keys()
 
             if (!exists)
             {
-                keys[key_count] = cursor->word[0];
+                keys[key_count] = hash(cursor->word);
                 key_count++;
             }
             cursor = cursor->next;
