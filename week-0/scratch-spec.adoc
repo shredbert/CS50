@@ -1,0 +1,54 @@
+= Scratch Project Spec
+
+== Requirements
+
+* [ ] 2 sprites
+** [ ] 1 non-cat
+
+* [ ] 3 scripts *total*
+
+* [ ] 1 conditional
+
+* [ ] 1 loop
+
+* [ ] 1 variable
+
+* [ ] 1 custom block
+
+* [ ] *probably* a few dozen puzzle pieces
+
+* [ ] well-designed
+** [ ] break into multiple scripts so not too long
+** [ ] break into custom block if descriptive name is appropriate
+
+* [ ] submit
+
+== Spec
+
+Display start screen -- player presses space to begin.
+
+Make a simple pong-like game -- player is a shredder, goals are listeners, bots
+are classical musicians.
+
+Player gets wider area (guitar) but bots become more numerous.
+
+Each round is 30 seconds -- track score of shredder & score of other team.
+
+Play 5 rounds -- each round increase the # of bots.
+
+Display score of each team & timer for each round throughout match.
+
+* [ ] start screen
+** [ ] space begins
+
+* [ ] match screen
+** [ ] round number out of total
+** [ ] score
+** [ ] timer
+** [ ] background
+** [ ] player
+** [ ] sprite 1 (round 1+)
+** [ ] sprite 2 (round 2+)
+** [ ] sprite 3 (round 3+)
+** [ ] sprite 4 (round 4+)
+** [ ] sprite 5 (round 5)
