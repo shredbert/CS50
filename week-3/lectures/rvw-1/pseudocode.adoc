@@ -1,0 +1,25 @@
+= Pseudocode for CS50 week 3 review
+
+* Linear search for number search in array nums[n]:
++
+----
+for i from 0 to n - 1
+    if nums[i] = search
+        return true
+return false
+----
+
+* Binary search for number search in array nums[n]:
++
+----
+for i from 0 to n - 1
+    if no vals
+        return false
+    if num = nums[middle]
+        return true
+    else if search < nums[middle]
+        search nums[0] to nums[middle - 1]
+    else if search > nums[middle]
+        search nums[middle + 1] to nums[n - 1]
+----
+
