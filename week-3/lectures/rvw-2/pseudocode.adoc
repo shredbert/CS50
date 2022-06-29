@@ -1,0 +1,83 @@
+Pseudocode exercises for CS50, week 3
+
+* linear search algorithm for num s of nums[n]:
++
+----
+for i from 0 to n-1 of nums
+    if nums[i] = s
+        return true
+return false
+----
+** stem:[O(n)]
+** stem:[O(1)]
+
+* binary search algorithm for num s of nums[n]:
++
+----
+for i from 0 to n-1 of nums
+    if no more nums
+        return false
+    if s = nums[n/2]
+        return true
+    else if s < nums[n/2]
+        search nums[0] to nums[n/2 - 1]
+    else if s > nums[n/2]
+        search nums[n/2 + 1] to nums[n-1]
+----
+** stem:[O(log n)]
+** stem:[O(1)]
+
+* selection sort of nums[n]
++
+----
+for i from 0 to n-1 of nums
+    find smallest between nums[i] & nums[n-1]
+    swap with nums[i]
+----
+** stem:[O(n^2)]
+** stem:[Omega(n^2)]
+** stem:[Theta(n^2)]
+
+* bubble sort of nums[n]
++
+----
+repeat n-1 times
+for i from 0 to n-2 of nums
+    if nums[j] > nums[i]
+        swap
+if no swaps
+    quit
+----
+** stem:[O(n^2)]
+** stem:[Omega(n)]
+
+* recursive binary search for s of nums[n]
++
+----
+if no nums
+    return false
+if s = nums[n/2]
+    return true
+else if s < nums[n/2 - 1]
+    search from 0 to n/2 - 1
+else if s > nums[n/2 + 1]
+    search from n/2 + 1 to n-1
+----
+** stem:[O()]
+** stem:[Omega()]
+** stem:[Theta()]
+
+* merge sort of nums[n]
++
+----
+if no more nums
+    return
+else
+    sort nums[0] to nums[n/2 - 1]
+    sort nums[n/2 + 1] to nums[n-1]
+    merge halves
+----
+** stem:[O(n log n)]
+** stem:[Omega(n log n)]
+** stem:[Theta(n log n)]
+
