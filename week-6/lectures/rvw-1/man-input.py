@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 try:
     x = int(input("X: "))
 except ValueError:

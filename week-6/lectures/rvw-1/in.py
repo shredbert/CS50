@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import cs50
 
 s = cs50.get_string("Do you agree? ")
