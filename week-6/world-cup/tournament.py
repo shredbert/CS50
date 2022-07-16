@@ -15,10 +15,27 @@ def main():
         sys.exit("Usage: python tournament.py FILENAME")
 
     teams = []
-    # TODO: Read teams into memory from file
+    # Read teams into memory from file
+    with open(sys.argv[1]) as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            try:
+                team = {
+                    "team": row["team"],
+                    "rating": int(row["rating"])
+                }
+                teams.append(team)
+            except ValueError:
+                sys.exit("Error parsing team ratings")
 
     counts = {}
-    # TODO: Simulate N tournaments and keep track of win counts
+    # Simulate N tournaments and keep track of win counts
+    winner = simulate_tournament(teams)
+    for i in range(N):
+        winner = simulate_tournament(teams)
+        if winner not in counts:
+            counts[winner] = 0
+        counts[winner] += 1
 
     # Print each team's chances of winning, according to simulation
     for team in sorted(counts, key=lambda team: counts[team], reverse=True):
@@ -49,7 +66,13 @@ def simulate_round(teams):
 
 def simulate_tournament(teams):
     """Simulate a tournament. Return name of winning team."""
-    # TODO
+    while True:
+        winners = simulate_round(teams)
+        teams = winners
+        if len(teams) == 1:
+            break
+    team = teams[0]['team']
+    return team
 
 
 if __name__ == "__main__":
