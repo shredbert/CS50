@@ -13,6 +13,7 @@ def main():
     number = get_string("Number: ")
 
     # Store regex for validation
+    # TODO: Include valid lengths in regex?
     rgx_only_nums = re.compile(r"^\d+$")
     match = rgx_only_nums.fullmatch(number)
 
@@ -29,6 +30,7 @@ def main():
 
     print(type)
 
+
 def get_card_type(number):
     # Amex starts with 34 or 37 & is 15 digits
     rgx_amex = re.compile(r"^3[47]*")
@@ -41,29 +43,87 @@ def get_card_type(number):
 
     # Visa starts with 4 & is either 13 or 16 digits
     rgx_visa = re.compile(r"^4*")
-    visa_match = rgx_visa.match(number) and (len(number) == 13 or len(number) == 16)
-    
+    visa_match = (rgx_visa.match(number) and
+                  (len(number) == 13 or len(number) == 16))
+
     if amex_match:
         return "Amex"
     elif mc_match:
         return "MasterCard"
     elif visa_match:
         return "Visa"
+    # Return blank str if no match -- falsey
     else:
         return ""
 
 
 def test_card_valid(number):
-    # TODO: Implement Luhn's algorithm
+    # Implement Luhn's algorithm -- start with 2nd last, multiply every other
+    # digit by 2, & add DIGITS ONLY (i.e., if product has multiple digits, add
+    # those together)
+    evens = []
+    odds = []
+    for i, n in enumerate(reversed(number)):
+        # Adds all evens/odds from end to respective lists
+        if (i + 1) % 2 == 0:
+            evens.append(n)
+        else:
+            odds.append(n)
 
-    # TODO: Start with 2nd last, multiply every other digit by 2 & add DIGITS
-    # ONLY (i.e., if product has multiple digits, add those together)
+    # Add the sum of the digits within the products of the even digits
+    # multiplied by 2
+    evn_sum = sum_dbld_digits(evens)
+    # Add the sum of all odd digits
+    odd_sum = sum_digits(odds)
+    # Test if total % 10 == 0 -- if so, valid
+    return ((evn_sum + odd_sum) % 10) == 0
 
-    # TODO: Add the sum of all even digits
 
-    # TODO: Test if % 10 == 0 -- if so, valid
+# Accept a list of strings containing numbers, multiply by 2, & return the sum
+# of each number's digits
+def sum_dbld_digits(nums):
+    products = []
 
-    return True
+    for n in nums:
+        # Throw error if can't cast to int
+        try:
+            products.append(int(n) * 2)
+        except ValueError:
+            print("Error parsing nums")
+            sys.exit(1)
+
+    # Need to sum each individual digit of each number
+    product_digits = return_digits(products)
+
+    return sum(product_digits)
+
+
+# Accept a list of numbers & return a modified list with just the individual
+# digits in each number
+def return_digits(nums):
+    digits = []
+    # Max decimal place is tens
+    start = 10
+    for n in nums:
+        i = start
+        while i >= 1:
+            digit = ((n % (i * 10)) - (n % i)) / i
+            digits.append(digit)
+            i /= 10
+    return digits
+
+
+# Accept a list of strings containing numbers & return the sum of those numbers
+def sum_digits(nums):
+    sum = 0
+    for n in nums:
+        # Throw error if can't parse list values to ints
+        try:
+            sum += int(n)
+        except ValueError:
+            print("Error parsing nums")
+            sys.exit(1)
+    return sum
 
 
 if __name__ == "__main__":
