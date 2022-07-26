@@ -47,11 +47,11 @@ def get_card_type(number):
                   (len(number) == 13 or len(number) == 16))
 
     if amex_match:
-        return "Amex"
+        return "AMEX"
     elif mc_match:
-        return "MasterCard"
+        return "MASTERCARD"
     elif visa_match:
-        return "Visa"
+        return "VISA"
     # Return blank str if no match -- falsey
     else:
         return ""
@@ -102,15 +102,22 @@ def sum_dbld_digits(nums):
 # digits in each number
 def return_digits(nums):
     digits = []
-    # Max decimal place is tens
-    start = 10
+    # Retrieve max decimal place for starting point
     for n in nums:
-        i = start
+        i = get_decimal_places(n)
         while i >= 1:
             digit = ((n % (i * 10)) - (n % i)) / i
             digits.append(digit)
             i /= 10
     return digits
+
+
+# Accept a number & return the number of decimal places in tens
+def get_decimal_places(num):
+    places = 10
+    while ((num / places) >= 1):
+        places *= 10
+    return places
 
 
 # Accept a list of strings containing numbers & return the sum of those numbers
