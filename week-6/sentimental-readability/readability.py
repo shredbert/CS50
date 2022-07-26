@@ -9,26 +9,44 @@ def main():
     # TEST
     print(text)
 
-    # TODO: Calculate num of letters (A-Z/a-z)
-    letters = len(re.match(r"[A-Za-z]", text).groups)
-    # TODO: Calculate num of words (chars separated by spaces)
-    words = re.match(r"[A-Za-z0-9'] [A-Za-z0-9']", text)
-    # TODO: Calculate num of sentences (.!?)
-    sentences = re.match(r"[A-Za-z0-9'][.!?][A-Za-z0-9']", text)
-    print(letters)
+    # Calculate num of letters (A-Z/a-z)
+    letters = len(re.findall(r"[A-Za-z]", text))
 
-    # print(letters)
-    # print(words)
-    # print(sentences)
+    # Calculate num of words (any sequence of chars separated by spaces on
+    # EITHER END)
+    words = len(re.findall(r". .", text))
+
+    # Calculate num of sentences (.!?)
+    sentences = len(re.findall(r"(\w*)[.!?]", text))
+
+    # TODO: Calculate avg letters per 100 words
+    avg_letters = letters / words * 100
+
+    # TODO: Calculate avg sentences per 100 words
+    avg_sentences = sentences / words * 100
 
     # TODO: Use Coleman-Liau formula to calculate reading level of input text
-    # 0.0588 * L - 0.296 * S - 15.8
-    # L = avg letters per 100 words, S = avg sentences per 100 words
+    reading_level = 0.0588 * avg_letters - 0.296 * avg_sentences - 15.8
 
     # TODO: Print grade level
-    # TODO: If 16+, print "16+" -- senior undergraduate reading level
     # TODO: If < 1, print "Before Grade 1"
-    # TODO: Round result to whole num for output
+    if reading_level < 1:
+        print("Before Grade 1")
+    # TODO: If 16+, print "16+" -- senior undergraduate reading level
+    elif reading_level >= 16:
+        print("16+")
+    # TODO: Else round result to whole num for output
+    else:
+        print(f"Grade {reading_level}")
+        # print(f"Grade {reading_level:0f}")
+
+    # TEST
+    print(f"Letters: {letters}")
+    print(f"Words: {words}")
+    print(f"Sentences: {sentences}")
+    print(f"Avg letters / 100 words: {avg_letters}")
+    print(f"Avg sentences / 100 words: {avg_sentences}")
+    print()
 
 
 if __name__ == "__main__":
