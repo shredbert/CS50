@@ -24,4 +24,10 @@ do
     fi
 done
 
-echo -e "Tests complete.\n"
+ERR=$(echo $?)
+if [[ $ERR == 0 ]]
+then
+    echo -e "All tests pass.\n"
+else
+    echo -e "Tests failed.\n"
+fi

@@ -3,20 +3,60 @@ import sys
 
 
 def main():
-
     # Check for command-line usage
     if len(sys.argv) != 3:
         print("Usage: python dna.py data.csv sequence.txt")
         sys.exit(1)
-    print("farts")
 
-    # TODO: Read database file into a variable
-    
-    # TODO: Read DNA sequence file into a variable
+    # Read database file into a variable
+    db_file = sys.argv[1]
+    database = []
+    with open(db_file, "r") as file:
+        # Add dictionary of CSV vals to database
+        reader = csv.DictReader(file)
+        for row in reader:
+            database.append(row)
 
-    # TODO: Find longest match of each STR in DNA sequence
+    # Read DNA sequence file into a variable
+    sequence_file = sys.argv[2]
+    with open(sequence_file, "r") as file:
+        sequence = file.read()
 
-    # TODO: Check database for matching profiles
+    # Find longest match of each STR in DNA sequence
+    # Get STRs from first database entry, avoiding first column of "name"
+    strs = list(database[0].keys())[1:]
+
+    # Save dictionary with each STR as a key & the value set to the longest
+    # match
+    # Returns int so no parsing necessary
+    longest_matches = {}
+    for str in strs:
+        match = int(longest_match(sequence, str))
+        longest_matches[str] = match
+
+    # Check database for matching profiles
+    for data in database:
+        name = data["name"]
+
+        for str in strs:
+            try:
+                db_cnt = int(data[str])
+            except ValueError:
+                print("Error parsing dictionary ints")
+                sys.exit(1)
+            mtch_cnt = longest_matches[str]
+
+            is_winner = db_cnt == mtch_cnt
+
+            if not is_winner:
+                break
+
+        if is_winner:
+            print(name)
+            sys.exit(0)
+
+    print("No match")
+    sys.exit(1)
 
     return
 
