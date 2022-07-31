@@ -14,7 +14,14 @@ do
     TST_RSLT=$(echo "$line" | sed 's/.*,//')
     echo -e "Command: $CMD\nExpected result: $TST_RSLT"
     RSLT=$($CMD)
-    echo -e "Actual result: $RSLT\n"
+    echo -e "Actual result: $RSLT"
+    if [[ "$RSLT" != "$TST_RSLT" ]]
+    then
+        echo -e "Not a match!\n"
+        exit 1
+    else
+        echo -e "Match!\n"
+    fi
 done
 
 echo -e "Tests complete.\n"
