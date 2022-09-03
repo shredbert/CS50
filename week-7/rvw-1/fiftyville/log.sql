@@ -52,7 +52,7 @@ before 10:15AM on 2021/07/28
 
 SELECT p.name
 FROM people AS p
--- License plates from bakery security logs
+-- License plates from bakery security logs within 10 min of theft
 WHERE p.license_plate IN
     (SELECT license_plate
     FROM bakery_security_logs
@@ -62,7 +62,8 @@ WHERE p.license_plate IN
     AND hour = 10
     AND minute BETWEEN 15 AND 25
     AND activity = 'exit')
--- Names from ATM withdrawals
+-- Names of account holders making ATM withdrawals on Leggett Street before
+-- theft
 AND p.name IN
     (SELECT p.name
     FROM people AS p
@@ -96,6 +97,7 @@ AND p.passport_number IN
         AND f.day = 29
         ORDER BY hour, minute
         LIMIT 1))
+-- Phone numbers of callers with conversations of <60 sec
 AND p.phone_number IN
     (SELECT c.caller
     FROM phone_calls AS c
@@ -147,16 +149,19 @@ FROM people AS p
     JOIN phone_calls AS c
         ON p.phone_number = c.receiver
 
-WHERE c.id =
+WHERE c.id IN
     (SELECT c.id
     FROM phone_calls AS c
-    WHERE c.year = 2021
+        JOIN people AS p
+            ON p.phone_number = c.caller
+
+    WHERE p.name = 'Bruce'
+    AND c.year = 2021
     AND c.month = 7
     AND c.day = 28
     AND c.duration < 60);
 
 /*
 Results:
-- Jack
+- Robin
 */
-
