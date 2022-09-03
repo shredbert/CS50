@@ -1,13 +1,16 @@
 -- Keep a log of any SQL queries you execute as you solve the mystery.
 
--- -- Find crime scene report for theft on 2021/07/28 on Humphrey Street
--- SELECT street, description
--- FROM crime_scene_reports
--- WHERE year = 2021
---     AND month = 07
---     AND day = 28
---     AND street = 'Humphrey Street'
---     AND description LIKE '%theft%';
+/*
+Find crime scene report for theft on 2021/07/28 on Humphrey Street
+*/
+
+SELECT street, description
+FROM crime_scene_reports
+WHERE year = 2021
+    AND month = 07
+    AND day = 28
+    AND street = 'Humphrey Street'
+    AND description LIKE '%theft%';
 
 /*
 RESULTS:
@@ -15,72 +18,145 @@ RESULTS:
 - 3 witnesses interviewed same day, each *mentions bakery*
 */
 
--- -- Find 3 interviews of witnesses to crime noted in crime scene report -> each
--- -- mentioned *bakery*
--- SELECT name, transcript
--- FROM interviews
--- WHERE year = 2021
---     AND month = 07
---     AND day = 28
---     AND transcript LIKE '%bakery%';
+/*
+Find 3 interviews of witnesses to crime noted in crime scene report -> each
+mentioned *bakery*
+*/
+
+SELECT name, transcript
+FROM interviews
+WHERE year = 2021
+    AND month = 07
+    AND day = 28
+    AND transcript LIKE '%bakery%';
 
 /*
 RESULTS:
 - Ruth saw thief leave within 10 minutes of the theft from bakery parking lot
 - Eugene saw thief withdraw from ATM that morning on Leggett Street
-- Raymond heard <1 min phone convo -> leaving on earliest flight out of
-Fiftyville on following day
+- Raymond heard thief have a <1 min phone convo
+- Raymond heard thief leaving on earliest flight out of Fiftyville on following
+day
 */
-
--- -- Review bakery security logs within 10 min of robbery (2021/07/28 @10:15)
--- SELECT hour, minute, activity, license_plate
--- FROM bakery_security_logs
--- WHERE year = 2021
---     AND month = 07
---     AND day = 28
---     AND hour = 10
---     AND minute BETWEEN 15 AND 25
---     AND activity = 'exit';
 
 /*
-RESULTS:
-- possible license plates leaving between 10:15 & 10:25:
-    - 5P2BI95
-    - 94KL13X
-    - 6P58WS2
-    - 4328GD8
-    - G412CB7
-    - L93JTIZ
-    - 322W7JE
-    - 0NTHK55
+Get name based on:
+- License plates matching those from bakery security logs within 10 min of
+robbery (2021/07/28, from 10:15-10:25)
+- Name of bank account holders that made withdrawals from ATM on Leggett Street
+before 10:15AM on 2021/07/28
+- Passport numbers of passengers on first flight out of Fiftyville on
+2021/07/29
+- Names of callers after theft on 2021/07/29 with duration <60 sec
 */
 
--- Check withdrawals from ATM on Leggett Street < 10:15AM
--- 8 bank accounts = 8 names?
--- Get names -> atm_transactions < bank_accounts < people
-SELECT p.name, p.phone_number, p.passport_number, p.license_plate
+SELECT p.name
 FROM people AS p
-    JOIN bank_accounts AS b
-    ON p.id = b.person_id
+-- License plates from bakery security logs
+WHERE p.license_plate IN
+    (SELECT license_plate
+    FROM bakery_security_logs
+    WHERE year = 2021
+    AND month = 07
+    AND day = 28
+    AND hour = 10
+    AND minute BETWEEN 15 AND 25
+    AND activity = 'exit')
+-- Names from ATM withdrawals
+AND p.name IN
+    (SELECT p.name
+    FROM people AS p
+        JOIN bank_accounts AS b
+            ON p.id = b.person_id
 
-    JOIN atm_transactions AS t
-    ON b.account_number = t.account_number
-WHERE t.year = 2021
+        JOIN atm_transactions AS t
+            ON b.account_number = t.account_number
+    WHERE t.year = 2021
     AND t.month = 07
     AND t.day = 28
     AND t.atm_location = 'Leggett Street'
-    AND t.transaction_type = 'withdraw';
+    AND t.transaction_type = 'withdraw')
+-- Passport numbers from first flight on 2021/07/29
+AND p.passport_number IN
+    (SELECT p.passport_number
+    FROM people AS p
+        JOIN passengers AS ps
+            ON ps.passport_number = p.passport_number
+
+    -- ID of first flight leaving from Fiftyville on 2021/07/29
+    WHERE ps.flight_id = 
+        (SELECT f.id
+        FROM flights AS f
+            JOIN airports AS a
+                ON a.id = f.origin_airport_id
+
+        WHERE a.city = 'Fiftyville'
+        AND f.year = 2021
+        AND f.month = 7
+        AND f.day = 29
+        ORDER BY hour, minute
+        LIMIT 1))
+AND p.phone_number IN
+    (SELECT c.caller
+    FROM phone_calls AS c
+    WHERE c.year = 2021
+    AND c.month = 7
+    AND c.day = 28
+    AND c.duration < 60);
 
 /*
-RESULTS:
-Bruce|(367) 555-5533|5773159633|94KL13X
-Diana|(770) 555-1861|3592750733|322W7JE
-Brooke|(122) 555-4581|4408372428|QX4YZN3
-Kenny|(826) 555-1652|9878712108|30G67EN
-Iman|(829) 555-5269|7049073643|L93JTIZ
-Luca|(389) 555-5198|8496433585|4328GD8
-Taylor|(286) 555-6063|1988161715|1106N58
-Benista|(338) 555-6650|9586786673|8X428L0
+Results:
+- Bruce
 */
 
--- Check who's on earliest flight out of Fiftyville on 2021/07/29
+/*
+Get destination city based on:
+- Destination of first flight out of Fiftyville on 2021/07/29
+*/
+
+SELECT a.city
+FROM airports AS a
+    JOIN flights AS f
+        ON a.id = f.destination_airport_id
+
+WHERE f.id = 
+    (SELECT f.id
+    FROM flights AS f
+        JOIN airports AS a
+            ON a.id = f.origin_airport_id
+
+    WHERE a.city = 'Fiftyville'
+    AND f.year = 2021
+    AND f.month = 7
+    AND f.day = 29
+    ORDER BY hour, minute
+    LIMIT 1);
+
+/*
+Results:
+- New York City
+*/
+
+/*
+Get accomplice based on:
+- Receiver of call after theft on 2021/07/29 with duration <60 sec
+*/
+
+SELECT p.name
+FROM people AS p
+    JOIN phone_calls AS c
+        ON p.phone_number = c.receiver
+
+WHERE c.id =
+    (SELECT c.id
+    FROM phone_calls AS c
+    WHERE c.year = 2021
+    AND c.month = 7
+    AND c.day = 28
+    AND c.duration < 60);
+
+/*
+Results:
+- Jack
+*/
+
