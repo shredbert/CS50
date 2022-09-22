@@ -6,7 +6,8 @@
         <link href="styles.css" rel="stylesheet">
         <title>Trivia!</title>
         <script>
-            // TODO: Add code to check answers to questions
+            let btns = document.querySelector('#mc-btns');
+            console.log(btns);
         </script>
     </head>
     <body>
@@ -18,13 +19,25 @@
             <div class="section">
                 <h2>Part 1: Multiple Choice </h2>
                 <hr>
-                <!-- TODO: Add multiple choice question here -->
+                <!-- Add multiple choice question here -->
+                <h3>
+                    Which is not a valid HTTP response?
+                </h3>
+                <div id="mc-btns">
+                    <button id="mc-btn1">200 OK</button>
+                    <button id="mc-btn2">304 Moved Temporarily</button>
+                    <button id="mc-btn3">401 Unauthorized</button>
+                    <button id="mc-btn4">501 Internal Server Error</button>
+                </div>
             </div>
 
             <div class="section">
                 <h2>Part 2: Free Response</h2>
                 <hr>
-                <!-- TODO: Add free response question here -->
+                <!-- Add free response question here -->
+                <h3>
+                    What does TCP/IP stand for?
+                </h3>
             </div>
         </div>
     </body>
