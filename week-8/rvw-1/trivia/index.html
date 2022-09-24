@@ -6,8 +6,28 @@
         <link href="styles.css" rel="stylesheet">
         <title>Trivia!</title>
         <script>
-            let btns = document.querySelector('#mc-btns');
-            console.log(btns);
+            window.addEventListener('load', (e) => {
+                const btns = document.querySelectorAll('[id*="mc-btn"]');
+                const correctAnsr = '401 Unauthorized'
+                btns.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        let msg = '';
+                        if (e.srcElement.innerHTML === correctAnsr) {
+                            e.srcElement.style.backgroundColor = '#00ff00';
+                            msg = 'Correct!';
+                        } else {
+                            e.srcElement.style.backgroundColor = '#ff0000';
+                            msg = 'Incorrect';
+                        }
+
+                        const question = btn.parentElement.previousElementSibling;
+                        const msgTxtNode = document.createTextNode(`${msg}`);
+                        const msgElementNode = document.createElement('div');
+                        msgElementNode.appendChild(msgTxtNode);
+                        question.appendAfter(msgElementNode);
+                    });
+                });
+            });
         </script>
     </head>
     <body>
@@ -23,7 +43,7 @@
                 <h3>
                     Which is not a valid HTTP response?
                 </h3>
-                <div id="mc-btns">
+                <div>
                     <button id="mc-btn1">200 OK</button>
                     <button id="mc-btn2">304 Moved Temporarily</button>
                     <button id="mc-btn3">401 Unauthorized</button>
