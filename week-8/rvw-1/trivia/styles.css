@@ -6,6 +6,7 @@ body {
     line-height: 1.5;
     margin: 0;
     text-align: left;
+    font-family: 'Verdana', sans-serif;
 }
 
 .container {
@@ -59,4 +60,24 @@ input[type="text"] {
 input[type="text"]:hover {
     background-color: #f5f5f5;
     transition: color 2s ease-in-out, background-color 0.15s ease-in-out;
+}
+
+/* My styles */
+
+.status-section {
+    padding: 0.375rem 0.75rem;
+    font-style: italic;
+}
+
+.status-txt-correct {
+    color: green;
+}
+
+.status-txt-incorrect {
+    color: red;
+}
+
+.btn-confirm {
+    display: block;
+    margin: 0.375rem 0;
 }

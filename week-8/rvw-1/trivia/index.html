@@ -6,28 +6,108 @@
         <link href="styles.css" rel="stylesheet">
         <title>Trivia!</title>
         <script>
-            window.addEventListener('load', (e) => {
-                const btns = document.querySelectorAll('[id*="mc-btn"]');
-                const correctAnsr = '401 Unauthorized'
-                btns.forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        let msg = '';
-                        if (e.srcElement.innerHTML === correctAnsr) {
-                            e.srcElement.style.backgroundColor = '#00ff00';
-                            msg = 'Correct!';
-                        } else {
-                            e.srcElement.style.backgroundColor = '#ff0000';
-                            msg = 'Incorrect';
-                        }
 
-                        const question = btn.parentElement.previousElementSibling;
-                        const msgTxtNode = document.createTextNode(`${msg}`);
-                        const msgElementNode = document.createElement('div');
-                        msgElementNode.appendChild(msgTxtNode);
-                        question.appendAfter(msgElementNode);
+            // Wait for page load before executing
+            window.addEventListener('load', (e) => {
+
+                // Shared
+                const correctMsg = 'Correct!';
+                const incorrectMsg = 'Incorrect';
+                const correctClr = '#00ff00';
+                const incorrectClr = '#ff0000';
+
+                const displayAnswerStatusMsg = (qstnNum, ansrIsCorrect) => {
+
+                    if (qstnNum === null || ansrIsCorrect === null) {
+
+                        console.error('Bad args');
+
+                    }
+
+                    if (!typeof(qstnNum) === 'number' || qstnNum < 1 ||
+                        qstnNum > 2) {
+
+                        console.error('Bad question number');
+
+                    }
+
+                    // Remove previous status section if present
+                    const prevQstnSectionNode = document
+                        .getElementById(`q${qstnNum}-status`);
+                    if (prevQstnSectionNode) prevQstnSectionNode.remove();
+
+                    // Create status text, message, & section nodes
+                    const statusMsg = ansrIsCorrect ? correctMsg : incorrectMsg;
+                    const statusTxtNode = document.createTextNode(statusMsg);
+                    const statusMsgNode = document.createElement('span');
+                    statusMsgNode.appendChild(statusTxtNode);
+
+                    // Different styles based on status
+                    ansrIsCorrect ?
+                        statusMsgNode.classList.add('status-txt-correct') :
+                        statusMsgNode.classList.add('status-txt-incorrect');
+
+                    const statusSectionNode = document.createElement('div');
+                    statusSectionNode.appendChild(statusMsgNode);
+                    statusSectionNode.classList.add('status-section');
+                    statusSectionNode.id = `q${qstnNum}-status`;
+
+                    // Place after question
+                    const qstnNode = document.getElementById(`q${qstnNum}`);
+                    const sttsMsg = ansrIsCorrect ? correctMsg : incorrectMsg;
+
+                    qstnNode.insertAdjacentElement(
+                        'afterEnd', statusSectionNode
+                    );
+
+                }
+
+                // Part 1 -- Multiple Choice question
+                const q1Btns = document.querySelectorAll('[id*="q1-btn"]');
+                q1Btns.forEach(q1Btn => {
+                    q1Btn.addEventListener('click', (e) => {
+
+                        // Reset background colour for each MC button
+                        q1Btns.forEach(q1Btn => q1Btn.removeAttribute('style'));
+
+                        // Test if correct
+                        const correctQ1Ansr = '401 Unauthorized'
+                        const q1AnsrIsCorrect = e.srcElement.innerHTML ===
+                            correctQ1Ansr;
+
+                        // Set BG color of message/button
+                        const q1StatusClr = q1AnsrIsCorrect ?
+                            correctClr : incorrectClr;
+                        e.srcElement.style.backgroundColor = q1StatusClr;
+
+                        // Display MC status message
+                        displayAnswerStatusMsg(1, q1AnsrIsCorrect);
+
                     });
                 });
+
+                // Part 2 -- Text answer
+                document.querySelector('#q2-btn')
+                    .addEventListener('click', (e) => {
+
+                    const correctQ2Ansr = 'Transmission Control Protocol';
+                    const q2Ansr = document.querySelector('#q2-ansr');
+                    const q2AnsrTxt = q2Ansr.value;
+                    const q2AnsrIsCorrect = q2AnsrTxt.trim().toLowerCase() ===
+                        correctQ2Ansr.trim().toLowerCase();
+                    
+                    // Change input colour (border & BG)
+                    const q2StatusClr = q2AnsrIsCorrect ?
+                        correctClr : incorrectClr;
+                    q2Ansr.style.borderColor = q2StatusClr;
+                    q2Ansr.style.backgroundColor = q2StatusClr;
+
+                    // Display text status message
+                    displayAnswerStatusMsg(2, q2AnsrIsCorrect);
+
+                });
             });
+
         </script>
     </head>
     <body>
@@ -40,14 +120,14 @@
                 <h2>Part 1: Multiple Choice </h2>
                 <hr>
                 <!-- Add multiple choice question here -->
-                <h3>
+                <h3 id="q1">
                     Which is not a valid HTTP response?
                 </h3>
                 <div>
-                    <button id="mc-btn1">200 OK</button>
-                    <button id="mc-btn2">304 Moved Temporarily</button>
-                    <button id="mc-btn3">401 Unauthorized</button>
-                    <button id="mc-btn4">501 Internal Server Error</button>
+                    <button id="q1-btn1">200 OK</button>
+                    <button id="q1-btn2">304 Moved Temporarily</button>
+                    <button id="q1-btn3">401 Unauthorized</button>
+                    <button id="q1-btn4">501 Internal Server Error</button>
                 </div>
             </div>
 
@@ -55,9 +135,13 @@
                 <h2>Part 2: Free Response</h2>
                 <hr>
                 <!-- Add free response question here -->
-                <h3>
-                    What does TCP/IP stand for?
+                <h3 id="q2">
+                    What does TCP stand for?
                 </h3>
+                <div>
+                    <input id="q2-ansr" type="text"/>
+                    <button class="btn-confirm" id="q2-btn">Confirm</button>
+                </div>
             </div>
         </div>
     </body>
