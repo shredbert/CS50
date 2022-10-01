@@ -1,36 +1,15 @@
 /* Homepage styles */
-/* overrides to BootStrap styles */
+/* Overrides to BootStrap vars for styles */
 :root {
-    /* --bs-font-sans-serif: Verdana, sans-serif; */
-    /* --bs-body-font-family: Tahoma, sans-serif; */
+    /* Alternative nav BG */
     --bs-primary: #EEC78E;
     --bs-secondary: #FFDFB1;
 }
 
 body {
-    background-color: var(--bs-gray-100);
-}
-
-h1 {
-    font-family: var(--bs-font-sans-serif);
-}
-
-p {
     font-family: var(--bs-body-font-family);
 }
 
-button {
-    background-color: var(--bs-secondary);
-    /* background-color: var(--bs-primary); */
-    color: var(--bs-gray-700);
-    border-color: var(--bs-gray-700);
-}
-
-.link {
-    color: var(--bs-info);
-    background-color: var(--bs-gray-900);
-}
-
-a:clicked {
-    color: var(--bs-pink);
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--bs-font-sans-serif);
 }
