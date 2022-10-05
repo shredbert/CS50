@@ -1,15 +1,60 @@
 /* Homepage styles */
-/* Overrides to BootStrap vars for styles */
-:root {
-    /* Alternative nav BG */
-    --bs-primary: #EEC78E;
-    --bs-secondary: #FFDFB1;
+/* Styles for all pages*/
+h1 > a:hover {
+    text-decoration: underline;
 }
 
-body {
-    font-family: var(--bs-body-font-family);
+p {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: var(--bs-font-sans-serif);
+@media (min-width: 768px) {
+    p {
+        width: 75%;
+    }
+}
+
+@media (min-width: 1200px) {
+    p {
+        width: 50%;
+    }
+}
+
+/* Shred page styles */
+
+.shred-section {
+    text-align: center;
+    width: 80%;
+}
+
+.shred-section:first-of-type {
+    color: var(--bs-red);
+}
+
+.shred-section:nth-of-type(2) {
+    color: var(--bs-green);
+}
+
+.shred-section:last-of-type {
+    color: var(--bs-blue);
+}
+
+@media (min-width: 992px) {
+    .shred-section:first-of-type {
+        color: var(--bs-red);
+        text-align: left;
+    }
+
+    .shred-section:nth-of-type(2) {
+        color: var(--bs-green);
+        text-align: center;
+    }
+
+    .shred-section:last-of-type {
+        color: var(--bs-blue);
+        text-align: right;
+    }
 }
