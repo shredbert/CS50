@@ -4,11 +4,20 @@ h1 > a:hover {
     text-decoration: underline;
 }
 
-p {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
+.banner-section {
+    width: 90%;
+    margin: 3rem auto;
+}
+
+.banner-section > img {
+    display: block;
     margin-left: auto;
     margin-right: auto;
+    width: 100%;
+}
+
+p, figcaption {
+    margin: 1rem auto;
 }
 
 @media (min-width: 768px) {
@@ -25,36 +34,42 @@ p {
 
 /* Shred page styles */
 
-.shred-section {
-    text-align: center;
-    width: 80%;
+figure {
+    margin: 1rem auto;
+    width: 90%;
 }
 
-.shred-section:first-of-type {
+.shred-section {
+    margin: 1rem auto;
+    width: 90%;
+    text-align: center;
+}
+
+.shred-section:first-of-type h3 {
     color: var(--bs-red);
 }
 
-.shred-section:nth-of-type(2) {
+.shred-section:nth-of-type(2) h3 {
     color: var(--bs-green);
 }
 
-.shred-section:last-of-type {
+.shred-section:last-of-type h3 {
     color: var(--bs-blue);
 }
 
 @media (min-width: 992px) {
-    .shred-section:first-of-type {
-        color: var(--bs-red);
-        text-align: left;
+    .banner-section {
+        width: 80%;
     }
 
-    .shred-section:nth-of-type(2) {
-        color: var(--bs-green);
-        text-align: center;
+    figure {
+        margin: 3rem auto;
+        width: 80%;
     }
 
-    .shred-section:last-of-type {
-        color: var(--bs-blue);
-        text-align: right;
+    .shred-section {
+        margin: 3rem auto;
+        width: 80%;
+        text-align: start;
     }
 }
