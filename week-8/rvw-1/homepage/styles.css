@@ -1,42 +1,19 @@
 /* Homepage styles */
-/* Styles for all pages*/
+
+/*
+Bootstrap breakpoints:
+< 576px = NA
+>= 576px = sm
+>= 768px = md
+>= 992px = lg
+>= 1200px = xl
+>= 1400px = xxl
+*/
+
+/* General/mobile styles */
+
 h1 > a:hover {
     text-decoration: underline;
-}
-
-.banner-section {
-    width: 90%;
-    margin: 3rem auto;
-}
-
-.banner-section > img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%;
-}
-
-p {
-    margin: 0.5rem auto;
-}
-
-@media (min-width: 768px) {
-    p {
-        width: 75%;
-    }
-}
-
-@media (min-width: 1200px) {
-    p {
-        width: 50%;
-    }
-}
-
-/* Shred page styles */
-
-figure {
-    margin: 1rem auto;
-    width: 90%;
 }
 
 .shred-section {
@@ -57,13 +34,49 @@ figure {
     color: var(--bs-blue);
 }
 
-@media (min-width: 992px) {
-    .banner-section {
-        width: 80%;
+.main-section {
+    width: 90%;
+    margin: 3rem auto;
+}
+
+.main-section > img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+.main-content {
+    font-size: 1rem;
+    margin: 1rem auto;
+    width: 100%;
+}
+
+.fig-section {
+    width: 80%;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+footer > p {
+    margin: 0.5rem auto;
+}
+
+/* Breakpoint styles */
+
+/* md */
+@media (min-width: 768px) {
+
+    .main-content {
+        font-size: 1.25rem;
     }
 
-    figure {
-        margin: 3rem auto;
+}
+
+/* lg */
+@media (min-width: 992px) {
+
+    .main-section {
         width: 80%;
     }
 
@@ -72,4 +85,22 @@ figure {
         width: 80%;
         text-align: start;
     }
+
 }
+
+/* xl */
+@media (min-width: 1200px) {
+
+    .main-content {
+        font-size: 1.5rem;
+        width: 75%;
+    }
+
+    .fig-section {
+        width: 50%;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+
+}
+
