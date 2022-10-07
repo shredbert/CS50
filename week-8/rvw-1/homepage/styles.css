@@ -16,8 +16,8 @@ h1 > a:hover {
     width: 100%;
 }
 
-p, figcaption {
-    margin: 1rem auto;
+p {
+    margin: 0.5rem auto;
 }
 
 @media (min-width: 768px) {
