@@ -19,7 +19,7 @@ h1 > a:hover {
 .shred-section {
     margin: 1rem auto;
     width: 90%;
-    text-align: center;
+    text-align: start;
 }
 
 .shred-section:first-of-type h3 {
@@ -32,6 +32,11 @@ h1 > a:hover {
 
 .shred-section:last-of-type h3 {
     color: var(--bs-blue);
+}
+
+main {
+    margin: 5rem auto;
+    width: 75%;
 }
 
 .main-section {
@@ -77,13 +82,12 @@ footer > p {
 @media (min-width: 992px) {
 
     .main-section {
-        width: 80%;
+        width: 50%;
     }
 
     .shred-section {
         margin: 3rem auto;
         width: 80%;
-        text-align: start;
     }
 
 }
