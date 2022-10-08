@@ -102,6 +102,12 @@ footer > p {
         height: 400px;
     }
 
+    .fig-section {
+        width: 50%;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+
     .main-section {
         width: 50%;
     }
@@ -123,12 +129,6 @@ footer > p {
     .main-content {
         font-size: 1.5rem;
         width: 75%;
-    }
-
-    .fig-section {
-        width: 50%;
-        margin-top: 1rem;
-        margin-bottom: 1rem;
     }
 
 }
