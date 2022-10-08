@@ -46,30 +46,51 @@
                 <h3>Register</h3>
                 <form id="reg-form">
                     <div class="my-2">
-                        <label class="form-label" for="name">What's your name?</label>
-                        <input class="form-control" id="name" placeholder="Name..." type="text">
+                        <label class="form-label" for="email">What's your email
+                            address?</label>
+                        <input class="form-control" id="email" name="email"
+                            placeholder="Email..." required type="email">
                     </div>
                     <div class="my-2">
-                        <label class="form-label" for="email">What's your email address?</label>
-                        <input class="form-control" id="email" placeholder="my@name.com" type="email">
+                        <label class="form-label" for="name">What's your full name?</label>
+                        <input class="form-control" id="name" name="name"
+                            placeholder="Full name..." required type="text">
                     </div>
                     <div class="my-2">
-                        <label class="form-label" for="favourite">Why are you a fan of Yngwie?</label>
-                        <input class="form-control" id="favourite" placeholder="Reason..." type="text">
+                        <label class="form-label" for="favourite">Why do you love Yngwie?</label>
+                        <input class="form-control" id="favourite"
+                            name="favourite" placeholder="Reason..." required
+                            type="text">
+                    </div>
+                    <div class="my-2">
+                        <label class="form-check-label" for="how-hear">How did you hear about us?</label>
+                        <select aria-label="Select how you hear about us"
+                            class="form-select" id="how-hear" name="how-hear"
+                            required>
+                            <option selected>Select...</option>
+                            <option value="vision">It came to me in a vision</option>
+                            <option value="friend">Referred by a friend</option>
+                            <option value="searching">Searching the web</option>
+                            <option value="social">Social media</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="my-2">
+                        <label class="form-label" for="rock">
+                            In 500 words or less, why do you loves the shred?
+                        </label>
+                        <textarea class="form-control" id="rock"
+                            maxlength="500" name="rock" required
+                            rows="3">Because I need a life!!!</textarea>
                     </div>
                     <div class="form-check my-2">
-                        <label class="form-check-label" for="name">How did you hear about us?</label>
-                        <textarea class="form-check-input" id="agree" type="checkbox">
+                        <input class="form-check-input" id="agree" name="agree"
+                            required type="checkbox">
+                        <label class="form-check-label" for="agree">I hereby
+                            agree that Yngwie Malmsteen is quite possibly the
+                            coolest guitarist in existence.</label>
                     </div>
-                    <div class="form-check my-2">
-                        <label class="form-check-label" for="name">I hereby agree that Yngwie Malmsteen is quite possibly the coolest guitarist in existence.</label>
-                        <textarea class="form-check-input" id="agree" type="checkbox">
-                    </div>
-                    <div class="form-check my-2">
-                        <input class="form-check-input" id="agree" type="checkbox">
-                        <label class="form-check-label" for="name">I hereby agree that Yngwie Malmsteen is quite possibly the coolest guitarist in existence.</label>
-                    </div>
-                    <button class="btn btn-primary my-2" type="submit">Sign Up!</button>
+                    <button class="btn btn-primary my-2" type="submit">Sign Up</button>
                 </form>
             </section>
             <section class="main-section">
@@ -89,16 +110,65 @@
         </footer>
         <!-- Bootstrap script used for navbar on mobile -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+        <!--
+            Look for signups in localstorage &, if present, overwrite
+            #no-members-msg with members
+        -->
         <script>
-            const regForm = document.querySelector('#reg-form');
-            regForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                console.log('farts!!!');
-            });
+            (() => {
 
-            // TODO: Display name & favourite thing about Yngwie in table
-            // TODO: Remove #no-members-msg until responses come in
-            // TODO: Store data in JSON file & read out programatically?
+                let baseData = [
+                    {
+                        "when-registered": "2022-10-01T03:00:00",
+                        "email": "yngwie@malmsteen.com",
+                        "name": "Yngwie Malmsteen",
+                        "reason": "Loves that vibrato!!!",
+                        "how-heard": "vision",
+                        "why-shred": "Because it brings meaning to my existence.",
+                    },
+                    {
+                        "when-registered": "2022-10-01T03:10:00",
+                        "email": "yngwie@malmsteen.com",
+                        "name": "Yngwie Malmsteen",
+                        "reason": "Loves that vibrato!!!",
+                        "how-heard": "vision",
+                        "why-shred": "Because it brings meaning to my existence.",
+                    },
+                    {
+                        "when-registered": "2022-10-01T03:20:00",
+                        "email": "yngwie@malmsteen.com",
+                        "name": "Yngwie Malmsteen",
+                        "reason": "Loves that vibrato!!!",
+                        "how-heard": "vision",
+                        "why-shred": "Because it brings meaning to my existence.",
+                    },
+                ];
+
+                if (localStorage.getItem('member') === null) {
+                    baseData = JSON.stringify(baseData);
+                    localStorage.setItem('members', baseData);
+                }
+
+                const members = JSON.parse(localStorage.getItem('members'));
+                console.log(members);
+            
+            })();
+        </script>
+        <!-- Handle form submission -->
+        <script>
+            (() => {
+
+                const regForm = document.querySelector('#reg-form');
+                regForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    console.log('farts!!!');
+                });
+
+                // TODO: Store data in local storage on submit
+                // TODO: Display name & favourite thing about Yngwie in table
+                // TODO: Remove #no-members-msg until responses come in
+
+            })();
         </script>
     </body>
 </html>
