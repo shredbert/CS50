@@ -34,23 +34,47 @@
                             <a class="nav-link"
                                 href="./guitars.html">Guitars</a>
                             <a class="nav-link" href="./about.html">About</a>
-                            <a class="nav-link" href="./join.html">Join</a>
+                            <a class="nav-link active" href="./join.html">Join</a>
                         </div>
                     </div>
                 </nav>
             </div>
         </header>
         <main class="container">
-            <h2>Fans of Yngwie Malmsteen Unite!</h2>
+            <h2>Join Our Community</h2>
             <section class="main-section">
-                <img alt="Image of Yngwie Malmsteen, the Sweed with speed"
-                    class="img-fluid" src="./img/yngwie-home.jfif">
-                <p class="main-content">
-                    <strong>Yngwie Fans</strong> is <em>the</em> Yngwie
-                    Malmsteen fan site for all things shred guitar, Sweden, &
-                    Ferrarris. Prepare to <strong>unleash the fury</strong>
-                    with this homage to the <strong>Swede with Speed!</strong>
-                </p>
+                <h3>Register</h3>
+                <form id="reg-form">
+                    <div class="my-2">
+                        <label class="form-label" for="name">What's your name?</label>
+                        <input class="form-control" id="name" placeholder="Name..." type="text">
+                    </div>
+                    <div class="my-2">
+                        <label class="form-label" for="email">What's your email address?</label>
+                        <input class="form-control" id="email" placeholder="my@name.com" type="email">
+                    </div>
+                    <div class="my-2">
+                        <label class="form-label" for="favourite">Why are you a fan of Yngwie?</label>
+                        <input class="form-control" id="favourite" placeholder="Reason..." type="text">
+                    </div>
+                    <div class="form-check my-2">
+                        <label class="form-check-label" for="name">How did you hear about us?</label>
+                        <textarea class="form-check-input" id="agree" type="checkbox">
+                    </div>
+                    <div class="form-check my-2">
+                        <label class="form-check-label" for="name">I hereby agree that Yngwie Malmsteen is quite possibly the coolest guitarist in existence.</label>
+                        <textarea class="form-check-input" id="agree" type="checkbox">
+                    </div>
+                    <div class="form-check my-2">
+                        <input class="form-check-input" id="agree" type="checkbox">
+                        <label class="form-check-label" for="name">I hereby agree that Yngwie Malmsteen is quite possibly the coolest guitarist in existence.</label>
+                    </div>
+                    <button class="btn btn-primary my-2" type="submit">Sign Up!</button>
+                </form>
+            </section>
+            <section class="main-section">
+                <h3>Community Members</h3>
+                <p class="text-grey-100" id="no-members-msg"><em>No community members have signed up yet.</em></p>
             </section>
         </main>
         <footer class="bg-secondary bg-gradient fixed-bottom">
@@ -65,5 +89,16 @@
         </footer>
         <!-- Bootstrap script used for navbar on mobile -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+        <script>
+            const regForm = document.querySelector('#reg-form');
+            regForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                console.log('farts!!!');
+            });
+
+            // TODO: Display name & favourite thing about Yngwie in table
+            // TODO: Remove #no-members-msg until responses come in
+            // TODO: Store data in JSON file & read out programatically?
+        </script>
     </body>
 </html>
