@@ -95,8 +95,10 @@
             </section>
             <section class="main-section" id="members-section">
                 <h3>Community Members</h3>
-                <!-- <p class="text-grey-100" id="no-members-msg"><em>No community members have signed up yet.</em></p> -->
-                <!-- <table id="members-table"></table> -->
+                <div id="members-content">
+                    <p class="text-grey-100" id="no-members-msg"><em>No community members have signed up yet.</em></p>
+                    <!-- <table id="members-table"></table> -->
+                </div>
             </section>
         </main>
         <footer class="bg-secondary bg-gradient fixed-bottom">
@@ -158,9 +160,11 @@
 
                     const membersSection = document.getElementById('members-section');
 
-                    const noMembersMsg = document.getElementById('no-members-msg');
-                    if (noMembersMsg)
-                        noMembersMsg.remove();
+                    // Remove no members message always? In case checked & no members present?
+                    const membersContent = document.getElementById('members-content');
+
+                    if (membersContent)
+                        membersContent.innerHTML = '';
 
                     if (!existingMembers) {
 
@@ -170,7 +174,7 @@
                             </p>
                         `;
 
-                        membersSection.insertAdjacentHTML('beforeend', noMembersMsg);
+                        // membersSection.insertAdjacentHTML('beforeend', noMembersMsg);
 
                     } else {
 
