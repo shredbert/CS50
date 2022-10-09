@@ -65,12 +65,11 @@
                             required type="text">
                     </div>
                     <div class="my-2">
-                        <label class="form-check-label" for="how-hear">How did
+                        <label class="form-check-label" for="howHeard">How did
                             you hear about us?</label>
-                        <select aria-label="Select how you hear about us"
-                            class="form-select" id="how-hear" name="how-hear"
-                            required>
-                            <option selected>Select...</option>
+                        <select class="form-select" id="howHeard"
+                            name="howHeard" required>
+                            <option hidden selected value="">Select...</option>
                             <option value="vision">It came to me in a vision</option>
                             <option value="friend">Referred by a friend</option>
                             <option value="searching">Searching the web</option>
@@ -79,12 +78,13 @@
                         </select>
                     </div>
                     <div class="my-2">
-                        <label class="form-label" for="rock">
+                        <label class="form-label" for="whyShred">
                             In 500 words or less, why do you love shred guitar?
                         </label>
-                        <textarea class="form-control" id="rock"
-                            maxlength="500" name="rock" required
-                            rows="3">Because playing fast is so cool.</textarea>
+                        <textarea class="form-control" id="whyShred"
+                            maxlength="500" name="whyShred" required
+                            rows="3">Because playing fast is so cool.
+                        </textarea>
                     </div>
                     <div class="form-check my-2">
                         <input class="form-check-input" id="agree" name="agree"
@@ -122,7 +122,7 @@
                     <tr>
                         <td data-field="name"></td>
                         <td data-field="whenRegistered"></td>
-                        <td data-field="joinReason"></td>
+                        <td data-field="favourite"></td>
                     </tr>
                 </template>
                 <template id="no-members-template">
@@ -154,37 +154,6 @@
         -->
         <script>
             (() => {
-
-                // TEST
-                let testData = [
-                    {
-                        "whenRegistered": "2022-10-01T03:00:00",
-                        "email": "yngwie@malmsteen.com",
-                        "name": "Yngwie Malmsteen",
-                        "joinReason": "Love that vibrato!!!",
-                        "howHeard": "vision",
-                        "whyShred": "Because it brings meaning to my existence.",
-                    },
-                    {
-                        "whenRegistered": "2022-10-01T03:10:00",
-                        "email": "mngwie@yalmsteen.com",
-                        "name": "Mngwie Yalmsteen",
-                        "joinReason": "Love those strats!!!",
-                        "howHeard": "friend",
-                        "whyShred": "Becausee I need a partner.",
-                    },
-                    {
-                        "whenRegistered": "2022-10-01T03:20:00",
-                        "email": "bert@mcshred.com",
-                        "name": "Bert McShred",
-                        "joinReason": "He unleashes the fury!!!",
-                        "howHeard": "web",
-                        "whyShred": "Cus it's cool.",
-                    },
-                ];
-                localStorage.clear();
-                testData = JSON.stringify(testData);
-                localStorage.setItem('members', testData);
 
                 // Load & display all existing members
                 const loadAndDisplayAllMembers = () => {
@@ -254,27 +223,46 @@
 
                 }
 
-                // TEST
-                // loadAndDisplayAllMembers();
-
                 // Handle form submission
                 const regForm = document.querySelector('#reg-form');
                 regForm.addEventListener('submit', (e) => {
 
                     e.preventDefault();
+                    const formData = e.target.elements;
+                    const now = (new Date()).toString();
+                    const email = formData['email'].value;
+                    const name = formData['name'].value;
+                    const favourite = formData['favourite'].value;
+                    const howHeard = formData['howHeard'].value;
+                    const whyShred = formData['whyShred'].value;
 
-                    // {
-                    //     "whenRegistered": "2022-10-01T03:20:00",
-                    //     "email": "bert@mcshred.com",
-                    //     "name": "Bert McShred",
-                    //     "joinReason": "He unleashes the fury!!!",
-                    //     "howHeard": "web",
-                    //     "whyShred": "Cus it's cool.",
-                    // },
+                    const newMember = {
+                        "whenRegistered": now,
+                        "email": email,
+                        "name": name,
+                        "favourite": favourite,
+                        "howHeard": howHeard,
+                        "whyShred": whyShred,
+                    }
 
-                    // TODO: Store data in local storage on submit
-                    // TODO: Display name & favourite thing about Yngwie in table
-                    // TODO: Remove #no-members-msg until responses come in
+                    let updatedMembers = JSON.parse(
+                        localStorage.getItem('members')
+                    );
+
+                    updatedMembers ?
+                        updatedMembers.push(newMember) :
+                        updatedMembers = [newMember];
+
+                    localStorage.setItem(
+                        'members',
+                        JSON.stringify(updatedMembers)
+                    );
+
+                    // Re-load list of members to display
+                    loadAndDisplayAllMembers();
+
+                    // Clear form
+                    e.target.reset();
 
                 });
 
