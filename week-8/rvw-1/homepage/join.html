@@ -184,7 +184,7 @@
                 ];
                 localStorage.clear();
                 testData = JSON.stringify(testData);
-                localStorage.setItem('members', testData);
+                // localStorage.setItem('members', testData);
 
                 // Load & display all existing members
                 const loadAndDisplayAllMembers = () => {
@@ -220,27 +220,38 @@
                         const membersDataFragment = document.
                             createDocumentFragment();
 
+                        // Fetch table template
+                        const memberRowTemplate = document
+                            .querySelector('#member-row-template');
+
                         // Iterate over all members
                         existingMembers.forEach(member => {
 
-                            // Fetch table template & clone
-                            const memberRowTemplate = document
-                                .querySelector('#member-row-template')
+                            // Clone template
+                            const newMemberRow = memberRowTemplate
                                 .content
                                 .cloneNode(true);
 
-                            let newMemberRow = memberRowTemplate
+                            const newMemberCells = newMemberRow
                                 .querySelectorAll('td');
 
-                            const regDate = new Date(
-                                member.whenRegistered
-                            ).toDateString();
+                            newMemberCells.forEach((cell, idx) => {
 
-                            newMemberRow[0].textContent = member.name;
-                            newMemberRow[1].textContent = regDate;
-                            newMemberRow[2].textContent = member.joinReason;
+                                if (idx === 0) {
+                                    cell.textContent = member.name;
+                                } else if (idx === 1) {
+                                    const regDate = new Date(
+                                        member.whenRegistered
+                                    ).toDateString();
 
-                            membersDataFragment.appendChild(memberRowTemplate);
+                                    cell.textContent = regDate;
+                                } else {
+                                    cell.textContent = member.joinReason;
+                                }
+
+                            });
+
+                            membersDataFragment.appendChild(newMemberRow);
 
                         });
 
@@ -251,7 +262,7 @@
                 }
 
                 // TEST
-                loadAndDisplayAllMembers();
+                // loadAndDisplayAllMembers();
 
                 // Handle form submission
                 const regForm = document.querySelector('#reg-form');
