@@ -95,7 +95,8 @@
             </section>
             <section class="main-section" id="members-section">
                 <h3>Community Members</h3>
-                <p class="text-grey-100" id="no-members-msg"><em>No community members have signed up yet.</em></p>
+                <!-- <p class="text-grey-100" id="no-members-msg"><em>No community members have signed up yet.</em></p> -->
+                <!-- <table id="members-table"></table> -->
             </section>
         </main>
         <footer class="bg-secondary bg-gradient fixed-bottom">
@@ -147,7 +148,7 @@
 
                 localStorage.clear();
                 testData = JSON.stringify(testData);
-                localStorage.setItem('members', testData);
+                // localStorage.setItem('members', testData);
 
                 // Load existing members
                 const displayMembers = () => {
@@ -156,18 +157,31 @@
                     console.log(existingMembers);
 
                     const membersSection = document.getElementById('members-section');
-                    console.log(membersSection);
 
-                    if (existingMembers) {
-                        const noMembersMsg = document.getElementById('no-members-msg');
+                    const noMembersMsg = document.getElementById('no-members-msg');
+                    if (noMembersMsg)
                         noMembersMsg.remove();
-                    }
 
-                    // If data new...
-                        // Test username unique
+                    if (!existingMembers) {
+
+                        const noMembersMsg = `
+                            <p class="text-grey-100" id="no-members-msg">
+                                <em>No community members have signed up yet.</em>
+                            </p>
+                        `;
+
+                        membersSection.insertAdjacentHTML('beforeend', noMembersMsg);
+
+                    } else {
+
+                        // If data new...
+                            // Test username unique
+
+                    }
 
                 }
 
+                // TEST
                 displayMembers();
 
                 // Handle form submission
