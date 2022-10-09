@@ -1,17 +1,6 @@
 /* Homepage styles */
 
-/*
-Bootstrap breakpoints:
-< 576px = NA
->= 576px = sm
->= 768px = md
->= 992px = lg
->= 1200px = xl
->= 1400px = xxl
-*/
-
 /* General/mobile styles */
-
 .carousel-cptn {
     color: var(--bs-gray-dark);
     text-align: center;
@@ -80,7 +69,21 @@ footer > p {
     margin: 0.5rem auto;
 }
 
-/* Breakpoint styles */
+/*  */
+
+/*
+
+Responsive styles
+
+Bootstrap breakpoints:
+- < 576px = NA
+- >= 576px = sm
+- >= 768px = md
+- >= 992px = lg
+- >= 1200px = xl
+- >= 1400px = xxl
+
+*/
 
 /* md */
 @media (min-width: 768px) {

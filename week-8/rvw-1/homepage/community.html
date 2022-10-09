@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
+        <!-- Add beta release for latest features -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
+            crossorigin="anonymous">
+        <link href="styles.css" rel="stylesheet">
+        <title>Yngwie Fans</title>
+    </head>
+    <body class="bg-body bg-gradient text-dark">
+        <header class="px-3 bg-light bg-gradient navbar navbar-expand-md sticky-top">
+            <div class="container-fluid">
+                <h1 class="mx-2">
+                    <a class="navbar-brand" href="./index.html">Yngwie Fans</a>
+                </h1>
+                <nav>
+                    <button class="navbar-toggler" type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarButtons"
+                        aria-controls="navbarButtons" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarButtons">
+                        <div class="navbar-nav">
+                            <a class="nav-link" href="./shred.html">Shred</a>
+                            <a class="nav-link" href="./guitars.html">Guitars</a>
+                            <a class="nav-link" href="./join.html">Join</a>
+                            <a class="active nav-link" href="./community.html">Community</a>
+                            <a class="nav-link" href="./about.html">About</a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <main class="container">
+            <h2>Our Community</h2>
+            <section class="main-section" id="members-section">
+                <h3>Members</h3>
+                <table class="table table-dark table-striped" id="members-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Member Since</th>
+                            <th>Favourite Yngwie Thing</th>
+                        </tr>
+                    </thead>
+                    <tbody id="members-table-data">
+                        <tr>
+                            <td colspan="3">
+                                <em>
+                                    No community members have signed up yet.
+                                </em>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- Template for adding new members to above table -->
+                <template id="member-row-template">
+                    <tr>
+                        <td data-field="name"></td>
+                        <td data-field="whenRegistered"></td>
+                        <td data-field="favourite"></td>
+                    </tr>
+                </template>
+                <template id="no-members-template">
+                    <tr>
+                        <td colspan="3">
+                            <em>
+                                No community members have signed up yet.
+                            </em>
+                        </td>
+                    </tr>
+                </template>
+            </section>
+        </main>
+        <footer class="bg-secondary bg-gradient fixed-bottom">
+            <p class="text-center text-light">
+                &copy;2022
+                <a class="link-light"
+                    href="https://github.com/shredbert">shredbert</a>
+                for
+                <a class="link-light"
+                    href="https://cs50.harvard.edu/x/2022/">CS50</a>
+            </p>
+        </footer>
+        <!-- Bootstrap script used for navbar on mobile -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+        <!--
+            Look for signups in localstorage &, if present, overwrite
+            #no-members-msg with members
+        -->
+        <script>
+            (() => {
+
+                // Load & display all existing members
+                const loadAndDisplayAllMembers = () => {
+
+                    // Remove data from members table to repopulate
+                    const membersTableData = document.
+                        querySelector('#members-table-data');
+                    if (membersTableData)
+                        membersTableData.innerHTML = '';
+
+                    // Test existing members
+                    const existingMembers = JSON.parse(
+                        localStorage.getItem('members')
+                    );
+
+                    // If no members, display no members message
+                    if (!existingMembers) {
+
+                        const noMembersTemplate = document.querySelector(
+                            '#no-members-template'
+                        );
+
+                        const noMembersMsg = noMembersTemplate
+                            .content
+                            .cloneNode(true);
+
+                        membersTableData.appendChild(noMembersMsg);
+
+                    // If members, display in table
+                    } else {
+
+                        // Create fragment so can append all at once
+                        const membersDataFragment = document.
+                            createDocumentFragment();
+
+                        // Fetch table template
+                        const memberRowTemplate = document
+                            .querySelector('#member-row-template');
+
+                        // Iterate over all members
+                        existingMembers.forEach(member => {
+
+                            // Clone template
+                            const newMemberRow = memberRowTemplate
+                                .content
+                                .cloneNode(true);
+
+                            // Store all cells of table data
+                            const newMemberCells = newMemberRow
+                                .querySelectorAll('td');
+
+                            // Populate content of cells based on dataset.field
+                            // attribute to declaratively assign
+                            newMemberCells.forEach(cell => {
+                                // Check if cell is registration date
+                                cell.dataset.field === 'whenRegistered' ?
+                                    // If date, convert to formatted string
+                                    cell.textContent = new Date(member[cell.dataset.field]).toDateString() :
+                                    cell.textContent = member[cell.dataset.field];
+                            });
+
+                            // Append cells in new row to fragment
+                            membersDataFragment.appendChild(newMemberRow);
+
+                        });
+
+                        // Append fragment with all new rows to table
+                        membersTableData.appendChild(membersDataFragment);
+
+                    }
+
+                }
+
+                // Load list of members to display
+                loadAndDisplayAllMembers();
+
+            })();
+        </script>
+    </body>
+</html>

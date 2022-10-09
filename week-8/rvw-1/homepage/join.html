@@ -24,17 +24,17 @@
                     <button class="navbar-toggler" type="button"
                         data-bs-toggle="collapse"
                         data-bs-target="#navbarButtons"
-                        aria-controls="navbarTogglerDemo01" aria-expanded="false"
+                        aria-controls="navbarButtons" aria-expanded="false"
                         aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarButtons">
                         <div class="navbar-nav">
                             <a class="nav-link" href="./shred.html">Shred</a>
-                            <a class="nav-link"
-                                href="./guitars.html">Guitars</a>
+                            <a class="nav-link" href="./guitars.html">Guitars</a>
+                            <a class="active nav-link" href="./join.html">Join</a>
+                            <a class="nav-link" href="./community.html">Community</a>
                             <a class="nav-link" href="./about.html">About</a>
-                            <a class="nav-link active" href="./join.html">Join</a>
                         </div>
                     </div>
                 </nav>
@@ -43,7 +43,7 @@
         <main class="container">
             <h2>Join Our Community</h2>
             <section class="main-section">
-                <h3>Register</h3>
+                <h3>Sign Up</h3>
                 <form id="reg-form">
                     <div class="my-2">
                         <label class="form-label" for="email">What's your email
@@ -83,8 +83,7 @@
                         </label>
                         <textarea class="form-control" id="whyShred"
                             maxlength="500" name="whyShred" required
-                            rows="3">Because playing fast is so cool.
-                        </textarea>
+                            rows="3">Because playing fast is so cool.</textarea>
                     </div>
                     <div class="form-check my-2">
                         <input class="form-check-input" id="agree" name="agree"
@@ -93,47 +92,10 @@
                             agree that Yngwie Malmsteen is quite possibly the
                             coolest guitarist in existence.</label>
                     </div>
-                    <button class="btn btn-primary my-2" type="submit">Sign
-                        Up</button>
+                    <button class="btn btn-primary my-2" type="submit">
+                        Register
+                    </button>
                 </form>
-            </section>
-            <section class="main-section" id="members-section">
-                <h3>Community Members</h3>
-                <table class="table table-dark table-striped" id="members-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Membership Since</th>
-                            <th>Favourite Yngwie Thing</th>
-                        </tr>
-                    </thead>
-                    <tbody id="members-table-data">
-                        <tr>
-                            <td colspan="3">
-                                <em>
-                                    No community members have signed up yet...
-                                </em>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <!-- Template for adding new members to above table -->
-                <template id="member-row-template">
-                    <tr>
-                        <td data-field="name"></td>
-                        <td data-field="whenRegistered"></td>
-                        <td data-field="favourite"></td>
-                    </tr>
-                </template>
-                <template id="no-members-template">
-                    <tr>
-                        <td colspan="3">
-                            <em>
-                                No community members have signed up yet...
-                            </em>
-                        </td>
-                    </tr>
-                </template>
             </section>
         </main>
         <footer class="bg-secondary bg-gradient fixed-bottom">
@@ -154,74 +116,6 @@
         -->
         <script>
             (() => {
-
-                // Load & display all existing members
-                const loadAndDisplayAllMembers = () => {
-
-                    // Remove data from members table to repopulate
-                    const membersTableData = document.
-                        querySelector('#members-table-data');
-                    if (membersTableData)
-                        membersTableData.innerHTML = '';
-
-                    // Test existing members
-                    const existingMembers = JSON.parse(
-                        localStorage.getItem('members')
-                    );
-
-                    // If no members, display no members message
-                    if (!existingMembers) {
-
-                        const noMembersTemplate = document.querySelector(
-                            '#no-members-template'
-                        );
-
-                        const noMembersMsg = noMembersTemplate
-                            .content
-                            .cloneNode(true);
-
-                        membersTableData.appendChild(noMembersMsg);
-
-                    // If members, display in table
-                    } else {
-
-                        // Create fragment so can append all at once
-                        const membersDataFragment = document.
-                            createDocumentFragment();
-
-                        // Fetch table template
-                        const memberRowTemplate = document
-                            .querySelector('#member-row-template');
-
-                        // Iterate over all members
-                        existingMembers.forEach(member => {
-
-                            // Clone template
-                            const newMemberRow = memberRowTemplate
-                                .content
-                                .cloneNode(true);
-
-                            // Store all cells of table data
-                            const newMemberCells = newMemberRow
-                                .querySelectorAll('td');
-
-                            // Populate content of cells based on dataset.field
-                            // attribute to declaratively assign
-                            newMemberCells.forEach((cell, idx) => {
-                                cell.textContent = member[cell.dataset.field];
-                            });
-
-                            // Append cells in new row to fragment
-                            membersDataFragment.appendChild(newMemberRow);
-
-                        });
-
-                        // Append fragment with all new rows to table
-                        membersTableData.appendChild(membersDataFragment);
-
-                    }
-
-                }
 
                 // Handle form submission
                 const regForm = document.querySelector('#reg-form');
@@ -258,11 +152,14 @@
                         JSON.stringify(updatedMembers)
                     );
 
-                    // Re-load list of members to display
-                    loadAndDisplayAllMembers();
+                    // Acknowledge success
+                    window.alert(`Thanks for signing up, ${newMember.name}!`);
 
                     // Clear form
                     e.target.reset();
+
+                    // Scroll to top
+                    window.scrollTo(0, 0);
 
                 });
 
