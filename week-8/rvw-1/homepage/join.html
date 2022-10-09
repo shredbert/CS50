@@ -120,9 +120,9 @@
                 <!-- Template for adding new members to above table -->
                 <template id="member-row-template">
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td data-field="name"></td>
+                        <td data-field="whenRegistered"></td>
+                        <td data-field="joinReason"></td>
                     </tr>
                 </template>
                 <template id="no-members-template">
@@ -184,7 +184,7 @@
                 ];
                 localStorage.clear();
                 testData = JSON.stringify(testData);
-                // localStorage.setItem('members', testData);
+                localStorage.setItem('members', testData);
 
                 // Load & display all existing members
                 const loadAndDisplayAllMembers = () => {
@@ -232,29 +232,22 @@
                                 .content
                                 .cloneNode(true);
 
+                            // Store all cells of table data
                             const newMemberCells = newMemberRow
                                 .querySelectorAll('td');
 
+                            // Populate content of cells based on dataset.field
+                            // attribute to declaratively assign
                             newMemberCells.forEach((cell, idx) => {
-
-                                if (idx === 0) {
-                                    cell.textContent = member.name;
-                                } else if (idx === 1) {
-                                    const regDate = new Date(
-                                        member.whenRegistered
-                                    ).toDateString();
-
-                                    cell.textContent = regDate;
-                                } else {
-                                    cell.textContent = member.joinReason;
-                                }
-
+                                cell.textContent = member[cell.dataset.field];
                             });
 
+                            // Append cells in new row to fragment
                             membersDataFragment.appendChild(newMemberRow);
 
                         });
 
+                        // Append fragment with all new rows to table
                         membersTableData.appendChild(membersDataFragment);
 
                     }
