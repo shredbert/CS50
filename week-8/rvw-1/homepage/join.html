@@ -52,18 +52,21 @@
                             placeholder="Email..." required type="email">
                     </div>
                     <div class="my-2">
-                        <label class="form-label" for="name">What's your full name?</label>
+                        <label class="form-label" for="name">What's your full
+                            name?</label>
                         <input class="form-control" id="name" name="name"
                             placeholder="Full name..." required type="text">
                     </div>
                     <div class="my-2">
-                        <label class="form-label" for="favourite">Why do you love Yngwie?</label>
+                        <label class="form-label" for="favourite">What is your
+                            favourite thing about Yngwie?</label>
                         <input class="form-control" id="favourite"
-                            name="favourite" placeholder="Reason..." required
-                            type="text">
+                            name="favourite" placeholder="Favourite thing..."
+                            required type="text">
                     </div>
                     <div class="my-2">
-                        <label class="form-check-label" for="how-hear">How did you hear about us?</label>
+                        <label class="form-check-label" for="how-hear">How did
+                            you hear about us?</label>
                         <select aria-label="Select how you hear about us"
                             class="form-select" id="how-hear" name="how-hear"
                             required>
@@ -77,11 +80,11 @@
                     </div>
                     <div class="my-2">
                         <label class="form-label" for="rock">
-                            In 500 words or less, why do you loves the shred?
+                            In 500 words or less, why do you love shred guitar?
                         </label>
                         <textarea class="form-control" id="rock"
                             maxlength="500" name="rock" required
-                            rows="3">Because I need a life!!!</textarea>
+                            rows="3">Because playing fast is so cool.</textarea>
                     </div>
                     <div class="form-check my-2">
                         <input class="form-check-input" id="agree" name="agree"
@@ -90,15 +93,47 @@
                             agree that Yngwie Malmsteen is quite possibly the
                             coolest guitarist in existence.</label>
                     </div>
-                    <button class="btn btn-primary my-2" type="submit">Sign Up</button>
+                    <button class="btn btn-primary my-2" type="submit">Sign
+                        Up</button>
                 </form>
             </section>
             <section class="main-section" id="members-section">
                 <h3>Community Members</h3>
-                <div id="members-content">
-                    <p class="text-grey-100" id="no-members-msg"><em>No community members have signed up yet.</em></p>
-                    <!-- <table id="members-table"></table> -->
-                </div>
+                <table class="table table-dark table-striped" id="members-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Membership Since</th>
+                            <th>Favourite Yngwie Thing</th>
+                        </tr>
+                    </thead>
+                    <tbody id="members-table-data">
+                        <tr>
+                            <td colspan="3">
+                                <em>
+                                    No community members have signed up yet...
+                                </em>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- Template for adding new members to above table -->
+                <template id="member-row-template">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </template>
+                <template id="no-members-template">
+                    <tr>
+                        <td colspan="3">
+                            <em>
+                                No community members have signed up yet...
+                            </em>
+                        </td>
+                    </tr>
+                </template>
             </section>
         </main>
         <footer class="bg-secondary bg-gradient fixed-bottom">
@@ -120,79 +155,119 @@
         <script>
             (() => {
 
-                // Create/load test data
+                // TEST
                 let testData = [
                     {
-                        "when-registered": "2022-10-01T03:00:00",
+                        "whenRegistered": "2022-10-01T03:00:00",
                         "email": "yngwie@malmsteen.com",
                         "name": "Yngwie Malmsteen",
-                        "reason": "Loves that vibrato!!!",
-                        "how-heard": "vision",
-                        "why-shred": "Because it brings meaning to my existence.",
+                        "joinReason": "Love that vibrato!!!",
+                        "howHeard": "vision",
+                        "whyShred": "Because it brings meaning to my existence.",
                     },
                     {
-                        "when-registered": "2022-10-01T03:10:00",
-                        "email": "yngwie@malmsteen.com",
-                        "name": "Yngwie Malmsteen",
-                        "reason": "Loves that vibrato!!!",
-                        "how-heard": "vision",
-                        "why-shred": "Because it brings meaning to my existence.",
+                        "whenRegistered": "2022-10-01T03:10:00",
+                        "email": "mngwie@yalmsteen.com",
+                        "name": "Mngwie Yalmsteen",
+                        "joinReason": "Love those strats!!!",
+                        "howHeard": "friend",
+                        "whyShred": "Becausee I need a partner.",
                     },
                     {
-                        "when-registered": "2022-10-01T03:20:00",
-                        "email": "yngwie@malmsteen.com",
-                        "name": "Yngwie Malmsteen",
-                        "reason": "Loves that vibrato!!!",
-                        "how-heard": "vision",
-                        "why-shred": "Because it brings meaning to my existence.",
+                        "whenRegistered": "2022-10-01T03:20:00",
+                        "email": "bert@mcshred.com",
+                        "name": "Bert McShred",
+                        "joinReason": "He unleashes the fury!!!",
+                        "howHeard": "web",
+                        "whyShred": "Cus it's cool.",
                     },
                 ];
-
                 localStorage.clear();
                 testData = JSON.stringify(testData);
-                // localStorage.setItem('members', testData);
+                localStorage.setItem('members', testData);
 
-                // Load existing members
-                const displayMembers = () => {
+                // Load & display all existing members
+                const loadAndDisplayAllMembers = () => {
 
-                    let existingMembers = JSON.parse(localStorage.getItem('members'));
-                    console.log(existingMembers);
+                    // Remove data from members table to repopulate
+                    const membersTableData = document.
+                        querySelector('#members-table-data');
+                    if (membersTableData)
+                        membersTableData.innerHTML = '';
 
-                    const membersSection = document.getElementById('members-section');
+                    // Test existing members
+                    const existingMembers = JSON.parse(
+                        localStorage.getItem('members')
+                    );
 
-                    // Remove no members message always? In case checked & no members present?
-                    const membersContent = document.getElementById('members-content');
-
-                    if (membersContent)
-                        membersContent.innerHTML = '';
-
+                    // If no members, display no members message
                     if (!existingMembers) {
 
-                        const noMembersMsg = `
-                            <p class="text-grey-100" id="no-members-msg">
-                                <em>No community members have signed up yet.</em>
-                            </p>
-                        `;
+                        const noMembersTemplate = document.querySelector(
+                            '#no-members-template'
+                        );
 
-                        // membersSection.insertAdjacentHTML('beforeend', noMembersMsg);
+                        const noMembersMsg = noMembersTemplate
+                            .content
+                            .cloneNode(true);
 
+                        membersTableData.appendChild(noMembersMsg);
+
+                    // If members, display in table
                     } else {
 
-                        // If data new...
-                            // Test username unique
+                        // Create fragment so can append all at once
+                        const membersDataFragment = document.
+                            createDocumentFragment();
+
+                        // Iterate over all members
+                        existingMembers.forEach(member => {
+
+                            // Fetch table template & clone
+                            const memberRowTemplate = document
+                                .querySelector('#member-row-template')
+                                .content
+                                .cloneNode(true);
+
+                            let newMemberRow = memberRowTemplate
+                                .querySelectorAll('td');
+
+                            const regDate = new Date(
+                                member.whenRegistered
+                            ).toDateString();
+
+                            newMemberRow[0].textContent = member.name;
+                            newMemberRow[1].textContent = regDate;
+                            newMemberRow[2].textContent = member.joinReason;
+
+                            membersDataFragment.appendChild(memberRowTemplate);
+
+                        });
+
+                        membersTableData.appendChild(membersDataFragment);
 
                     }
 
                 }
 
                 // TEST
-                displayMembers();
+                loadAndDisplayAllMembers();
 
                 // Handle form submission
                 const regForm = document.querySelector('#reg-form');
                 regForm.addEventListener('submit', (e) => {
 
                     e.preventDefault();
+
+                    // {
+                    //     "whenRegistered": "2022-10-01T03:20:00",
+                    //     "email": "bert@mcshred.com",
+                    //     "name": "Bert McShred",
+                    //     "joinReason": "He unleashes the fury!!!",
+                    //     "howHeard": "web",
+                    //     "whyShred": "Cus it's cool.",
+                    // },
+
                     // TODO: Store data in local storage on submit
                     // TODO: Display name & favourite thing about Yngwie in table
                     // TODO: Remove #no-members-msg until responses come in
