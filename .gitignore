@@ -16,3 +16,6 @@
 # Vim files
 Session.*
 
+# Flask builds
+**/__pycache__/*
+
