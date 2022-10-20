@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<h1>Frosh IMs</h1>
+
+<form action="/register" method="post">
+    <label for="name">Name</label>
+    <input autocomplete="off" autofocus name="name" placeholder="Enter name" type="text">
+
+    <!-- Dropdown list -->
+    <!-- <label for="sport">Sport</label> -->
+    <!-- <select name="sport"> -->
+    <!--     <option hidden value="">Select...</option> -->
+    <!--     {% for sport in sports %} -->
+    <!--         <option value="{{ sport }}">{{ sport }}</option> -->
+    <!--     {% endfor %} -->
+    <!-- </select> -->
+
+    <!-- Checkboxes -->
+    {% for sport in sports %}
+        <input name="{{ sport }}"type="checkbox">
+        <label for="{{ sport }}">{{ sport }}</label>
+    {% endfor %}
+
+    <input type="submit">
+</form>
+
+{% endblock %}
