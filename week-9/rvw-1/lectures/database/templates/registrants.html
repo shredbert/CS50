@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<h1>Registrants</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Sport</th>
+            <th>#</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for registrant in registrants %}
+            <tr>
+                <td>{{ registrant.name }}</td>
+                <td>{{ registrant.sport }}</td>
+                <td>
+                    <form action="/delete" method="post">
+                        <button name="id" type="submit" value="{{ registrant.id }}">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
