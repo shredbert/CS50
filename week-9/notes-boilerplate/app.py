@@ -4,7 +4,7 @@ from cs50 import SQL
 
 app = Flask(__name__)
 
-db = SQL("sqlite:///stores.db")
+db = SQL("sqlite:///??.db")
 
 app.config["SESSION_TYPE"] = "filesystem"
 app.config["SESSION_PERMANENT"] = False
