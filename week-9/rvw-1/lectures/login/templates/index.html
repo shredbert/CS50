@@ -2,18 +2,12 @@
 
 {% block body %}
 
-<h1>Session!!!</h1>
+<h1>Session!</h1>
 
-    {% if session %}
-        <p>
-            You be logged in, {{ session.name }}!!!
-            <a href="/logout">Log out</a>
-        </p>
-    {% else %}
-        <p>
-            You should probably log in!!!
-            <a href="/login">Log in</a></a>
-        </p>
-    {% endif %}
+{% if session["name"] %}
+    <p>Logged in as {{ session["name"] }}! <a href="/logout">Log out</a></p>
+{% else %}
+    <p>Not logged in! <a href="/login">Log in</a></p>
+{% endif %}
 
 {% endblock %}
