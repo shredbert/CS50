@@ -2,11 +2,19 @@
 
 {% block body %}
 
-<h1>Title!</h1>
+<h1>Bookstore!</h1>
 
-<form action="??" method="??">
-    <input autocomplete="off" autofocus name="??" placeholder="??" type="text">
-    <input type="submit">
+<form action="/cart" method="post">
+    <ul>
+        {% for book in books %}
+        <li>
+            {{ book["title"] }}
+            <button name="id" type="submit" value="{{ book['id'] }}">
+                Add to cart
+            </button>
+        </li>
+        {% endfor %}
+    </ul>
 </form>
 
 {% endblock %}
