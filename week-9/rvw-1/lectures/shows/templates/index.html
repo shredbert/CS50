@@ -9,12 +9,26 @@
     <body>
         <h1>Shows!!!</h1>
 
-        <input autocomplete="off" autofocus name="??" placeholder="??" type="text">
+        <input autocomplete="off" autofocus id="search" name="q" placeholder="Show title..." type="text">
+
+        <ul id="shows">
+            <em>No search entered...</em>
+        </ul>
 
         <script>
-            (
-
-            )();
+            (() => {
+                const query = document.querySelector('#search');
+                query.addEventListener('input', async (e) => {
+                    const response = await fetch(`/search?q=${query.value}`);
+                    const shows = await response.json();
+                    console.log(shows);
+                    const showsList = document.querySelector('#shows');
+                    showsList.innerHTML = '';
+                    shows.forEach(show => {
+                        showsList.innerHTML += `<li>${show.title}</li>`;
+                    });
+                });
+            })();
         </script>
     </body>
 </html>
