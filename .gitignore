@@ -10,10 +10,10 @@
 !*/
 **/test
 
-# Unignore Makefile
+# Unignore Makefiles
 !**/Makefile
 
-# Vim files
+# Vim session files
 Session.*
 
 # Flask builds
