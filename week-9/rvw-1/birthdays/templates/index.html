@@ -15,6 +15,21 @@
 
                 <h2>Add a Birthday</h2>
                 <!-- TODO: Create a form for users to submit a name, a month, and a day -->
+                <form action="/" class="birthday-form" id="new-birthday" method="post">
+                    <div class="birthday-field">
+                        <label for="birth_name">Name</label>
+                        <input autocomplete="off" autofocus name="birth_name" placeholder="Name..." required type="text">
+                    </div>
+                    <div class="birthday-field">
+                        <label for="birth_month">Month</label>
+                        <input autocomplete="off" max="12" min="1" placeholder="Birth month..." required type="number">
+                    </div>
+                    <div class="birthday-field">
+                        <label for="birth_day">Day</label>
+                        <input autocomplete="off" max="31" min="1" placeholder="Birth day..." required type="number">
+                    </div>
+                    <input type="submit">
+                </form>
             </div>
 
             <div class="section">
@@ -25,10 +40,25 @@
                         <tr>
                             <th>Name</th>
                             <th>Birthday</th>
+                            <th>#</th>
                         </tr>
                     </thead>
                     <tbody>
                         <!-- TODO: Loop through the database entries to display them in this table -->
+                        <!-- birthdays have id, name, month, & day -->
+                        {% for birthday in birthdays %}
+                            <tr>
+                                <td>{{ birthday.name }}</td>
+                                <td>{{ birthday.month }}/{{ birthday.day }}</td>
+                                <td>
+                                    <form action="/delete" method="post">
+                                        <button name="birthday_id" value="{{ birthday.id }}">
+                                            Remove
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
