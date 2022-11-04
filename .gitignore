@@ -8,7 +8,7 @@
 
 # Unignore all dirs
 !*/
-**/test
+# **/test
 
 # Unignore Makefiles
 !**/Makefile

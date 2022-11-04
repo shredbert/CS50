@@ -51,6 +51,9 @@
                                 <td>{{ birthday.name }}</td>
                                 <td>{{ birthday.month }}/{{ birthday.day }}</td>
                                 <td>
+                                    <button>Edit</button>
+                                </td>
+                                <td>
                                     <form action="/delete" method="post">
                                         <button name="birthday_id" value="{{ birthday.id }}">
                                             Remove
