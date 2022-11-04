@@ -1,5 +1,4 @@
 import os
-import sys
 
 from cs50 import SQL
 from flask import Flask, flash, jsonify, redirect, render_template, request, session
@@ -14,17 +13,18 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 db = SQL("sqlite:///birthdays.db")
 
 
-# @app.after_request
-# def after_request(response):
-#     """Ensure responses aren't cached"""
-#     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-#     response.headers["Expires"] = 0
-#     response.headers["Pragma"] = "no-cache"
-#     return response
+@app.after_request
+def after_request(response):
+    """Ensure responses aren't cached"""
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Expires"] = 0
+    response.headers["Pragma"] = "no-cache"
+    return response
 
 
 @app.route("/", methods=["GET", "DELETE", "POST", "PUT"])
 def index():
+
     if request.method == "POST":
 
         # TODO: Add the user's entry into the database
@@ -56,7 +56,8 @@ def index():
         return redirect("/")
 
     elif request.method == "DELETE":
-        birthday_id = request.args.get()
+
+        birthday_id = request.args.get("id")
         if birthday_id:
             db.execute("DELETE FROM birthdays WHERE id = ?", birthday_id)
 
@@ -67,5 +68,6 @@ def index():
         # Display the entries in the database on index.html
         birthdays = db.execute("SELECT * FROM birthdays")
 
-        # return render_template("index.html", birthdays=birthdays)
-        return jsonify(birthdays)
+        return render_template("index.html", birthdays=birthdays)
+        # TEST
+        # return jsonify(birthdays)
