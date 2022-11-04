@@ -31,6 +31,7 @@ def index():
         name = request.form.get("birth_name")
         month = request.form.get("birth_month")
         day = request.form.get("birth_day")
+        print(name, month, day)
 
         if name and month and day:
             db.execute(
@@ -58,6 +59,7 @@ def index():
     elif request.method == "DELETE":
 
         birthday_id = request.args.get("id")
+        print(birthday_id)
         if birthday_id:
             db.execute("DELETE FROM birthdays WHERE id = ?", birthday_id)
 

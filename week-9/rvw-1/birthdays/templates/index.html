@@ -22,11 +22,11 @@
                     </div>
                     <div class="birthday-field">
                         <label for="birth_month">Month</label>
-                        <input autocomplete="off" max="12" min="1" placeholder="Birth month..." required type="number">
+                        <input autocomplete="off" max="12" min="1" name="birth_month" placeholder="Birth month..." required type="number">
                     </div>
                     <div class="birthday-field">
                         <label for="birth_day">Day</label>
-                        <input autocomplete="off" max="31" min="1" placeholder="Birth day..." required type="number">
+                        <input autocomplete="off" max="31" min="1" name="birth_day" placeholder="Birth day..." required type="number">
                     </div>
                     <input type="submit">
                 </form>
@@ -36,35 +36,82 @@
 
                 <h2>All Birthdays</h2>
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Birthday</th>
-                            <th>#</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- TODO: Loop through the database entries to display them in this table -->
-                        <!-- birthdays have id, name, month, & day -->
-                        {% for birthday in birthdays %}
+                    {% if birthdays|length == 0 %}
+                        <em>There are no birthdays to display.</em>
+                    {% else %}
+                        <thead>
                             <tr>
-                                <td>{{ birthday.name }}</td>
-                                <td>{{ birthday.month }}/{{ birthday.day }}</td>
-                                <td>
-                                    <button>Edit</button>
-                                </td>
-                                <td>
-                                    <form action="/delete" method="post">
-                                        <button name="birthday_id" value="{{ birthday.id }}">
-                                            Remove
-                                        </button>
-                                    </form>
-                                </td>
+                                <th>Name</th>
+                                <th>Birthday</th>
+                                <th>#</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
+                        </thead>
+                        <tbody>
+                            <!-- Loop through the database entries to display them in this table -->
+                                {% for birthday in birthdays %}
+                                    <tr>
+                                        <td class="birth-name">{{ birthday.name }}</td>
+                                        <td class="birth-date">{{ birthday.month }}/{{ birthday.day }}</td>
+                                        <td class="grid-actions">
+                                            <button class="edit-btn" value="{{ birthday.id }}">
+                                                Edit
+                                            </button>
+                                            <button class="delete-btn" value="{{ birthday.id }}">
+                                                Remove
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                        </tbody>
+                    {% endif %}
                 </table>
             </div>
         </div>
+        <dialog id="edit-dlg">
+            <form method="dialog">
+                <div class="birthday-field">
+                    <label for="birth_name">Name</label>
+                    <input autocomplete="off" autofocus name="birth_name" placeholder="Name..." required type="text">
+                </div>
+                <div class="birthday-field">
+                    <label for="birth_month">Month</label>
+                    <input autocomplete="off" max="12" min="1" name="birth_month" placeholder="Birth month..." required type="number">
+                </div>
+                <div class="birthday-field">
+                    <label for="birth_day">Day</label>
+                    <input autocomplete="off" max="31" min="1" name="birth_day" placeholder="Birth day..." required type="number">
+                </div>
+                <input type="text">
+            </form>
+        </dialog>
+        <script>
+            (() => {
+                document.addEventListener('click', (e) => {
+                    // DELETE behaviour
+                    if (e.target.classList.contains('delete-btn')) {
+                        const bDayId = e.target.value;
+                        fetch(`/?id=${bDayId}`, {
+                            method: "DELETE",
+                        });
+                        window.location.reload();
+                    // PUT behaviour
+                    } else if (e.target.classList.contains('edit-btn')) {
+                        // Get fields for populating dialogue
+                        const bDayId = e.target.value;
+                        const row = e.target.parentNode.parentNode;
+                        const name = row.querySelector('.birth-name').innerHTML.toString();
+                        const bDate = row.querySelector('.birth-date').innerHTML.toString();
+                        const bMonth = bDate.split('/')[0];
+                        const bDay = bDate.split('/')[1];
+                        // console.log(bDayId, name, bMonth, bDay);
+                        // Populate dialogue fields
+                        const editDlg = document.querySelector('#edit-dlg');
+                        console.log(editDlg);
+                        console.log(editDlg.attributes);
+                        editDlg.setAttributes('open', '');
+                    }
+                });
+            })();
+        </script>
     </body>
 </html>
