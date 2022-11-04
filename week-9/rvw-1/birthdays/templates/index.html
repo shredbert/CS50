@@ -71,17 +71,18 @@
             <form method="dialog">
                 <div class="birthday-field">
                     <label for="birth_name">Name</label>
-                    <input autocomplete="off" autofocus name="birth_name" placeholder="Name..." required type="text">
+                    <input autocomplete="off" autofocus id="editName" name="birth_name" placeholder="Name..." required type="text">
                 </div>
                 <div class="birthday-field">
                     <label for="birth_month">Month</label>
-                    <input autocomplete="off" max="12" min="1" name="birth_month" placeholder="Birth month..." required type="number">
+                    <input autocomplete="off" id="editMonth" max="12" min="1" name="birth_month" placeholder="Birth month..." required type="number">
                 </div>
                 <div class="birthday-field">
                     <label for="birth_day">Day</label>
-                    <input autocomplete="off" max="31" min="1" name="birth_day" placeholder="Birth day..." required type="number">
+                    <input autocomplete="off" id="editDay" max="31" min="1" name="birth_day" placeholder="Birth day..." required type="number">
                 </div>
-                <input type="text">
+                <button id="cancelBtn" type="reset">Cancel</button>
+                <button id="updateBtn" type="submit">Update</button>
             </form>
         </dialog>
         <script>
@@ -89,26 +90,57 @@
                 document.addEventListener('click', (e) => {
                     // DELETE behaviour
                     if (e.target.classList.contains('delete-btn')) {
+
                         const bDayId = e.target.value;
                         fetch(`/?id=${bDayId}`, {
-                            method: "DELETE",
+                            method: 'DELETE',
                         });
                         window.location.reload();
+
                     // PUT behaviour
                     } else if (e.target.classList.contains('edit-btn')) {
-                        // Get fields for populating dialogue
+
+                        // Dialogue fields
                         const bDayId = e.target.value;
                         const row = e.target.parentNode.parentNode;
                         const name = row.querySelector('.birth-name').innerHTML.toString();
                         const bDate = row.querySelector('.birth-date').innerHTML.toString();
                         const bMonth = bDate.split('/')[0];
                         const bDay = bDate.split('/')[1];
-                        // console.log(bDayId, name, bMonth, bDay);
+
                         // Populate dialogue fields
+                        document.querySelector('#updateBtn').value = bDayId;
+                        document.querySelector('#editName').value = name;
+                        document.querySelector('#editMonth').value = bMonth;
+                        document.querySelector('#editDay').value = bDay;
+
+                        // Dialogue behaviour
                         const editDlg = document.querySelector('#edit-dlg');
-                        console.log(editDlg);
-                        console.log(editDlg.attributes);
-                        editDlg.setAttributes('open', '');
+                        editDlg.showModal();
+
+                        // Close dialogue on Cancel
+                        document
+                            .querySelector('#cancelBtn')
+                            .addEventListener('click', () => {
+                                editDlg.close();
+                            });
+                        
+                        // Submit event
+                        editDlg.addEventListener('submit', (e) => {
+                            const editFields = new FormData();
+                            editFields.append('id', e.target.querySelector('#updateBtn').value);
+                            editFields.append('birth_name', e.target.querySelector('#editName').value);
+                            editFields.append('birth_month', e.target.querySelector('#editMonth').value);
+                            editFields.append('birth_day', e.target.querySelector('#editDay').value);
+
+                            fetch('/', {
+                                method: 'PUT',
+                                body: editFields,
+                            });
+
+                            window.location.reload();
+                        });
+
                     }
                 });
             })();

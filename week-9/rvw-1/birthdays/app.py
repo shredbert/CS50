@@ -47,6 +47,7 @@ def index():
         name = request.form.get("birth_name")
         month = request.form.get("birth_month")
         day = request.form.get("birth_day")
+        print(birthday_id, name, month, day)
         
         if birthday_id and name and month and day:
             db.execute(
