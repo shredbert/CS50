@@ -48,30 +48,29 @@ def index():
         return render_template("index.html", birthdays=birthdays)
 
 
-@app.route("/modify", methods=["DELETE", "PUT"])
-def modify():
-    if request.method == "PUT":
-        
-        # Update the user's entry in the database
-        birthday_id = request.form.get("id")
-        name = request.form.get("birth_name")
-        month = request.form.get("birth_month")
-        day = request.form.get("birth_day")
-        
-        if birthday_id and name and month and day:
-            db.execute(
-                "UPDATE birthdays SET name = ?, month = ?, day = ? WHERE id = ?",
-                name, month, day, birthday_id
-            )
+@app.route("/update", methods=["POST"])
+def update():
+    # Update the user's entry in the database
+    birthday_id = request.form.get("id")
+    name = request.form.get("birth_name")
+    month = request.form.get("birth_month")
+    day = request.form.get("birth_day")
+    
+    if birthday_id and name and month and day:
+        db.execute(
+            "UPDATE birthdays SET name = ?, month = ?, day = ? WHERE id = ?",
+            name, month, day, birthday_id
+        )
 
-        return redirect(url_for("index"))
+    return redirect(url_for("index"))
 
-    elif request.method == "DELETE":
 
-        # Delete the user's entry from the database
-        birthday_id = request.form.get("id")
-        if birthday_id:
-            db.execute("DELETE FROM birthdays WHERE id = ?", birthday_id)
+@app.route("/delete", methods=["POST"])
+def delete():
+    # Delete the user's entry from the database
+    birthday_id = request.form.get("id")
+    if birthday_id:
+        db.execute("DELETE FROM birthdays WHERE id = ?", birthday_id)
 
-        return redirect(url_for("index"))
+    return redirect(url_for("index"))
 

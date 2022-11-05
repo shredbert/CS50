@@ -111,3 +111,7 @@ dialog::backdrop {
     background-color: #000000;
     opacity: 0.5;
 }
+
+.hidden-form {
+    display: inline;
+}

@@ -59,9 +59,11 @@
                                         <button class="edit-btn" value="{{ birthday.id }}">
                                             Edit
                                         </button>
-                                        <button class="delete-btn" value="{{ birthday.id }}">
-                                            Remove
-                                        </button>
+                                        <form action="/delete" class="hidden-form" method="post">
+                                            <button class="delete-btn" name="id" value="{{ birthday.id }}">
+                                                Remove
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -71,8 +73,8 @@
 
             </div>
         </div>
-        <dialog id="edit-dlg">
-            <form method="dialog">
+        <dialog id="updateDlg">
+            <form action="/update" method="post">
                 <div class="birthday-field">
                     <label for="birth_name">Name</label>
                     <input autocomplete="off" autofocus id="editName" name="birth_name" placeholder="Name..." required type="text">
@@ -86,36 +88,18 @@
                     <input autocomplete="off" id="editDay" max="31" min="1" name="birth_day" placeholder="Birth day..." required type="number">
                 </div>
                 <button id="cancelBtn" type="reset">Cancel</button>
-                <button id="updateBtn" type="submit">Update</button>
+                <button id="updateBtn" name="id" type="submit">Update</button>
             </form>
         </dialog>
         <script>
             (() => {
                 document.addEventListener('click', async (e) => {
 
-                    // Store in var -- more reliable
-                    const modUrl = '/modify';
+                    // Populate Edit dialogue
+                    if (e.target.classList.contains('edit-btn')) {
 
-                    // DELETE behaviour
-                    if (e.target.classList.contains('delete-btn')) {
-
-                        const deleteBody = new FormData();
-                        const bDayId = e.target.value;
-                        deleteBody.append('id', bDayId);
-
-                        await fetch(modUrl, {
-                            method: 'DELETE',
-                            body: deleteBody,
-                            redirect: 'manual',
-                        }).then((response) => {
-                            console.log(response);
-                            if (response.redirected) {
-                                console.log('Redirected!!!');
-                            }
-                        });
-
-                    // PUT behaviour
-                    } else if (e.target.classList.contains('edit-btn')) {
+                        // Store in var -- more reliable
+                        const modUrl = '/modify';
 
                         // Dialogue fields
                         const bDayId = e.target.value;
@@ -132,7 +116,7 @@
                         document.querySelector('#editDay').value = bDay;
 
                         // Dialogue behaviour
-                        const editDlg = document.querySelector('#edit-dlg');
+                        const editDlg = document.querySelector('#updateDlg');
                         editDlg.showModal();
 
                         // Close dialogue on Cancel
@@ -142,25 +126,6 @@
                                 editDlg.close();
                             });
                         
-                        // Submit event
-                        editDlg.addEventListener('submit', async (e) => {
-                            const editBody = new FormData();
-                            editBody.append('id', e.target.querySelector('#updateBtn').value);
-                            editBody.append('birth_name', e.target.querySelector('#editName').value);
-                            editBody.append('birth_month', e.target.querySelector('#editMonth').value);
-                            editBody.append('birth_day', e.target.querySelector('#editDay').value);
-
-                            await fetch(modUrl, {
-                                method: 'PUT',
-                                body: editBody,
-                            }).then((response) => console.log(response));
-                                //.then((response) => console.log(response));
-                            // Could just reload window but better to get redirect
-                            // URL from Response object & alter URL manually
-                                // .then(() => window.location.reload());
-                            window.location.reload();
-                        });
-
                     }
                 });
             })();
