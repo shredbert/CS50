@@ -27,11 +27,10 @@ def index():
 
     if request.method == "POST":
 
-        # TODO: Add the user's entry into the database
+        # Add the user's entry into the database
         name = request.form.get("birth_name")
         month = request.form.get("birth_month")
         day = request.form.get("birth_day")
-        print(name, month, day)
 
         if name and month and day:
             db.execute(
@@ -43,11 +42,11 @@ def index():
 
     elif request.method == "PUT":
         
+        # Update the user's entry in the database
         birthday_id = request.form.get("id")
         name = request.form.get("birth_name")
         month = request.form.get("birth_month")
         day = request.form.get("birth_day")
-        print(birthday_id, name, month, day)
         
         if birthday_id and name and month and day:
             db.execute(
@@ -59,8 +58,8 @@ def index():
 
     elif request.method == "DELETE":
 
+        # Delete the user's entry from the database
         birthday_id = request.args.get("id")
-        print(birthday_id)
         if birthday_id:
             db.execute("DELETE FROM birthdays WHERE id = ?", birthday_id)
 
@@ -72,5 +71,3 @@ def index():
         birthdays = db.execute("SELECT * FROM birthdays")
 
         return render_template("index.html", birthdays=birthdays)
-        # TEST
-        # return jsonify(birthdays)

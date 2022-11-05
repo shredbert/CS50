@@ -55,6 +55,10 @@ button, input[type="submit"] {
     vertical-align: middle;
 }
 
+button:hover, input[type="submit"]:hover {
+    cursor: pointer;
+}
+
 input[type="text"], input[type="number"] {
     line-height: 1.8;
     width: 25%;
@@ -97,4 +101,13 @@ tbody tr:nth-of-type(odd) {
 .birthday-field > input[type="text"],
 .birthday-field > input[type="number"] {
     width: 100%;
+}
+
+dialog {
+    width: 25%;
+}
+
+dialog::backdrop {
+    background-color: #000000;
+    opacity: 0.5;
 }

@@ -2,6 +2,8 @@
 
 <html lang="en">
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="initial-scale=1, width=device-width">
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
         <link href="/static/styles.css" rel="stylesheet">
         <title>Birthdays</title>
@@ -14,7 +16,7 @@
             <div class="section">
 
                 <h2>Add a Birthday</h2>
-                <!-- TODO: Create a form for users to submit a name, a month, and a day -->
+                <!-- Create a form for users to submit a name, a month, and a day -->
                 <form action="/" class="birthday-form" id="new-birthday" method="post">
                     <div class="birthday-field">
                         <label for="birth_name">Name</label>
@@ -30,15 +32,16 @@
                     </div>
                     <input type="submit">
                 </form>
+
             </div>
 
             <div class="section">
 
                 <h2>All Birthdays</h2>
-                <table>
-                    {% if birthdays|length == 0 %}
-                        <em>There are no birthdays to display.</em>
-                    {% else %}
+                {% if birthdays|length == 0 %}
+                    <em>There are no birthdays to display.</em>
+                {% else %}
+                    <table>
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -48,23 +51,24 @@
                         </thead>
                         <tbody>
                             <!-- Loop through the database entries to display them in this table -->
-                                {% for birthday in birthdays %}
-                                    <tr>
-                                        <td class="birth-name">{{ birthday.name }}</td>
-                                        <td class="birth-date">{{ birthday.month }}/{{ birthday.day }}</td>
-                                        <td class="grid-actions">
-                                            <button class="edit-btn" value="{{ birthday.id }}">
-                                                Edit
-                                            </button>
-                                            <button class="delete-btn" value="{{ birthday.id }}">
-                                                Remove
-                                            </button>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
+                            {% for birthday in birthdays %}
+                                <tr>
+                                    <td class="birth-name">{{ birthday.name }}</td>
+                                    <td class="birth-date">{{ birthday.month }}/{{ birthday.day }}</td>
+                                    <td class="grid-actions">
+                                        <button class="edit-btn" value="{{ birthday.id }}">
+                                            Edit
+                                        </button>
+                                        <button class="delete-btn" value="{{ birthday.id }}">
+                                            Remove
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
-                    {% endif %}
-                </table>
+                    </table>
+                {% endif %}
+
             </div>
         </div>
         <dialog id="edit-dlg">
@@ -87,15 +91,20 @@
         </dialog>
         <script>
             (() => {
+                // document.addEventListener('click', (e) => {
                 document.addEventListener('click', (e) => {
                     // DELETE behaviour
                     if (e.target.classList.contains('delete-btn')) {
 
                         const bDayId = e.target.value;
+
                         fetch(`/?id=${bDayId}`, {
                             method: 'DELETE',
-                        });
-                        window.location.reload();
+                            redirect: 'manual',
+                        }).then((response) => console.log(response));
+                        // Could just reload window but better to get redirect
+                        // URL from Response object & alter URL manually
+                        // }).then(() => window.location.reload());
 
                     // PUT behaviour
                     } else if (e.target.classList.contains('edit-btn')) {
@@ -136,9 +145,12 @@
                             fetch('/', {
                                 method: 'PUT',
                                 body: editFields,
-                            });
-
-                            window.location.reload();
+                                redirect: 'manual',
+                            })
+                                .then((response) => console.log(response));
+                            // Could just reload window but better to get redirect
+                            // URL from Response object & alter URL manually
+                                // .then(() => window.location.reload());
                         });
 
                     }
