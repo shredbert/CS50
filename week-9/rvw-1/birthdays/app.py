@@ -1,7 +1,7 @@
 import os
 
 from cs50 import SQL
-from flask import Flask, flash, jsonify, redirect, render_template, request, session
+from flask import Flask, flash, jsonify, redirect, render_template, request, session, url_for
 
 # Configure application
 app = Flask(__name__)
@@ -22,7 +22,7 @@ def after_request(response):
     return response
 
 
-@app.route("/", methods=["GET", "DELETE", "POST", "PUT"])
+@app.route("/", methods=["GET", "POST"])
 def index():
 
     if request.method == "POST":
@@ -38,9 +38,19 @@ def index():
                 name, month, day
             )
 
-        return redirect("/")
+        return redirect(url_for("index"))
 
-    elif request.method == "PUT":
+    elif request.method == "GET":
+
+        # Display the entries in the database on index.html
+        birthdays = db.execute("SELECT * FROM birthdays")
+
+        return render_template("index.html", birthdays=birthdays)
+
+
+@app.route("/modify", methods=["DELETE", "PUT"])
+def modify():
+    if request.method == "PUT":
         
         # Update the user's entry in the database
         birthday_id = request.form.get("id")
@@ -54,20 +64,14 @@ def index():
                 name, month, day, birthday_id
             )
 
-        return redirect("/")
+        return redirect(url_for("index"))
 
     elif request.method == "DELETE":
 
         # Delete the user's entry from the database
-        birthday_id = request.args.get("id")
+        birthday_id = request.form.get("id")
         if birthday_id:
             db.execute("DELETE FROM birthdays WHERE id = ?", birthday_id)
 
-        return redirect("/")
+        return redirect(url_for("index"))
 
-    elif request.method == "GET":
-
-        # Display the entries in the database on index.html
-        birthdays = db.execute("SELECT * FROM birthdays")
-
-        return render_template("index.html", birthdays=birthdays)

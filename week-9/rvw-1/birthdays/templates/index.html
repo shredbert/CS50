@@ -92,18 +92,26 @@
         <script>
             (() => {
                 document.addEventListener('click', async (e) => {
+
+                    // Store in var -- more reliable
+                    const modUrl = '/modify';
+
                     // DELETE behaviour
                     if (e.target.classList.contains('delete-btn')) {
 
+                        const deleteBody = new FormData();
                         const bDayId = e.target.value;
+                        deleteBody.append('id', bDayId);
 
-                        await fetch(`/?id=${bDayId}`, {
+                        await fetch(modUrl, {
                             method: 'DELETE',
+                            body: deleteBody,
+                            redirect: 'manual',
                         }).then((response) => {
                             console.log(response);
-                            // if (response.redirected) {
-                            //     window.location.href = response.url;
-                            // }
+                            if (response.redirected) {
+                                console.log('Redirected!!!');
+                            }
                         });
 
                     // PUT behaviour
@@ -136,17 +144,16 @@
                         
                         // Submit event
                         editDlg.addEventListener('submit', async (e) => {
-                            const editFields = new FormData();
-                            editFields.append('id', e.target.querySelector('#updateBtn').value);
-                            editFields.append('birth_name', e.target.querySelector('#editName').value);
-                            editFields.append('birth_month', e.target.querySelector('#editMonth').value);
-                            editFields.append('birth_day', e.target.querySelector('#editDay').value);
+                            const editBody = new FormData();
+                            editBody.append('id', e.target.querySelector('#updateBtn').value);
+                            editBody.append('birth_name', e.target.querySelector('#editName').value);
+                            editBody.append('birth_month', e.target.querySelector('#editMonth').value);
+                            editBody.append('birth_day', e.target.querySelector('#editDay').value);
 
-                            await fetch('/', {
+                            await fetch(modUrl, {
                                 method: 'PUT',
-                                body: editFields,
-                                // redirect: 'manual',
-                            });
+                                body: editBody,
+                            }).then((response) => console.log(response));
                                 //.then((response) => console.log(response));
                             // Could just reload window but better to get redirect
                             // URL from Response object & alter URL manually
