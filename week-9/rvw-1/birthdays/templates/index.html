@@ -98,10 +98,7 @@
                     // Populate Edit dialogue
                     if (e.target.classList.contains('edit-btn')) {
 
-                        // Store in var -- more reliable
-                        const modUrl = '/modify';
-
-                        // Dialogue fields
+                        // Fetch dialogue fields
                         const bDayId = e.target.value;
                         const row = e.target.parentNode.parentNode;
                         const name = row.querySelector('.birth-name').innerHTML.toString();
@@ -115,7 +112,7 @@
                         document.querySelector('#editMonth').value = bMonth;
                         document.querySelector('#editDay').value = bDay;
 
-                        // Dialogue behaviour
+                        // Open dialogue on edit
                         const editDlg = document.querySelector('#updateDlg');
                         editDlg.showModal();
 
