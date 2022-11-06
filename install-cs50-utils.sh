@@ -15,3 +15,4 @@ pip install style50
 pip install check50
 pip install pillow
 pip install flask flask-session flask-mail
+pip install submit50

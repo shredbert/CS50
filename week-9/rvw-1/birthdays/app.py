@@ -55,7 +55,7 @@ def update():
     name = request.form.get("birth_name")
     month = request.form.get("birth_month")
     day = request.form.get("birth_day")
-    
+
     if birthday_id and name and month and day:
         db.execute(
             "UPDATE birthdays SET name = ?, month = ?, day = ? WHERE id = ?",
@@ -73,4 +73,3 @@ def delete():
         db.execute("DELETE FROM birthdays WHERE id = ?", birthday_id)
 
     return redirect(url_for("index"))
-
