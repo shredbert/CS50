@@ -1,7 +1,8 @@
 import os
 
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session, \
+    url_for
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -43,7 +44,7 @@ def after_request(response):
 @login_required
 def index():
     """Show portfolio of stocks"""
-    return apology("TODO")
+    return apology("Working on home page!!!")
 
 
 @app.route("/buy", methods=["GET", "POST"])
@@ -79,17 +80,23 @@ def login():
             return apology("must provide password", 403)
 
         # Query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
+        rows = db.execute(
+            "SELECT * FROM users WHERE username = ?",
+            request.form.get("username")
+        )
 
         # Ensure username exists and password is correct
-        if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
+        if (len(rows) != 1 or
+                not check_password_hash(
+                    rows[0]["hash"], request.form.get("password")
+                )):
             return apology("invalid username and/or password", 403)
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
 
         # Redirect user to home page
-        return redirect("/")
+        return redirect(url_for("index"))
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
@@ -104,7 +111,7 @@ def logout():
     session.clear()
 
     # Redirect user to login form
-    return redirect("/")
+    return redirect(url_for("index"))
 
 
 @app.route("/quote", methods=["GET", "POST"])
@@ -120,19 +127,35 @@ def register():
     if request.method == "GET":
         return render_template("register.html")
     else:
-        if not request.form.get("username") or not request.form.get("password") or not request.form.get("confirmation"):
+        if (not request.form.get("username") or
+                not request.form.get("password") or
+                not request.form.get("confirmation")):
             return apology("All fields required", 403)
+
         elif request.form.get("password") != request.form.get("confirmation"):
             return apology("Passwords do not match", 403)
 
         username = request.form.get("username")
-        password = request.form.get("password")
-        new_row = db.execute("INSERT INTO users (username, hash) VALUES (?, ?)",
-                             username, password)
+        password = generate_password_hash(request.form.get("password"))
+
+        existing_user_id = db.execute(
+            "SELECT id FROM users WHERE username = ?",
+            username
+        )
+        if existing_user_id:
+            return apology("That username already exists", 403)
+
+        new_row = db.execute(
+            "INSERT INTO users (username, hash) VALUES (?, ?)",
+            username,
+            password
+        )
+
         if not new_row:
             return apology("Could not register -- please try again", 403)
-        
-        return redirect("/")
+
+        flash("Registration successful")
+        return render_template("login.html")
 
 
 @app.route("/sell", methods=["GET", "POST"])
