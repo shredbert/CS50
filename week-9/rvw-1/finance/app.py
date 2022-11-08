@@ -51,6 +51,21 @@ def index():
 @login_required
 def buy():
     """Buy shares of stock"""
+    # TODO: Error if symbol missing
+
+    # TODO: Error if symbol invalid
+
+    # TODO: Error if # shares missing or <= 0
+
+    # TODO: Look up stock price
+
+    # TODO: Look up user's balance
+
+    # TODO: Error if user balance < # shares * price
+
+    # TODO: Store purchases -- purchase id (unique/PK), user id (FK), symbol
+    # name, # shares, price, total $ (calculated field?), datetime
+
     return apology("TODO")
 
 
