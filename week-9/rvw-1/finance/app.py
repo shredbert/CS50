@@ -51,22 +51,49 @@ def index():
 @login_required
 def buy():
     """Buy shares of stock"""
-    # TODO: Error if symbol missing
 
-    # TODO: Error if symbol invalid
+    if request.method == "GET":
+        return render_template("buy-stocks.html")
 
-    # TODO: Error if # shares missing or <= 0
+    if request.method == "POST":
+        # Get stock symbol
+        stock_symbol = None or request.form.get("symbol")
 
-    # TODO: Look up stock price
+        # Error if symbol missing
+        if not stock_symbol:
+            return apology("Please submit a symbol", 403)
 
-    # TODO: Look up user's balance
+        # Lookup stock info
+        stock_info = None or lookup(stock_symbol)
 
-    # TODO: Error if user balance < # shares * price
+        # Error if symbol invalid
+        if not lookup(stock_symbol):
+            return apology("Please submit a valid symbol", 403)
 
-    # TODO: Store purchases -- purchase id (unique/PK), user id (FK), symbol
-    # name, # shares, price, total $ (calculated field?), datetime
+        # Get num of shares to buy
+        number_of_shares = None or request.form.get("shares")
 
-    return apology("TODO")
+        # Error if # shares missing
+        if not number_of_shares:
+            return apology("Please submit the number of shares to buy", 403)
+        # Error if # shares <= 0
+        elif number_of_shares <= 0:
+            return apology("Please submit a valid number of shares to buy", 403)
+
+        # Look up user's balance
+        user_balance = db.execute(
+            "SELECT cash FROM users WHERE id = ?",
+            session["user_id"]
+        )
+
+        # Error if user balance < # shares * price
+        if user_balance < (number_of_shares * stock_info.price):
+            return apology("Not enough cash to purchase stocks", 403)
+
+        # TODO: Store purchases -- purchase id (unique/PK), user id (FK), symbol
+        # name, # shares, price, total $ (calculated field?), datetime
+
+        return apology("TODO")
 
 
 @app.route("/history")
@@ -136,11 +163,12 @@ def quote():
     if request.method == "GET":
         return render_template("search-quotes.html")
     else:
-        if not request.form.get("symbol"):
+        stock_symbol = None or request.form.get("symbol")
+        lookup_results = None or lookup(stock_symbol)
+
+        if not stock_symbol:
             return apology("Must input a stock symbol to search", 403)
 
-        stock_symbol = request.form.get("symbol")
-        lookup_results = None or lookup(stock_symbol)
         if not lookup_results:
             flash("Invalid symbol -- please try again")
             return render_template("search-quotes.html")
