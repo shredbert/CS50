@@ -55,30 +55,42 @@ def buy():
     if request.method == "GET":
         return render_template("buy-stocks.html")
 
-    if request.method == "POST":
+    elif request.method == "POST":
         # Get stock symbol
-        stock_symbol = None or request.form.get("symbol")
+        stock_symbol = request.form.get("symbol") or None
 
         # Error if symbol missing
         if not stock_symbol:
             return apology("Please submit a symbol", 403)
 
-        # Lookup stock info
-        stock_info = None or lookup(stock_symbol)
+        # Look up stock info
+        stock_info = lookup(stock_symbol) or None
 
         # Error if symbol invalid
         if not lookup(stock_symbol):
-            return apology("Please submit a valid symbol", 403)
+            return apology("Please submit a valid stock symbol", 403)
 
-        # Get num of shares to buy
-        number_of_shares = None or request.form.get("shares")
+        try:
+            # Get num of shares to buy
+            number_of_shares = int(request.form.get("shares")) or None
 
-        # Error if # shares missing
-        if not number_of_shares:
-            return apology("Please submit the number of shares to buy", 403)
-        # Error if # shares <= 0
-        elif number_of_shares <= 0:
-            return apology("Please submit a valid number of shares to buy", 403)
+            # Error if # shares missing
+            if not number_of_shares:
+                return apology("Please enter the number of shares to buy", 403)
+            # Error if # shares < 1
+            elif (number_of_shares < 1):
+                return apology(
+                    "Please submit a number of shares to buy that is " +
+                    "greater than 0",
+                    403
+                )
+
+        # Error if # shares not valid int
+        except ValueError:
+            return apology(
+                "Please submit the number of shares to buy as a valid number",
+                403
+            )
 
         # Look up user's balance
         user_balance = db.execute(
@@ -87,13 +99,19 @@ def buy():
         )
 
         # Error if user balance < # shares * price
-        if user_balance < (number_of_shares * stock_info.price):
+        total_cost = number_of_shares * stock_info.price
+        if user_balance < total_cost:
             return apology("Not enough cash to purchase stocks", 403)
 
-        # TODO: Store purchases -- purchase id (unique/PK), user id (FK), symbol
-        # name, # shares, price, total $ (calculated field?), datetime
+        # TODO: Store purchases -- purchase id (unique/PK), user id (FK),
+        # symbol name, # shares, price, total $ (calculated field?), datetime
 
-        return apology("TODO")
+        flash(
+            f"You successfully purchased {number_of_shares} shares of \
+            {symbol} for {total_cost:%.2f}"
+        )
+
+        return redirect(url_for("index"))
 
 
 @app.route("/history")
@@ -174,7 +192,6 @@ def quote():
             return render_template("search-quotes.html")
             # return apology("That symbol is invalid", 403)
 
-        print(lookup_results)
         return render_template("quote-results.html", quote=lookup_results)
 
 
@@ -199,6 +216,7 @@ def register():
             "SELECT id FROM users WHERE username = ?",
             username
         )
+
         if existing_user_id:
             return apology("That username already exists", 403)
 
@@ -211,7 +229,9 @@ def register():
         if not new_row:
             return apology("Could not register -- please try again", 403)
 
-        flash("Registration successful")
+        flash(f"Hi, {username}! You've registered successfully.")
+        # Use render_template instead of redirect to display message -- login
+        # route deletes session so won't display message
         return render_template("login.html")
 
 
