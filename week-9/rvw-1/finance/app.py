@@ -86,29 +86,69 @@ def buy():
                 )
 
         # Error if # shares not valid int
-        except ValueError:
+        except (TypeError, ValueError):
             return apology(
                 "Please submit the number of shares to buy as a valid number",
                 403
             )
 
-        # Look up user's balance
-        user_balance = db.execute(
-            "SELECT cash FROM users WHERE id = ?",
+        try:
+            # Look up user's balance
+            user_balance = float(db.execute(
+                "SELECT cash FROM users WHERE id = ?",
+                session["user_id"])[0]["cash"]
+            )
+        except (TypeError, ValueError):
+            return apology(
+                "Error fetching user balance -- incorrect format",
+                403
+            )
+
+        # Error if user balance < # shares * price
+        total_cost = number_of_shares * stock_info["price"]
+
+        if user_balance < total_cost:
+            return apology(
+                f"Not enough cash to purchase stocks. Your balance is " +
+                f"${user_balance:.2f} & {number_of_shares} share(s) of " +
+                f"{stock_info['name']} costs ${total_cost:.2f}.",
+                403
+            )
+
+        # Calculate new balance
+        new_balance = user_balance - total_cost
+
+        # Store purchase -- user_id, stock_symbol, number_of_shares,
+        # stock_price
+        new_purchase_id = db.execute(
+            "INSERT INTO purchases " +
+            "(user_id, stock_symbol, number_of_shares, stock_price)" +
+            "VALUES (?, ?, ?, ?)",
+            session["user_id"],
+            stock_symbol,
+            number_of_shares,
+            stock_info['price']
+        )
+
+        # Update user's balance
+        user_rows_updated = db.execute(
+            "UPDATE users " +
+            "SET cash = ? " +
+            "WHERE id = ?",
+            new_balance,
             session["user_id"]
         )
 
-        # Error if user balance < # shares * price
-        total_cost = number_of_shares * stock_info.price
-        if user_balance < total_cost:
-            return apology("Not enough cash to purchase stocks", 403)
-
-        # TODO: Store purchases -- purchase id (unique/PK), user id (FK),
-        # symbol name, # shares, price, total $ (calculated field?), datetime
+        if not new_purchase_id or not user_rows_updated:
+            return apology(
+                "Purchase could not be completed -- please try again",
+                403
+            )
 
         flash(
-            f"You successfully purchased {number_of_shares} shares of \
-            {symbol} for {total_cost:%.2f}"
+            f"You successfully purchased {number_of_shares} share(s) of " +
+            f"{stock_info['name']} for ${total_cost:.2f}. Your remaining " +
+            f"balance is ${new_balance:.2f}."
         )
 
         return redirect(url_for("index"))

@@ -11,13 +11,11 @@
     <form action="/buy" class="mx-auto w-25 text-start" method="post">
         <div class="mb-3">
             <label class="form-label" for="symbol">Stock Symbol</label>
-            <input autocomplete="off" autofocus class="form-control" name="symbol" placeholder="Stock symbol" type="text">
-            <!-- <input autocomplete="off" autofocus class="form-control" name="symbol" placeholder="Stock symbol" required type="text"> -->
+            <input autocomplete="off" autofocus class="form-control" name="symbol" placeholder="Stock symbol" required type="text">
         </div>
         <div class="mb-3">
             <label class="form-label" for="shares">Number of Shares</label>
-            <input class="form-control" name="shares" placeholder="Number of shares" type="text">
-            <!-- <input class="form-control" name="shares" min="1" placeholder="Number of shares" required type="number"> -->
+            <input class="form-control" name="shares" min="1" placeholder="Number of shares" required type="number">
         </div>
         <button class="btn btn-primary" type="submit">Buy Stock</button>
     </form>
