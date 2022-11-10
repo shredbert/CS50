@@ -1,37 +1,49 @@
 {% extends "layout.html" %}
 
 {% block title %}
-
     Wealth Summary
-
 {% endblock %}
 
 {% block main %}
-
     <h1>Wealth Summary</h1>
 
-    <p><em>Available Cash:</em> {{ "$%.2f" | format(user_wealth['cash']) }}</p>
-    <p><em>Total Wealth:</em> {{ "$%.2f" | format(user_wealth['total']) }}</p>
-
-    <table>
-        <thead>
+    <div class="mx-auto table-container table-responsive">
+        <table class="table table-primary">
             <tr>
-                <th>Stock Symbol</th>
-                <th># of Shares</th>
-                <th>Current Price</th>
-                <th>Total Value</th>
+                <th>Available Cash</th>
+                <td>{{ "$%.2f" | format(user_wealth['cash']) }}</td>
             </tr>
-        </thead>
-        <tbody>
-            {% for stock in user_portfolio %}
-                <tr>
-                    <td>{{ stock["symbol"] }}</td>
-                    <td>{{ stock["shares"] }}</td>
-                    <td>{{ "$%.2f" | format(stock["current_price"]) }}</td>
-                    <td>{{ "$%.2f" | format(stock["total_value"]) }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            <tr>
+                <th>Total Wealth</th>
+                <td>{{ "$%.2f" | format(user_wealth['total']) }}</td>
+            </tr>
+        </table>
 
+        {% if user_portfolio %}
+            <table class="table table-secondary table-striped">
+                <thead>
+                    <tr>
+                        <th>Company Name</th>
+                        <th>Stock Symbol</th>
+                        <th>Shares</th>
+                        <th>Current Price</th>
+                        <th>Total Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stock in user_portfolio %}
+                        <tr>
+                            <td>{{ stock["company_name"] }}</td>
+                            <td>{{ stock["symbol"] }}</td>
+                            <td>{{ stock["shares"] }}</td>
+                            <td>{{ "$%.2f" | format(stock["current_price"]) }}</td>
+                            <td>{{ "$%.2f" | format(stock["total_value"]) }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p><em>You don't own any stocks yet.</em></p>
+        {% endif %}
+    </div>
 {% endblock %}

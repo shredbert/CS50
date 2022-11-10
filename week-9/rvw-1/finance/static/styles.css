@@ -21,3 +21,19 @@ nav .navbar-brand .green
 {
     color: #2e944b;
 }
+
+.table-container {
+    width: 100%;
+}
+
+@media (min-width: 576px) {
+    .table-container {
+        width: 75%;
+    }
+}
+
+@media (min-width: 992px) {
+    .table-container {
+        width: 50%;
+    }
+}

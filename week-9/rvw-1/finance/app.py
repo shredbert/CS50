@@ -61,14 +61,15 @@ def index():
         # Look up the current price for each stock & calc the total
         # current value
         for stock in stocks_owned:
-            portfolio_item = {}
-            portfolio_item["symbol"] = stock["stock_symbol"]
-            portfolio_item["shares"] = int(stock["total_shares"])
-
             stock_info = lookup(stock["stock_symbol"])
 
+            portfolio_item = {}
+            portfolio_item["symbol"] = stock_info["symbol"]
+            portfolio_item["shares"] = int(stock["total_shares"])
+            portfolio_item["company_name"] = stock_info["name"]
             portfolio_item["current_price"] = stock_info["price"]
-            portfolio_item["total_value"] = portfolio_item["shares"] * portfolio_item["current_price"]
+            portfolio_item["total_value"] = portfolio_item["shares"] * \
+                portfolio_item["current_price"]
 
             total_wealth += portfolio_item["total_value"]
             user_portfolio.append(portfolio_item)
