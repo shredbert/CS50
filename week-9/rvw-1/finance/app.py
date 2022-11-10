@@ -44,7 +44,55 @@ def after_request(response):
 @login_required
 def index():
     """Show portfolio of stocks"""
-    return apology("Working on home page!!!")
+    try:
+        # Store portfolio as list & initialize total wealth
+        user_portfolio = []
+        total_wealth = 0
+
+        # Get distinct stock symbols owned & the total # of each
+        stocks_owned = db.execute(
+            "SELECT DISTINCT stock_symbol, SUM(number_of_shares) AS total_shares " +
+            "FROM purchases " +
+            "WHERE user_id = ? " +
+            "GROUP BY stock_symbol",
+            session["user_id"]
+        )
+
+        # Look up the current price for each stock & calc the total
+        # current value
+        for stock in stocks_owned:
+            portfolio_item = {}
+            portfolio_item["symbol"] = stock["stock_symbol"]
+            portfolio_item["shares"] = int(stock["total_shares"])
+
+            stock_info = lookup(stock["stock_symbol"])
+
+            portfolio_item["current_price"] = stock_info["price"]
+            portfolio_item["total_value"] = portfolio_item["shares"] * portfolio_item["current_price"]
+
+            total_wealth += portfolio_item["total_value"]
+            user_portfolio.append(portfolio_item)
+
+        # TODO: Get user's current balance & grand total -- i.e., cash + total
+        # value of stocks
+        user_wealth = {}
+        user_cash = db.execute(
+            "SELECT cash FROM users WHERE id = ?",
+            session["user_id"]
+        )[0]["cash"]
+        total_wealth += user_cash
+        user_wealth["cash"] = user_cash
+        user_wealth["total"] = total_wealth
+
+    # TODO: Figure out specific exception for DB lookup
+    except:
+        return apology("Error looking up portfolio information", 400)
+
+    return render_template(
+        "index.html",
+        user_wealth=user_wealth,
+        user_portfolio=user_portfolio
+    )
 
 
 @app.route("/buy", methods=["GET", "POST"])
@@ -121,8 +169,7 @@ def buy():
         # Store purchase -- user_id, stock_symbol, number_of_shares,
         # stock_price
         new_purchase_id = db.execute(
-            "INSERT INTO purchases " +
-            "(user_id, stock_symbol, number_of_shares, stock_price)" +
+            "INSERT INTO purchases (user_id, stock_symbol, number_of_shares, stock_price)" +
             "VALUES (?, ?, ?, ?)",
             session["user_id"],
             stock_symbol,

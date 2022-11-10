@@ -2,12 +2,36 @@
 
 {% block title %}
 
-    Home Page
+    Wealth Summary
 
 {% endblock %}
 
 {% block main %}
 
-    <h1>View Stocks</h1>
+    <h1>Wealth Summary</h1>
+
+    <p><em>Available Cash:</em> {{ "$%.2f" | format(user_wealth['cash']) }}</p>
+    <p><em>Total Wealth:</em> {{ "$%.2f" | format(user_wealth['total']) }}</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Stock Symbol</th>
+                <th># of Shares</th>
+                <th>Current Price</th>
+                <th>Total Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stock in user_portfolio %}
+                <tr>
+                    <td>{{ stock["symbol"] }}</td>
+                    <td>{{ stock["shares"] }}</td>
+                    <td>{{ "$%.2f" | format(stock["current_price"]) }}</td>
+                    <td>{{ "$%.2f" | format(stock["total_value"]) }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
 {% endblock %}
