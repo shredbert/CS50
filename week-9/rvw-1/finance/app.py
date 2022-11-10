@@ -327,4 +327,13 @@ def register():
 @login_required
 def sell():
     """Sell shares of stock"""
-    return apology("TODO")
+    if request.method == "GET":
+        # TODO: Pass all distinct stock symbols where user has > 0 shares
+    elif request.method == "POST":
+        # TODO: Error if user doesn't submit valid stock as "symbol"
+        # TODO: Error if user doesn't own any shares of selected stock
+        # TODO: Error if user doesn't submit shares to sell as "shares"
+        # TODO: Error if shares < 1
+        # TODO: Look up shares of selected stock user currently owns
+        # TODO: Error if shares selected > shares owned
+        return redirect(url_for("index"))

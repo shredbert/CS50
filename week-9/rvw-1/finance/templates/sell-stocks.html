@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Sell Stocks
+{% endblock %}
+
+{% block main %}
+
+    <h1>Sell Stocks</h1>
+
+    {% if stocks_owned %}
+        <form class="form mx-auto w-50">
+            <div class="mb-3">
+                <select autocomplete="off" autofocus class="form-select" name="symbol" required>
+                    <option hidden selected value="">Select stock...</option>
+                    {% for stock in stocks_owned %}
+                        <option value="{{ stock['symbol'] }}">{{ stock['symbol'] }}</option>
+                    {% endfor %}
+                </select>    
+            </div>
+            <div class="mb-3">
+                <!-- Test -->
+                <input class="form-control" name="shares" type="text">
+                <!-- <input class="form-control" min="1" name="shares" type="number" required> -->
+            </div>
+            <button class="btn btn-primary" type="submit">Sell Shares</button>
+        </form>
+    {% else %}
+        <p><em>
+            You don't own any stocks to sell.
+            <a href="/buy">Buy stocks.</a>
+        </em></p>
+    {% endif %}
+
+{% endblock %}
