@@ -1,10 +1,11 @@
 -- Turn on FKs
 PRAGMA foreign_keys = ON;
 
--- Purchases of stocks
-CREATE TABLE purchases (
+-- Record buys & sales of stocks
+CREATE TABLE stock_transactions (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     user_id INTEGER NOT NULL,
+    transaction_type TEXT NOT NULL,
     stock_symbol TEXT NOT NULL,
     number_of_shares INTEGER NOT NULL CHECK(number_of_shares > 0),
     stock_price REAL NOT NULL CHECK(stock_price > 0),
