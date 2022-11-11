@@ -106,7 +106,7 @@ def buy():
         return render_template("buy-stocks.html")
 
     elif request.method == "POST":
-        # Get stock symbol
+        # Get stock symbol -- case DOESN'T matter to API
         stock_symbol = request.form.get("symbol")
 
         # Error if symbol missing
@@ -166,6 +166,8 @@ def buy():
             )
 
         # Calculate new balance
+        # TODO: Is this less efficient than calculating in DB & retrieving
+        # afterwards?
         new_balance = user_balance - total_cost
 
         # Store purchase -- user_id, stock_symbol, number_of_shares,
@@ -176,7 +178,9 @@ def buy():
              "VALUES (?, ?, ?, ?, ?)"),
             session["user_id"],
             "buy",
-            stock_symbol,
+            # Use symbol retrieved from API -- already formatted correctly
+            # TODO: Better than just uppercasing?
+            stock_info['symbol'],
             number_of_shares,
             stock_info['price']
         )
@@ -333,7 +337,9 @@ def register():
 def sell():
     """Sell shares of stock"""
     if request.method == "GET":
-        # TODO: Pass all distinct stock symbols where user has > 0 shares
+
+        # Pass all distinct stock symbols where user has > 0 shares
+        # TODO: Include company name for display to users -- better UX?
         stocks_owned = db.execute(
             ("SELECT DISTINCT stock_symbol, SUM(number_of_shares) "
              "AS total_shares "
@@ -342,8 +348,9 @@ def sell():
              "GROUP BY stock_symbol"),
             session["user_id"]
         )
-        print(stocks_owned)
+
         return render_template("sell-stocks.html", stocks_owned=stocks_owned)
+
     elif request.method == "POST":
         # TODO: Error if user doesn't submit valid stock as "symbol"
         # TODO: Error if user doesn't own any shares of selected stock

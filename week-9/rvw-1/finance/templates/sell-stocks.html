@@ -9,17 +9,20 @@
     <h1>Sell Stocks</h1>
 
     {% if stocks_owned %}
-        <form class="form mx-auto w-50">
+        <form class="form mx-auto w-25 text-start">
             <div class="mb-3">
+                <label class="form-label" for="symbol">Stock Symbol</label>
                 <select autocomplete="off" autofocus class="form-select" name="symbol" required>
+                    <!-- Hidden means can't be selected, blank val means can't be submitted while required -->
                     <option hidden selected value="">Select stock...</option>
                     {% for stock in stocks_owned %}
+                        <!-- TODO: Display company name or symbol to users? Have to change query if so -->
                         <option value="{{ stock['stock_symbol'] }}">{{ stock['stock_symbol'] }}</option>
-                        <!-- <option value="{{ stock['stock_symbol'] }}">{{ stock['stock_symbol'] }}</option> -->
                     {% endfor %}
                 </select>    
             </div>
             <div class="mb-3">
+                <label for="shares">Number of Shares</label>
                 <!-- Test -->
                 <input class="form-control" name="shares" type="text">
                 <!-- <input class="form-control" min="1" name="shares" type="number" required> -->
@@ -33,4 +36,8 @@
         </em></p>
     {% endif %}
 
+{% endblock %}
+
+{% block scripts %}
+    <script src="./static/sell-stocks.js"></script>
 {% endblock %}
