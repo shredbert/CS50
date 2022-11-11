@@ -51,10 +51,11 @@ def index():
 
         # Get distinct stock symbols owned & the total # of each
         stocks_owned = db.execute(
-            "SELECT DISTINCT stock_symbol, SUM(number_of_shares) AS total_shares " +
-            "FROM purchases " +
-            "WHERE user_id = ? " +
-            "GROUP BY stock_symbol",
+            ("SELECT DISTINCT stock_symbol, SUM(number_of_shares) "
+             "AS total_shares "
+             "FROM stock_transactions "
+             "WHERE user_id = ? "
+             "GROUP BY stock_symbol"),
             session["user_id"]
         )
 
@@ -106,14 +107,14 @@ def buy():
 
     elif request.method == "POST":
         # Get stock symbol
-        stock_symbol = request.form.get("symbol") or None
+        stock_symbol = request.form.get("symbol")
 
         # Error if symbol missing
         if not stock_symbol:
             return apology("Please submit a symbol", 403)
 
         # Look up stock info
-        stock_info = lookup(stock_symbol) or None
+        stock_info = lookup(stock_symbol)
 
         # Error if symbol invalid
         if not lookup(stock_symbol):
@@ -121,7 +122,7 @@ def buy():
 
         try:
             # Get num of shares to buy
-            number_of_shares = int(request.form.get("shares")) or None
+            number_of_shares = int(request.form.get("shares"))
 
             # Error if # shares missing
             if not number_of_shares:
@@ -129,8 +130,8 @@ def buy():
             # Error if # shares < 1
             elif (number_of_shares < 1):
                 return apology(
-                    "Please submit a number of shares to buy that is " +
-                    "greater than 0",
+                    ("Please submit a number of shares to buy that is greater "
+                     "than 0"),
                     403
                 )
 
@@ -158,9 +159,9 @@ def buy():
 
         if user_balance < total_cost:
             return apology(
-                f"Not enough cash to purchase stocks. Your balance is " +
-                f"${user_balance:.2f} & {number_of_shares} share(s) of " +
-                f"{stock_info['name']} costs ${total_cost:.2f}.",
+                ("Not enough cash to purchase stocks. Your balance is "
+                 f"${user_balance:,.2f} & {number_of_shares} share(s) of "
+                 f"{stock_info['name']} costs ${total_cost:,.2f}."),
                 403
             )
 
@@ -170,9 +171,11 @@ def buy():
         # Store purchase -- user_id, stock_symbol, number_of_shares,
         # stock_price
         new_purchase_id = db.execute(
-            "INSERT INTO purchases (user_id, stock_symbol, number_of_shares, stock_price)" +
-            "VALUES (?, ?, ?, ?)",
+            ("INSERT INTO stock_transactions (user_id, transaction_type, "
+             "stock_symbol, number_of_shares, stock_price) "
+             "VALUES (?, ?, ?, ?, ?)"),
             session["user_id"],
+            "buy",
             stock_symbol,
             number_of_shares,
             stock_info['price']
@@ -180,9 +183,9 @@ def buy():
 
         # Update user's balance
         user_rows_updated = db.execute(
-            "UPDATE users " +
-            "SET cash = ? " +
-            "WHERE id = ?",
+            ("UPDATE users "
+             "SET cash = ? "
+             "WHERE id = ?"),
             new_balance,
             session["user_id"]
         )
@@ -194,9 +197,8 @@ def buy():
             )
 
         flash(
-            f"You successfully purchased {number_of_shares} share(s) of " +
-            f"{stock_info['name']} for ${total_cost:.2f}. Your remaining " +
-            f"balance is ${new_balance:.2f}."
+            (f"You successfully purchased {number_of_shares} share(s) of "
+             f"{stock_info['name']} for ${total_cost:,.2f}.")
         )
 
         return redirect(url_for("index"))
@@ -269,15 +271,18 @@ def quote():
     if request.method == "GET":
         return render_template("search-quotes.html")
     else:
-        stock_symbol = None or request.form.get("symbol")
-        lookup_results = None or lookup(stock_symbol)
+        stock_symbol = request.form.get("symbol")
 
         if not stock_symbol:
             return apology("Must input a stock symbol to search", 403)
 
+        lookup_results = lookup(stock_symbol)
+
         if not lookup_results:
             flash("Invalid symbol -- please try again")
             return render_template("search-quotes.html")
+            # Better UX to take back to message for re-searching & giving
+            # feedback there
             # return apology("That symbol is invalid", 403)
 
         return render_template("quote-results.html", quote=lookup_results)
@@ -329,6 +334,16 @@ def sell():
     """Sell shares of stock"""
     if request.method == "GET":
         # TODO: Pass all distinct stock symbols where user has > 0 shares
+        stocks_owned = db.execute(
+            ("SELECT DISTINCT stock_symbol, SUM(number_of_shares) "
+             "AS total_shares "
+             "FROM stock_transactions "
+             "WHERE user_id = ? "
+             "GROUP BY stock_symbol"),
+            session["user_id"]
+        )
+        print(stocks_owned)
+        return render_template("sell-stocks.html", stocks_owned=stocks_owned)
     elif request.method == "POST":
         # TODO: Error if user doesn't submit valid stock as "symbol"
         # TODO: Error if user doesn't own any shares of selected stock
@@ -336,4 +351,5 @@ def sell():
         # TODO: Error if shares < 1
         # TODO: Look up shares of selected stock user currently owns
         # TODO: Error if shares selected > shares owned
+        # TODO: Add sale to transactions table & return to home page
         return redirect(url_for("index"))

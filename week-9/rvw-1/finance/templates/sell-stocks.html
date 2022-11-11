@@ -14,7 +14,8 @@
                 <select autocomplete="off" autofocus class="form-select" name="symbol" required>
                     <option hidden selected value="">Select stock...</option>
                     {% for stock in stocks_owned %}
-                        <option value="{{ stock['symbol'] }}">{{ stock['symbol'] }}</option>
+                        <option value="{{ stock['stock_symbol'] }}">{{ stock['stock_symbol'] }}</option>
+                        <!-- <option value="{{ stock['stock_symbol'] }}">{{ stock['stock_symbol'] }}</option> -->
                     {% endfor %}
                 </select>    
             </div>
