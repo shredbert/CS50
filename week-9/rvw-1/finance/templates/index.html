@@ -10,41 +10,43 @@
     <div class="mx-auto table-container table-responsive">
         <table class="table table-primary">
             <tr>
-                <th>Available Cash</th>
-                <td>{{ "${:,.2f}".format(user_wealth['cash']) }}</td>
+                <th class="text-start">Available Cash</th>
+                <td class="text-end">{{ "${:,.2f}".format(user_wealth['cash']) }}</td>
             </tr>
             <tr>
-                <th>Total Wealth</th>
-                <td>{{ "${:,.2f}".format(user_wealth['total']) }}</td>
+                <th class="text-start">Total Wealth</th>
+                <td class="text-end">{{ "${:,.2f}".format(user_wealth['total']) }}</td>
             </tr>
         </table>
-
-        {% if user_portfolio %}
-            <table class="table table-secondary table-striped">
-                <thead>
-                    <tr>
-                        <th>Company Name</th>
-                        <th>Stock Symbol</th>
-                        <th>Shares</th>
-                        <th>Current Price</th>
-                        <th>Total Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for stock in user_portfolio %}
-                        <tr>
-                            <td>{{ stock["company_name"] }}</td>
-                            <td>{{ stock["symbol"] }}</td>
-                            <td>{{ stock["shares"] }}</td>
-                            <td>{{ "${:,.2f}".format(stock["current_price"]) }}</td>
-                            <td>{{ "${:,.2f}".format(stock["total_value"]) }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <a class="btn btn-primary" href="/">Refresh Portfolio</a>
-        {% else %}
-            <p><em>You don't own any stocks yet.</em></p>
-        {% endif %}
     </div>
+
+    {% if user_portfolio %}
+        <div class="mx-auto table-container table-responsive">
+                <table class="table table-secondary table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-start">Company Name</th>
+                            <th class="text-start">Stock Symbol</th>
+                            <th class="text-end">Shares</th>
+                            <th class="text-end">Current Price</th>
+                            <th class="text-end">Total Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stock in user_portfolio %}
+                            <tr>
+                                <td class="text-start">{{ stock["company_name"] }}</td>
+                                <td class="text-start">{{ stock["symbol"] }}</td>
+                                <td class="text-end">{{ stock["shares"] }}</td>
+                                <td class="text-end">{{ "${:,.2f}".format(stock["current_price"]) }}</td>
+                                <td class="text-end">{{ "${:,.2f}".format(stock["total_value"]) }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+        </div>
+        <a class="btn btn-primary mt-3" href="/">Refresh Portfolio</a>
+    {% else %}
+        <p><em>You don't own any stocks yet.</em></p>
+    {% endif %}
 {% endblock %}
