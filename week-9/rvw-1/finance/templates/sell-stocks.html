@@ -12,23 +12,31 @@
         <form class="form mx-auto w-25 text-start">
             <div class="mb-3">
                 <label class="form-label" for="symbol">Stock Symbol</label>
-                <select autocomplete="off" autofocus class="form-select" name="symbol" required>
-                    <!-- Hidden means can't be selected, blank val means can't be submitted while required -->
+                <select autocomplete="off" autofocus class="form-select" id="stockSelector" name="symbol" required>
+                    <!-- Hidden means can't be selected, blank val means won't be accepted if required -->
                     <option hidden selected value="">Select stock...</option>
                     {% for stock in stocks_owned %}
-                        <!-- TODO: Display company name or symbol to users? Have to change query if so -->
-                        <option value="{{ stock['stock_symbol'] }}">{{ stock['stock_symbol'] }}</option>
+                        <!-- TODO: Display company name to users instead? Have to change query if so -->
+                        <option data-total-owned="{{ stock['total_owned'] }}" value="{{ stock['stock_symbol'] }}">{{ stock['stock_symbol'] }}</option>
                     {% endfor %}
                 </select>    
             </div>
             <div class="mb-3">
-                <label for="shares">Number of Shares</label>
+                <label for="shares">Shares to Sell</label>
+                <!-- <input class="form-control" min="1" name="shares" type="number" required> -->
                 <!-- Test -->
                 <input class="form-control" name="shares" type="text">
-                <!-- <input class="form-control" min="1" name="shares" type="number" required> -->
             </div>
             <button class="btn btn-primary" type="submit">Sell Shares</button>
         </form>
+        <template id="totalSharesOwnedTemplate">
+            <table class="my-3 table table-secondary" id="totalSharesOwnedTable">
+                <tr>
+                    <th class="text-start">Total Shares Owned</th>
+                    <td class="text-end" id="totalSharesOwnedCell">17</td>
+                </tr>
+            </table>
+        </template>
     {% else %}
         <p><em>
             You don't own any stocks to sell.
