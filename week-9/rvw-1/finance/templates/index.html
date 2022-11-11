@@ -11,11 +11,11 @@
         <table class="table table-primary">
             <tr>
                 <th>Available Cash</th>
-                <td>{{ "$%.2f" | format(user_wealth['cash']) }}</td>
+                <td>{{ "${:,.2f}".format(user_wealth['cash']) }}</td>
             </tr>
             <tr>
                 <th>Total Wealth</th>
-                <td>{{ "$%.2f" | format(user_wealth['total']) }}</td>
+                <td>{{ "${:,.2f}".format(user_wealth['total']) }}</td>
             </tr>
         </table>
 
@@ -36,12 +36,13 @@
                             <td>{{ stock["company_name"] }}</td>
                             <td>{{ stock["symbol"] }}</td>
                             <td>{{ stock["shares"] }}</td>
-                            <td>{{ "$%.2f" | format(stock["current_price"]) }}</td>
-                            <td>{{ "$%.2f" | format(stock["total_value"]) }}</td>
+                            <td>{{ "${:,.2f}".format(stock["current_price"]) }}</td>
+                            <td>{{ "${:,.2f}".format(stock["total_value"]) }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            <a class="btn btn-primary" href="/">Refresh Portfolio</a>
         {% else %}
             <p><em>You don't own any stocks yet.</em></p>
         {% endif %}

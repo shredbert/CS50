@@ -18,7 +18,7 @@
         </div>
         <div class="mb-3">
             <label class="form-label">Price</label>
-            <input class="form-control" disabled type="text" value="{{ "$%.2f"|format(quote.price) }}">
+            <input class="form-control" disabled type="text" value="{{ "${:,.2f}".format(quote.price) }}">
         </div>
         <button class="btn btn-primary" type="submit">Search Again</button>
     </form>
