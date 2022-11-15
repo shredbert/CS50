@@ -12,31 +12,30 @@
         <form class="form mx-auto w-25 text-start">
             <div class="mb-3">
                 <label class="form-label" for="symbol">Stock Symbol</label>
+                <!-- Test -->
+                <!-- <select autocomplete="off" autofocus class="form-select" id="stockSelector" name="symbol"> -->
                 <select autocomplete="off" autofocus class="form-select" id="stockSelector" name="symbol" required>
                     <!-- Hidden means can't be selected, blank val means won't be accepted if required -->
                     <option hidden selected value="">Select stock...</option>
+                    <!-- TODO: Display company name to users instead? Have to add query if so... -->
                     {% for stock in stocks_owned %}
-                        <!-- TODO: Display company name to users instead? Have to change query if so -->
-                        <option data-total-owned="{{ stock['total_owned'] }}" value="{{ stock['stock_symbol'] }}">{{ stock['stock_symbol'] }}</option>
+                        <option data-total-shares="{{ stock['total_shares'] }}" value="{{ stock['stock_symbol'] }}">{{ stock['stock_symbol'] }}</option>
                     {% endfor %}
                 </select>    
             </div>
+            <!-- Hide & display with JS -- only useful if JS enabled -->
+            <div hidden id="sharesOwnedGroup" class="mb-3">
+                <label class="form-label" for="shares">Shares Owned</label>
+                <input class="form-control" disabled id="sharesOwned" name="shares" type="text" value=0>
+            </div>
             <div class="mb-3">
                 <label for="shares">Shares to Sell</label>
-                <!-- <input class="form-control" min="1" name="shares" type="number" required> -->
-                <!-- Test -->
-                <input class="form-control" name="shares" type="text">
+                <input class="form-control" min="1" name="shares" type="number" required>
+                <!-- <!-1- Test -1-> -->
+                <!-- <input class="form-control" name="shares" type="text"> -->
             </div>
             <button class="btn btn-primary" type="submit">Sell Shares</button>
         </form>
-        <template id="totalSharesOwnedTemplate">
-            <table class="my-3 table table-secondary" id="totalSharesOwnedTable">
-                <tr>
-                    <th class="text-start">Total Shares Owned</th>
-                    <td class="text-end" id="totalSharesOwnedCell">17</td>
-                </tr>
-            </table>
-        </template>
     {% else %}
         <p><em>
             You don't own any stocks to sell.
