@@ -352,11 +352,57 @@ def sell():
         return render_template("sell-stocks.html", stocks_owned=stocks_owned)
 
     elif request.method == "POST":
-        # TODO: Error if user doesn't submit valid stock as "symbol"
-        # TODO: Error if user doesn't own any shares of selected stock
-        # TODO: Error if user doesn't submit shares to sell as "shares"
-        # TODO: Error if shares < 1
-        # TODO: Look up shares of selected stock user currently owns
-        # TODO: Error if shares selected > shares owned
-        # TODO: Add sale to transactions table & return to home page
+        # Error if user doesn't submit a stock "symbol"
+        symbol = request.form.get("symbol")
+        if not symbol:
+            return apology("Must submit a stock symbol to sell", 403)
+
+        # Error if stock symbol isn't valid
+        stockInfo = lookup(symbol)
+        if not stockInfo:
+            return apology("Sorry, that stock symbol is not valid", 403)
+
+        # Error if user doesn't submit shares to sell as "shares", isn't
+        # valid number, or # of shares < 1
+        try:
+            sharesToSell = int(request.form.get("shares"))
+            if sharesToSell < 1:
+                return apology(
+                    "Please submit 1 or more shares to sell",
+                    403
+                )
+        except ValueError:
+            return apology(
+                "Please submit a valid number of shares to sell",
+                403
+            )
+
+        # Look up shares of selected stock user currently owns
+        # Looking up again in case has changed after initial display
+        try:
+            sharesOwned = db.execute(
+                ("SELECT DISTINCT stock_symbol, SUM(number_of_shares) "
+                 "AS total_shares "
+                 "FROM stock_transactions "
+                 "WHERE user_id = ? "
+                 "GROUP BY stock_symbol "
+                 "HAVING stock_symbol = ?"),
+                session["user_id"],
+                symbol
+            )[0]['total_shares']
+        # Error if don't own any of those stocks
+        except IndexError:
+            return apology("Sorry, you don't own any of those stocks", 403)
+
+        # TODO: Error if # of shares < 1 or shares selected > shares owned
+        if sharesToSell > sharesOwned:
+            return apology(
+                "Sorry, you don't own enough of those shares to sell",
+                403
+            )
+
+        # TODO: Add sale to transactions table
+
+        # TODO: Give feedback & return to home page
+        flash("Success!!!")
         return redirect(url_for("index"))
