@@ -75,7 +75,7 @@ def index():
             total_wealth += portfolio_item["total_value"]
             user_portfolio.append(portfolio_item)
 
-        # TODO: Get user's current balance & grand total -- i.e., cash + total
+        # Get user's current balance & grand total -- i.e., cash + total
         # value of stocks
         user_wealth = {}
         user_cash = db.execute(
@@ -86,9 +86,12 @@ def index():
         user_wealth["cash"] = user_cash
         user_wealth["total"] = total_wealth
 
-    # TODO: Figure out specific exception for DB lookup
-    except:
-        return apology("Error looking up portfolio information", 400)
+    # Error if no results
+    except (IndexError, RuntimeError):
+        return apology(
+            "Sorry, your portfolio could not be fetched -- please try again.",
+            400
+        )
 
     return render_template(
         "index.html",
@@ -148,55 +151,50 @@ def buy():
                 "SELECT cash FROM users WHERE id = ?",
                 session["user_id"])[0]["cash"]
             )
-        except (TypeError, ValueError):
-            return apology(
-                "Error fetching user balance -- incorrect format",
-                403
+            # Error if user balance < # shares * price
+            total_cost = number_of_shares * stock_info["price"]
+
+            if user_balance < total_cost:
+                return apology(
+                    ("Not enough cash to purchase stocks. Your balance is "
+                     f"${user_balance:,.2f} & {number_of_shares} share(s) of "
+                     f"{stock_info['name']} costs ${total_cost:,.2f}."),
+                    403
+                )
+
+            # Calculate new balance
+            # TODO: Is this less efficient than calculating in DB & retrieving
+            # afterwards?
+            new_balance = user_balance - total_cost
+
+            # Store purchase -- user_id, stock_symbol, number_of_shares,
+            # stock_price
+            db.execute(
+                ("INSERT INTO stock_transactions (user_id, transaction_type, "
+                 "stock_symbol, number_of_shares, stock_price) "
+                 "VALUES (?, ?, ?, ?, ?)"),
+                session["user_id"],
+                "buy",
+                # Use symbol retrieved from API -- already formatted correctly
+                # TODO: Better than just uppercasing?
+                stock_info['symbol'],
+                number_of_shares,
+                stock_info['price']
             )
 
-        # Error if user balance < # shares * price
-        total_cost = number_of_shares * stock_info["price"]
-
-        if user_balance < total_cost:
-            return apology(
-                ("Not enough cash to purchase stocks. Your balance is "
-                 f"${user_balance:,.2f} & {number_of_shares} share(s) of "
-                 f"{stock_info['name']} costs ${total_cost:,.2f}."),
-                403
+            # Update user's balance
+            db.execute(
+                ("UPDATE users "
+                 "SET cash = ? "
+                 "WHERE id = ?"),
+                new_balance,
+                session["user_id"]
             )
 
-        # Calculate new balance
-        # TODO: Is this less efficient than calculating in DB & retrieving
-        # afterwards?
-        new_balance = user_balance - total_cost
-
-        # Store purchase -- user_id, stock_symbol, number_of_shares,
-        # stock_price
-        new_purchase_id = db.execute(
-            ("INSERT INTO stock_transactions (user_id, transaction_type, "
-             "stock_symbol, number_of_shares, stock_price) "
-             "VALUES (?, ?, ?, ?, ?)"),
-            session["user_id"],
-            "buy",
-            # Use symbol retrieved from API -- already formatted correctly
-            # TODO: Better than just uppercasing?
-            stock_info['symbol'],
-            number_of_shares,
-            stock_info['price']
-        )
-
-        # Update user's balance
-        user_rows_updated = db.execute(
-            ("UPDATE users "
-             "SET cash = ? "
-             "WHERE id = ?"),
-            new_balance,
-            session["user_id"]
-        )
-
-        if not new_purchase_id or not user_rows_updated:
+        except (IndexError, RuntimeError):
             return apology(
-                "Purchase could not be completed -- please try again",
+                ("Sorry, your purchase could not be completed -- please try "
+                 "again"),
                 403
             )
 
@@ -309,22 +307,27 @@ def register():
         username = request.form.get("username")
         password = generate_password_hash(request.form.get("password"))
 
-        existing_user_id = db.execute(
-            "SELECT id FROM users WHERE username = ?",
-            username
-        )
+        try:
+            existing_user_id = db.execute(
+                "SELECT id FROM users WHERE username = ?",
+                username
+            )
 
-        if existing_user_id:
-            return apology("That username already exists", 403)
+            if existing_user_id:
+                return apology("That username already exists", 403)
 
-        new_row = db.execute(
-            "INSERT INTO users (username, hash) VALUES (?, ?)",
-            username,
-            password
-        )
+            db.execute(
+                "INSERT INTO users (username, hash) VALUES (?, ?)",
+                username,
+                password
+            )
 
-        if not new_row:
-            return apology("Could not register -- please try again", 403)
+        except (IndexError, RuntimeError):
+            return apology(
+                ("Sorry, your account could not be registered. Please try "
+                 "again."),
+                403
+            )
 
         flash(f"Hi, {username}! You've registered successfully.")
         # Use render_template instead of redirect to display message -- login
@@ -340,69 +343,100 @@ def sell():
 
         # Pass all distinct stock symbols where user has > 0 shares
         # TODO: Include company name for display to users -- better UX?
-        stocks_owned = db.execute(
-            ("SELECT DISTINCT stock_symbol, SUM(number_of_shares) "
-             "AS total_shares "
-             "FROM stock_transactions "
-             "WHERE user_id = ? "
-             "GROUP BY stock_symbol"),
-            session["user_id"]
-        )
-
-        return render_template("sell-stocks.html", stocks_owned=stocks_owned)
-
-    elif request.method == "POST":
-        # Error if user doesn't submit a stock "symbol"
-        symbol = request.form.get("symbol")
-        if not symbol:
-            return apology("Must submit a stock symbol to sell", 403)
-
-        # Error if stock symbol isn't valid
-        stockInfo = lookup(symbol)
-        if not stockInfo:
-            return apology("Sorry, that stock symbol is not valid", 403)
-
-        # Error if user doesn't submit shares to sell as "shares", isn't
-        # valid number, or # of shares < 1
         try:
-            sharesToSell = int(request.form.get("shares"))
-            if sharesToSell < 1:
-                return apology(
-                    "Please submit 1 or more shares to sell",
-                    403
-                )
-        except ValueError:
-            return apology(
-                "Please submit a valid number of shares to sell",
-                403
-            )
-
-        # Look up shares of selected stock user currently owns
-        # Looking up again in case has changed after initial display
-        try:
-            sharesOwned = db.execute(
+            stocks_owned = db.execute(
                 ("SELECT DISTINCT stock_symbol, SUM(number_of_shares) "
                  "AS total_shares "
                  "FROM stock_transactions "
                  "WHERE user_id = ? "
-                 "GROUP BY stock_symbol "
-                 "HAVING stock_symbol = ?"),
-                session["user_id"],
-                symbol
-            )[0]['total_shares']
-        # Error if don't own any of those stocks
-        except IndexError:
-            return apology("Sorry, you don't own any of those stocks", 403)
-
-        # TODO: Error if # of shares < 1 or shares selected > shares owned
-        if sharesToSell > sharesOwned:
+                 "GROUP BY stock_symbol"),
+                session["user_id"]
+            )
+        except RuntimeError:
             return apology(
-                "Sorry, you don't own enough of those shares to sell",
+                "Sorry, your stocks could not be found -- please try again.",
                 403
             )
 
-        # TODO: Add sale to transactions table
+        return render_template("sell-stocks.html", stocks_owned=stocks_owned)
 
-        # TODO: Give feedback & return to home page
-        flash("Success!!!")
+    elif request.method == "POST":
+        try:
+            # Error if user doesn't submit a stock "symbol"
+            symbol = request.form.get("symbol")
+            if not symbol:
+                return apology("Must submit a stock symbol to sell", 403)
+
+            # Error if stock symbol isn't valid
+            stock_info = lookup(symbol)
+            if not stock_info:
+                return apology("Sorry, that stock symbol is not valid", 403)
+
+            # Error if user doesn't submit shares to sell as "shares", isn't
+            # valid number, or # of shares < 1
+            try:
+                shares_to_sell = int(request.form.get("shares"))
+                if shares_to_sell < 1:
+                    return apology(
+                        "Please submit 1 or more shares to sell",
+                        403
+                    )
+
+            except (TypeError, ValueError):
+                return apology(
+                    "Please submit a valid number of shares to sell",
+                    403
+                )
+
+            # Look up shares of selected stock user currently owns
+            # Looking up again in case has changed after initial display
+            try:
+                shares_owned = db.execute(
+                    ("SELECT DISTINCT stock_symbol, SUM(number_of_shares) "
+                     "AS total_shares "
+                     "FROM stock_transactions "
+                     "WHERE user_id = ? "
+                     "GROUP BY stock_symbol "
+                     "HAVING stock_symbol = ?"),
+                    session["user_id"],
+                    symbol
+                )[0]['total_shares']
+
+            # Error if don't own any of those stocks
+            except (IndexError, ValueError):
+                return apology("Sorry, you don't own any of those stocks", 403)
+
+            # Error if # of shares < 1 or shares selected > shares owned
+            if shares_to_sell > shares_owned:
+                return apology(
+                    "Sorry, you don't own enough of those shares to sell",
+                    403
+                )
+
+            # Add sale to transactions table
+            db.execute(
+                ("INSERT INTO stock_transaction (user_id, transaction_type, "
+                 "stock_symbol, number_of_shares, stock_price) "
+                 f"VALUES (?, ?, ?, ?, ?)"),
+                session["user_id"],
+                "sell",
+                stock_info["symbol"],
+                shares_to_sell,
+                stock_info["price"]
+            )
+
+        # Error if any queries fail
+        except RuntimeError:
+            return apology(
+                "Sorry, your stock(s) could not be sold. Please try again.",
+                403
+            )
+
+        # Give feedback & return to home page
+        flash(
+            (f"You successfully sold {shares_to_sell} share(s) of "
+             f"{stock_info['name']} stock for "
+             f"${shares_to_sell * stock_info['price']:,.2f}.")
+        )
+
         return redirect(url_for("index"))
