@@ -52,53 +52,40 @@ def index():
         total_wealth = 0
 
         # Get distinct stock symbols owned & the total # bought & sold
-        stocks_bought = db.execute(
-            ("SELECT DISTINCT stock_symbol, SUM(number_of_shares) "
-             "AS stocks_bought "
-             "FROM stock_transactions "
-             "WHERE user_id = ? AND transaction_type = 'buy' "
-             "GROUP BY stock_symbol"),
+        stocks_owned = db.execute(
+            "SELECT DISTINCT stock_symbol, \
+            (TOTAL(number_of_shares) FILTER(\
+                WHERE transaction_type = 'buy'\
+            )) - (TOTAL(number_of_shares) FILTER(\
+                WHERE transaction_type = 'sell'\
+            )) AS total_shares \
+            FROM stock_transactions \
+            WHERE user_id = ? \
+            GROUP BY stock_symbol \
+            HAVING (\
+                (TOTAL(number_of_shares) \
+                 FILTER(WHERE transaction_type = 'buy')) - \
+                (TOTAL(number_of_shares) \
+                 FILTER(WHERE transaction_type = 'sell'))\
+            ) > 0",
             session["user_id"]
         )
 
-        stocks_sold = db.execute(
-            ("SELECT DISTINCT stock_symbol, SUM(number_of_shares) "
-             "AS stocks_sold "
-             "FROM stock_transactions "
-             "WHERE user_id = ? AND transaction_type = 'sell' "
-             "GROUP BY stock_symbol"),
-            session["user_id"]
-        )
-
-        # Consolidate keys
-        for stock_bought in stocks_bought:
-            for stock_sold in stocks_sold:
-
-        stocks_owned = stocks_bought + stocks_sold
+        # Look up the current price for each stock & calc the total
+        # current value
         for stock in stocks_owned:
-            if "stocks_bought" not in stock:
-                stock["stocks_bought"] = 0
-            if "stocks_sold" not in stock:
-                stock["stocks_sold"] = 0
-            stock["total"] = stock["stocks_bought"] - stock["stocks_sold"]
+            stock_info = lookup(stock["stock_symbol"])
 
-        print(stocks_owned)
+            portfolio_item = {}
+            portfolio_item["symbol"] = stock_info["symbol"]
+            portfolio_item["shares"] = int(stock["total_shares"])
+            portfolio_item["company_name"] = stock_info["name"]
+            portfolio_item["current_price"] = stock_info["price"]
+            portfolio_item["total_value"] = portfolio_item["shares"] * \
+                portfolio_item["current_price"]
 
-        # # Look up the current price for each stock & calc the total
-        # # current value
-        # for stock in stocks_owned:
-        #     stock_info = lookup(stock["stock_symbol"])
-
-        #     portfolio_item = {}
-        #     portfolio_item["symbol"] = stock_info["symbol"]
-        #     portfolio_item["shares"] = int(stock["total_shares"])
-        #     portfolio_item["company_name"] = stock_info["name"]
-        #     portfolio_item["current_price"] = stock_info["price"]
-        #     portfolio_item["total_value"] = portfolio_item["shares"] * \
-        #         portfolio_item["current_price"]
-
-        #     total_wealth += portfolio_item["total_value"]
-        #     user_portfolio.append(portfolio_item)
+            total_wealth += portfolio_item["total_value"]
+            user_portfolio.append(portfolio_item)
 
         # Get user's current balance & grand total -- i.e., cash + total
         # value of stocks
@@ -183,21 +170,22 @@ def buy():
                 "SELECT cash FROM users WHERE id = ?",
                 session["user_id"])[0]["cash"]
             )
-            # Error if user balance < # shares * price
-            total_cost = number_of_shares * stock_info["price"]
 
-            if user_balance < total_cost:
+            # Error if user balance < # shares * price
+            buy_amount = number_of_shares * stock_info["price"]
+
+            if user_balance < buy_amount:
                 return apology(
                     ("Not enough cash to purchase stocks. Your balance is "
                      f"${user_balance:,.2f} & {number_of_shares} share(s) of "
-                     f"{stock_info['name']} costs ${total_cost:,.2f}."),
+                     f"{stock_info['name']} costs ${buy_amount:,.2f}."),
                     403
                 )
 
             # Calculate new balance
             # TODO: Is this less efficient than calculating in DB & retrieving
             # afterwards?
-            new_balance = user_balance - total_cost
+            new_balance = user_balance - buy_amount
 
             # Store purchase -- user_id, stock_symbol, number_of_shares,
             # stock_price
@@ -217,9 +205,9 @@ def buy():
             # Update user's balance
             db.execute(
                 ("UPDATE users "
-                 "SET cash = ? "
+                 "SET cash = cash - ? "
                  "WHERE id = ?"),
-                new_balance,
+                buy_amount,
                 session["user_id"]
             )
 
@@ -232,7 +220,7 @@ def buy():
 
         flash(
             (f"You successfully purchased {number_of_shares} share(s) of "
-             f"{stock_info['name']} for ${total_cost:,.2f}.")
+             f"{stock_info['name']} for ${buy_amount:,.2f}.")
         )
 
         return redirect(url_for("index"))
@@ -377,11 +365,23 @@ def sell():
         # TODO: Include company name for display to users -- better UX?
         try:
             stocks_owned = db.execute(
-                ("SELECT DISTINCT stock_symbol, SUM(number_of_shares) "
-                 "AS total_shares "
-                 "FROM stock_transactions "
-                 "WHERE user_id = ? "
-                 "GROUP BY stock_symbol"),
+                "SELECT DISTINCT stock_symbol, \
+                (TOTAL(number_of_shares) FILTER(\
+                    WHERE transaction_type = 'buy'\
+                )) - \
+                (TOTAL(number_of_shares) FILTER(\
+                    WHERE transaction_type = 'sell'\
+                )) \
+                AS total_shares \
+                FROM stock_transactions \
+                WHERE user_id = ? \
+                GROUP BY stock_symbol \
+                HAVING (\
+                    (TOTAL(number_of_shares) \
+                     FILTER(WHERE transaction_type = 'buy')) - \
+                    (TOTAL(number_of_shares) \
+                     FILTER(WHERE transaction_type = 'sell'))\
+                ) > 0",
                 session["user_id"]
             )
         except RuntimeError:
@@ -393,53 +393,60 @@ def sell():
         return render_template("sell-stocks.html", stocks_owned=stocks_owned)
 
     elif request.method == "POST":
+        # Error if user doesn't submit a stock "symbol"
+        symbol = request.form.get("symbol")
+        if not symbol:
+            return apology("Must submit a stock symbol to sell", 403)
+
+        # Error if stock symbol isn't valid
+        stock_info = lookup(symbol)
+        if not stock_info:
+            return apology("Sorry, that stock symbol is not valid", 403)
+
+        # Error if user doesn't submit shares to sell as "shares", isn't
+        # valid number, or # of shares < 1
         try:
-            # Error if user doesn't submit a stock "symbol"
-            symbol = request.form.get("symbol")
-            if not symbol:
-                return apology("Must submit a stock symbol to sell", 403)
-
-            # Error if stock symbol isn't valid
-            stock_info = lookup(symbol)
-            if not stock_info:
-                return apology("Sorry, that stock symbol is not valid", 403)
-
-            # Error if user doesn't submit shares to sell as "shares", isn't
-            # valid number, or # of shares < 1
-            try:
-                shares_to_sell = int(request.form.get("shares"))
-                if shares_to_sell < 1:
-                    return apology(
-                        "Please submit 1 or more shares to sell",
-                        403
-                    )
-
-            except (TypeError, ValueError):
+            shares_to_sell = int(request.form.get("shares"))
+            if shares_to_sell < 1:
                 return apology(
-                    "Please submit a valid number of shares to sell",
+                    "Please submit 1 or more shares to sell",
                     403
                 )
 
-            # Look up shares of selected stock user currently owns
-            # Looking up again in case has changed after initial display
-            try:
-                shares_owned = db.execute(
-                    ("SELECT DISTINCT stock_symbol, SUM(number_of_shares) "
-                     "AS total_shares "
-                     "FROM stock_transactions "
-                     "WHERE user_id = ? "
-                     "GROUP BY stock_symbol "
-                     "HAVING stock_symbol = ?"),
-                    session["user_id"],
-                    symbol
-                )[0]['total_shares']
+        except (TypeError, ValueError):
+            return apology(
+                "Please submit a valid number of shares to sell",
+                403
+            )
 
-            # Error if don't own any of those stocks
-            except (IndexError, ValueError):
-                return apology("Sorry, you don't own any of those stocks", 403)
+        # Look up shares of selected stock user currently owns
+        # Looking up again in case has changed after initial display
+        try:
+            stocks_owned = db.execute(
+                "SELECT DISTINCT stock_symbol, \
+                (TOTAL(number_of_shares) FILTER(\
+                    WHERE transaction_type = 'buy'\
+                )) - \
+                (TOTAL(number_of_shares) FILTER(\
+                    WHERE transaction_type = 'sell'\
+                )) \
+                AS total_shares \
+                FROM stock_transactions \
+                WHERE user_id = ? \
+                GROUP BY stock_symbol \
+                HAVING stock_symbol = ? \
+                AND (\
+                    (TOTAL(number_of_shares) \
+                     FILTER(WHERE transaction_type = 'buy')) - \
+                    (TOTAL(number_of_shares) \
+                     FILTER(WHERE transaction_type = 'sell'))\
+                ) > 0",
+                session["user_id"],
+                symbol
+            )[0]['total_shares']
 
             # Error if # of shares < 1 or shares selected > shares owned
-            if shares_to_sell > shares_owned:
+            if shares_to_sell > stocks_owned:
                 return apology(
                     "Sorry, you don't own enough of those shares to sell",
                     403
@@ -457,8 +464,22 @@ def sell():
                 stock_info["price"]
             )
 
+            # Update user cash balance
+            sell_amount = stock_info["price"] * shares_to_sell
+            db.execute(
+                ("UPDATE users "
+                 "SET cash = cash + ? "
+                 "WHERE id = ?"),
+                sell_amount,
+                session["user_id"]
+            )
+
+        # Error if don't own any of those stocks
+        except (TypeError, ValueError):
+            return apology("Sorry, you don't own any of those stocks", 403)
+
         # Error if any queries fail
-        except RuntimeError:
+        except (IndexError, RuntimeError):
             return apology(
                 "Sorry, your stock(s) could not be sold. Please try again.",
                 403

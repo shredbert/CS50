@@ -5,7 +5,6 @@
     document.querySelector('#sharesOwnedGroup').removeAttribute('hidden');
 
     const refreshStockCount = () => {
-        console.log('farts');
         const stockSymbol = document.querySelector('#stockSelector').value;
         if (stockSymbol) {
             const sharesOwned = document
