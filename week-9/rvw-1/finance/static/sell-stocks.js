@@ -19,6 +19,9 @@
     // Call immediately to take effect on back/forward
     refreshStockCount();
 
+    // TODO: Figure out event to call refresh on when back button pressed so
+    // fields auto-populated
+
     // Populate field when different stock symbols are selected
     document.querySelector('#stockSelector').addEventListener('change', () => {
         refreshStockCount();
