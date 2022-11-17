@@ -193,9 +193,9 @@ def buy():
             # Store purchase -- user_id, stock_symbol, number_of_shares,
             # stock_price
             db.execute(
-                ("INSERT INTO stock_transactions (user_id, transaction_type, "
-                 "stock_symbol, number_of_shares, stock_price) "
-                 "VALUES (?, ?, ?, ?, ?)"),
+                "INSERT INTO stock_transactions (user_id, transaction_type, \
+                 stock_symbol, number_of_shares, stock_price) \
+                 VALUES (?, ?, ?, ?, ?)",
                 session["user_id"],
                 "buy",
                 # Use symbol retrieved from API -- already formatted correctly
@@ -207,9 +207,9 @@ def buy():
 
             # Update user's balance
             db.execute(
-                ("UPDATE users "
-                 "SET cash = cash - ? "
-                 "WHERE id = ?"),
+                "UPDATE users \
+                 SET cash = cash - ? \
+                 WHERE id = ?",
                 buy_amount,
                 session["user_id"]
             )
@@ -436,16 +436,15 @@ def sell():
                         WHERE transaction_type = 'sell'\
                     )) AS INT\
                 ) AS total_shares \
-                AS total_shares \
                 FROM stock_transactions \
-                WHERE user_id = ? \
+                WHERE user_id = ?\
                 GROUP BY stock_symbol \
-                HAVING stock_symbol = ? \
+                HAVING stock_symbol = ?\
                 AND (\
                     (TOTAL(number_of_shares) \
-                     FILTER(WHERE transaction_type = 'buy')) - \
+                        FILTER(WHERE transaction_type = 'buy')) - \
                     (TOTAL(number_of_shares) \
-                     FILTER(WHERE transaction_type = 'sell'))\
+                        FILTER(WHERE transaction_type = 'sell'))\
                 ) > 0",
                 session["user_id"],
                 symbol
@@ -460,9 +459,10 @@ def sell():
 
             # Add sale to transactions table
             db.execute(
-                ("INSERT INTO stock_transactions (user_id, transaction_type, "
-                 "stock_symbol, number_of_shares, stock_price) "
-                 f"VALUES (?, ?, ?, ?, ?)"),
+                "INSERT INTO stock_transactions (\
+                    user_id, transaction_type, stock_symbol, \
+                    number_of_shares, stock_price\
+                 ) VALUES (?, ?, ?, ?, ?)",
                 session["user_id"],
                 "sell",
                 stock_info["symbol"],
@@ -473,9 +473,9 @@ def sell():
             # Update user cash balance
             sell_amount = stock_info["price"] * shares_to_sell
             db.execute(
-                ("UPDATE users "
-                 "SET cash = cash + ? "
-                 "WHERE id = ?"),
+                "UPDATE users \
+                 SET cash = cash + ? \
+                 WHERE id = ?",
                 sell_amount,
                 session["user_id"]
             )
