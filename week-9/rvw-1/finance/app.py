@@ -54,11 +54,14 @@ def index():
         # Get distinct stock symbols owned & the total # bought & sold
         stocks_owned = db.execute(
             "SELECT DISTINCT stock_symbol, \
-            (TOTAL(number_of_shares) FILTER(\
-                WHERE transaction_type = 'buy'\
-            )) - (TOTAL(number_of_shares) FILTER(\
-                WHERE transaction_type = 'sell'\
-            )) AS total_shares \
+            CAST(\
+                (TOTAL(number_of_shares) FILTER(\
+                    WHERE transaction_type = 'buy'\
+                )) - \
+                (TOTAL(number_of_shares) FILTER(\
+                    WHERE transaction_type = 'sell'\
+                )) AS INT\
+            ) AS total_shares \
             FROM stock_transactions \
             WHERE user_id = ? \
             GROUP BY stock_symbol \
@@ -366,13 +369,14 @@ def sell():
         try:
             stocks_owned = db.execute(
                 "SELECT DISTINCT stock_symbol, \
-                (TOTAL(number_of_shares) FILTER(\
-                    WHERE transaction_type = 'buy'\
-                )) - \
-                (TOTAL(number_of_shares) FILTER(\
-                    WHERE transaction_type = 'sell'\
-                )) \
-                AS total_shares \
+                CAST(\
+                    (TOTAL(number_of_shares) FILTER(\
+                        WHERE transaction_type = 'buy'\
+                    )) - \
+                    (TOTAL(number_of_shares) FILTER(\
+                        WHERE transaction_type = 'sell'\
+                    )) AS INT\
+                ) AS total_shares \
                 FROM stock_transactions \
                 WHERE user_id = ? \
                 GROUP BY stock_symbol \
@@ -424,12 +428,14 @@ def sell():
         try:
             stocks_owned = db.execute(
                 "SELECT DISTINCT stock_symbol, \
-                (TOTAL(number_of_shares) FILTER(\
-                    WHERE transaction_type = 'buy'\
-                )) - \
-                (TOTAL(number_of_shares) FILTER(\
-                    WHERE transaction_type = 'sell'\
-                )) \
+                CAST(\
+                    (TOTAL(number_of_shares) FILTER(\
+                        WHERE transaction_type = 'buy'\
+                    )) - \
+                    (TOTAL(number_of_shares) FILTER(\
+                        WHERE transaction_type = 'sell'\
+                    )) AS INT\
+                ) AS total_shares \
                 AS total_shares \
                 FROM stock_transactions \
                 WHERE user_id = ? \
