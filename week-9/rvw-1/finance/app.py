@@ -1,3 +1,5 @@
+# TODO: Verify all try/except blocks make sense -- consolidate all within each
+# function? Or keep sprinkled throughout?
 import os
 
 from cs50 import SQL
@@ -49,31 +51,54 @@ def index():
         user_portfolio = []
         total_wealth = 0
 
-        # Get distinct stock symbols owned & the total # of each
-        stocks_owned = db.execute(
+        # Get distinct stock symbols owned & the total # bought & sold
+        stocks_bought = db.execute(
             ("SELECT DISTINCT stock_symbol, SUM(number_of_shares) "
-             "AS total_shares "
+             "AS stocks_bought "
              "FROM stock_transactions "
-             "WHERE user_id = ? "
+             "WHERE user_id = ? AND transaction_type = 'buy' "
              "GROUP BY stock_symbol"),
             session["user_id"]
         )
 
-        # Look up the current price for each stock & calc the total
-        # current value
+        stocks_sold = db.execute(
+            ("SELECT DISTINCT stock_symbol, SUM(number_of_shares) "
+             "AS stocks_sold "
+             "FROM stock_transactions "
+             "WHERE user_id = ? AND transaction_type = 'sell' "
+             "GROUP BY stock_symbol"),
+            session["user_id"]
+        )
+
+        # Consolidate keys
+        for stock_bought in stocks_bought:
+            for stock_sold in stocks_sold:
+
+        stocks_owned = stocks_bought + stocks_sold
         for stock in stocks_owned:
-            stock_info = lookup(stock["stock_symbol"])
+            if "stocks_bought" not in stock:
+                stock["stocks_bought"] = 0
+            if "stocks_sold" not in stock:
+                stock["stocks_sold"] = 0
+            stock["total"] = stock["stocks_bought"] - stock["stocks_sold"]
 
-            portfolio_item = {}
-            portfolio_item["symbol"] = stock_info["symbol"]
-            portfolio_item["shares"] = int(stock["total_shares"])
-            portfolio_item["company_name"] = stock_info["name"]
-            portfolio_item["current_price"] = stock_info["price"]
-            portfolio_item["total_value"] = portfolio_item["shares"] * \
-                portfolio_item["current_price"]
+        print(stocks_owned)
 
-            total_wealth += portfolio_item["total_value"]
-            user_portfolio.append(portfolio_item)
+        # # Look up the current price for each stock & calc the total
+        # # current value
+        # for stock in stocks_owned:
+        #     stock_info = lookup(stock["stock_symbol"])
+
+        #     portfolio_item = {}
+        #     portfolio_item["symbol"] = stock_info["symbol"]
+        #     portfolio_item["shares"] = int(stock["total_shares"])
+        #     portfolio_item["company_name"] = stock_info["name"]
+        #     portfolio_item["current_price"] = stock_info["price"]
+        #     portfolio_item["total_value"] = portfolio_item["shares"] * \
+        #         portfolio_item["current_price"]
+
+        #     total_wealth += portfolio_item["total_value"]
+        #     user_portfolio.append(portfolio_item)
 
         # Get user's current balance & grand total -- i.e., cash + total
         # value of stocks
@@ -86,10 +111,17 @@ def index():
         user_wealth["cash"] = user_cash
         user_wealth["total"] = total_wealth
 
-    # Error if no results
+    # Error if no results/DB error
     except (IndexError, RuntimeError):
         return apology(
             "Sorry, your portfolio could not be fetched -- please try again.",
+            400
+        )
+    # Error if can't convert # of stocks to int
+    except (TypeError, ValueError):
+        return apology(
+            ("Sorry, an error was found with your portfolio data -- please "
+             "try again."),
             400
         )
 
@@ -415,7 +447,7 @@ def sell():
 
             # Add sale to transactions table
             db.execute(
-                ("INSERT INTO stock_transaction (user_id, transaction_type, "
+                ("INSERT INTO stock_transactions (user_id, transaction_type, "
                  "stock_symbol, number_of_shares, stock_price) "
                  f"VALUES (?, ?, ?, ?, ?)"),
                 session["user_id"],
