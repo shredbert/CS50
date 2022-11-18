@@ -522,9 +522,43 @@ def settings():
 @app.route("/update-password", methods=["POST"])
 def update_password():
     try:
+        # Check all fields submitted
+        usr_existing_pw = request.form.get("existing")
+        new_pw = request.form.get("new")
+        confirm_pw = request.form.get("confirm")
 
-        flash("Your password has been successfully updated -- please log out\
-               & in again to confirm your changes")
+        if not usr_existing_pw or not new_pw or not confirm_pw:
+            return apology("Please submit all fields")
+
+        # Fetch current password & dehash
+        db_existing_pw = db.execute(
+            "SELECT hash FROM users WHERE id = ?",
+            session["user_id"]
+        )[0]["hash"]
+
+        # Check existing DB & user PWs match
+        if not check_password_hash(db_existing_pw, usr_existing_pw):
+            return apology("Sorry, your existing password is incorrect")
+
+        # Check "new" & "confirm" are equivalent
+        if new_pw != confirm_pw:
+            return apology(
+                "Sorry, your new password was not confirmed correctly"
+            )
+
+        # Hash "new" & replace PW in DB
+        db.execute(
+            "UPDATE users \
+             SET hash = ? \
+             WHERE id = ?",
+            generate_password_hash(new_pw),
+            session["user_id"]
+        )
+
+        # TODO: Log user out & take back to login screen to ensure they update
+        # their password (good if tracking using browser/PW manager
+        flash("Your password has been successfully updated.")
         return redirect(url_for("index"))
-    # except:
-    #     return apology("error")
+
+    except (IndexError, RuntimeError):
+        return apology("Sorry, your password could not be updated")
