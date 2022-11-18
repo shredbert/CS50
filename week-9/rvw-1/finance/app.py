@@ -511,3 +511,20 @@ def sell():
         )
 
         return redirect(url_for("index"))
+
+
+@app.route("/settings")
+def settings():
+    if request.method == "GET":
+        return render_template("user-settings.html")
+
+
+@app.route("/update-password", methods=["POST"])
+def update_password():
+    try:
+
+        flash("Your password has been successfully updated -- please log out\
+               & in again to confirm your changes")
+        return redirect(url_for("index"))
+    # except:
+    #     return apology("error")
