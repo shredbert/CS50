@@ -28,12 +28,12 @@ nav .navbar-brand .green
 
 @media (min-width: 576px) {
     .table-container {
-        width: 75%;
+        width: 80%;
     }
 }
 
 @media (min-width: 992px) {
     .table-container {
-        width: 50%;
+        width: 60%;
     }
 }

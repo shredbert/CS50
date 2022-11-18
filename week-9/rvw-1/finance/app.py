@@ -1,5 +1,3 @@
-# TODO: Verify all try/except blocks make sense -- consolidate all within each
-# function? Or keep sprinkled throughout?
 import os
 
 from cs50 import SQL
@@ -40,6 +38,9 @@ def after_request(response):
     response.headers["Expires"] = 0
     response.headers["Pragma"] = "no-cache"
     return response
+
+# TODO: Verify all try/except blocks make sense -- consolidate all within each
+# function? Or keep sprinkled throughout?
 
 
 @app.route("/")
@@ -198,7 +199,7 @@ def buy():
                  VALUES (?, ?, ?, ?, ?)",
                 session["user_id"],
                 "buy",
-                # Use symbol retrieved from API -- already formatted correctly
+                # Use symbol retrieved from API -- stored in uppercase
                 # TODO: Better than just uppercasing?
                 stock_info['symbol'],
                 number_of_shares,
@@ -233,10 +234,12 @@ def buy():
 @login_required
 def history():
     """Show history of transactions"""
+    # TODO: Format time to be more user-friendly in query?
     transactions = db.execute(
         "SELECT stock_symbol AS symbol, transaction_type AS type, \
             transaction_price AS price, number_of_shares AS shares, \
-            DATE(transaction_time) AS date, TIME(transaction_time) AS time \
+            DATE(transaction_time) AS transaction_date, \
+            TIME(transaction_time, 'localtime') AS transaction_time \
          FROM stock_transactions \
          WHERE user_id = ? \
          ORDER BY transaction_time",
