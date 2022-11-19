@@ -5,24 +5,43 @@
 {% endblock %}
 
 {% block main %}
+    <!-- TODO: Change layout to use accordion/tabs for each section? -->
     <h1>User Settings</h1>
 
     <div class="mx-auto my-4 text-start w-50">
         <h2>Change Password</h2>
         <form action="/update-password" class="form" method="post">
             <div class="mb-3">
-                <label class="form-label">Existing Password</label>
+                <label class="form-label" for="existing">Existing Password</label>
                 <input class="form-control" name="existing" required type="password">
             </div>
             <div class="mb-3">
-                <label class="form-label">New Password</label>
+                <label class="form-label" for="new">New Password</label>
                 <input class="form-control" name="new" required type="password">
             </div>
             <div class="mb-3">
-                <label class="form-label">Confirm New Password</label>
+                <label class="form-label" for="confirm">Confirm New Password</label>
                 <input class="form-control" name="confirm" required type="password">
             </div>
             <button class="btn btn-primary">Update Password</button>
         </form>
     </div>
+
+    <div class="mx-auto my-4 text-start w-50">
+        <h2>Add Cash</h2>
+        <form action="/add-cash" class="form" method="post">
+            {% if balance %}
+                <div class="mb-3">
+                    <label class="form-label" for="current-balance">Current Balance</label>
+                    <input class="form-control" disabled name="current-balance" type="text" value="{{ "${:,.2f}".format(balance) }}">
+                </div>
+            {% endif %}
+            <div class="mb-3">
+                <label class="form-label" for="amount">Amount to Add</label>
+                <input class="form-control" min="0.01" name="amount" required step="0.01" type="number">
+            </div>
+            <button class="btn btn-primary">Add Cash</button>
+        </form>
+    </div>
+
 {% endblock %}

@@ -9,6 +9,9 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from helpers import apology, login_required, lookup, usd
 
+# TODO: Verify all try/except blocks make sense -- consolidate all within each
+# function? Or keep sprinkled throughout?
+
 # Configure application
 app = Flask(__name__)
 
@@ -38,10 +41,6 @@ def after_request(response):
     response.headers["Expires"] = 0
     response.headers["Pragma"] = "no-cache"
     return response
-
-# TODO: Verify all try/except blocks make sense -- consolidate all within each
-# function? Or keep sprinkled throughout?
-
 
 @app.route("/")
 @login_required
@@ -320,6 +319,8 @@ def quote():
             return render_template("search-quotes.html")
             # Better UX to take back to message for re-searching & giving
             # feedback there
+            # Keep in case errors encountered with flashing instead of
+            # apologizing
             # return apology("That symbol is invalid", 403)
 
         return render_template("quote-results.html", quote=lookup_results)
@@ -516,7 +517,22 @@ def sell():
 @app.route("/settings")
 def settings():
     if request.method == "GET":
-        return render_template("user-settings.html")
+        try:
+            # Fetch current balance to show in form for adding cash
+            balance = db.execute(
+                "SELECT cash \
+                 FROM users \
+                 WHERE id = ?",
+                session["user_id"]
+            )[0]["cash"]
+
+            return render_template("user-settings.html", balance=balance)
+
+        except (KeyError, RuntimeError):
+            return apology(
+                ("Sorry, your settings could not be loaded -- please "
+                 "try again later.")
+            )
 
 
 @app.route("/update-password", methods=["POST"])
@@ -555,10 +571,44 @@ def update_password():
             session["user_id"]
         )
 
-        # TODO: Log user out & take back to login screen to ensure they update
-        # their password (good if tracking using browser/PW manager
+        # TODO: Log user out & back in instead?
         flash("Your password has been successfully updated.")
         return redirect(url_for("index"))
 
     except (IndexError, RuntimeError):
         return apology("Sorry, your password could not be updated")
+
+
+@app.route("/add-cash", methods=["POST"])
+def add_cash():
+    try:
+        # Get amount to add
+        amount_to_add = float(request.form.get("amount"))
+
+        # Check amount to add > 0
+        if amount_to_add <= 0:
+            return apology(
+                ("Please submit a positive dollar value to add to your "
+                 "balance"),
+                400
+            )
+
+    # Check amount to add submitted & valid #
+    except (ValueError):
+        return apology("Please submit an amount to add as a valid number", 400)
+
+    # Add submitted amount to cash balance
+    try:
+        db.execute(
+            "UPDATE users \
+             SET cash = cash + ? \
+             WHERE id = ?",
+            amount_to_add,
+            session["user_id"]
+        )
+
+        flash(f"You successfully added ${amount_to_add:,.2f} to your account.")
+        return redirect(url_for("index"))
+
+    except (IndexError, RuntimeError):
+        return apology("Sorry, your balance could not be updated", 400)
