@@ -67,6 +67,7 @@ def usd(value):
 
 # Check that password is 8+ chars with 1 capital, 1 number, & 1 symbol
 def is_valid_password(password):
-    if len(password) >= 8 or re.search("^.*$", password):
-        return True
-    return False
+    regex = "^(?=[A-Z])(?=[1-9])$"
+    if len(password) < 8 or re.search(regex, password) is None:
+        return False
+    return True

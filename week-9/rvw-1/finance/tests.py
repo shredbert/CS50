@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 from helpers import is_valid_password
 
-assert is_valid_password("test") is False, "Not enough characters"
-assert is_valid_password("test") is False, "No caps"
-assert is_valid_password("test") is False, "No nums"
-assert is_valid_password("test") is False, "No symbols"
-assert is_valid_password("test") is False, "Contains spaces (invalid char)"
+print("Testing passwords...")
+
+assert not is_valid_password("Test1!"), "Not enough characters failed"
+assert not is_valid_password("test123!"), "No caps failed"
+assert not is_valid_password("Testonetwothree!"), "No nums failed"
+assert not is_valid_password("Test1234"), "No symbols failed"
+assert not is_valid_password("Test 123!"), "Contains spaces (invalid char) failed"
+
+print("Tests pass")
