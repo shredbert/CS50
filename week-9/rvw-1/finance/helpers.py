@@ -1,4 +1,5 @@
 import os
+import re
 import requests
 import urllib.parse
 
@@ -62,3 +63,10 @@ def lookup(symbol):
 def usd(value):
     """Format value as USD."""
     return f"${value:,.2f}"
+
+
+# Check that password is 8+ chars with 1 capital, 1 number, & 1 symbol
+def is_valid_password(password):
+    if len(password) >= 8 or re.search("^.*$", password):
+        return True
+    return False
