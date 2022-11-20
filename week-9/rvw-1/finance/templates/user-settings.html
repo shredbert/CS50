@@ -13,15 +13,15 @@
         <form action="/update-password" class="form" method="post">
             <div class="mb-3">
                 <label class="form-label" for="existing">Existing Password</label>
-                <input class="form-control" name="existing" required type="password">
+                <input autocomplete="current-password" class="form-control" name="existing" required type="password">
             </div>
             <div class="mb-3">
                 <label class="form-label" for="new">New Password</label>
-                <input class="form-control" name="new" required type="password">
+                <input autocomplete="new-password" class="form-control" name="new" required type="password">
             </div>
             <div class="mb-3">
                 <label class="form-label" for="confirm">Confirm New Password</label>
-                <input class="form-control" name="confirm" required type="password">
+                <input autocomplete="new-password" class="form-control" name="confirm" required type="password">
             </div>
             <button class="btn btn-primary">Update Password</button>
         </form>
@@ -29,7 +29,7 @@
 
     <div class="mx-auto my-4 text-start w-50">
         <h2>Add Cash</h2>
-        <form action="/add-cash" class="form" method="post">
+        <form action="/add-cash" autucomplete="off" class="form" method="post">
             {% if balance %}
                 <div class="mb-3">
                     <label class="form-label" for="current-balance">Current Balance</label>

@@ -12,11 +12,11 @@
         </div>
         <div class="mb-3">
             <label class="form-label" for="username">Password</label>
-            <input class="form-control" name="password" required placeholder="Password" type="password">
+            <input autocomplete="new-password" class="form-control" title="Password must be 8+ characters & contain 1 at least capital, number, & symbol." minlength="8" name="password" required placeholder="Password" type="password">
         </div>
         <div class="mb-3">
             <label class="form-label" for="confirmation">Confirm Password</label>
-            <input class="form-control" name="confirmation" required placeholder="Confirm password" type="password">
+            <input autocomplete="new-password" class="form-control" name="confirmation" required placeholder="Confirm password" type="password">
         </div>
         <button class="btn btn-primary">Register</button>
     </form>
