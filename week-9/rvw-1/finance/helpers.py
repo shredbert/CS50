@@ -65,15 +65,19 @@ def usd(value):
     return f"${value:,.2f}"
 
 
-# Check that password is 8+ chars with 1 capital, 1 number, 1 symbol, & no
-# spaces
+# Check that password is 8+ chars with 1 capital, 1 lowercase, 1 number, & 1
+# symbol
+# Accept all ascii symbols (30 total) -- `~!@#$%^&*()-_=+[{]}\|'",<.>/?
+# Reference for regex troubleshooting:
+# https://devsheet.com/code-snippet/validate-password-with-and-without-regex-in-python/#:~:text=Validate%20Password%20using%20regex%20in%20python%201%201.,4.%20Password%20must%20contain%20at%20least%20one%20number.
 def is_valid_password(password):
-    regex = r"^.+(?=[A-Z0-9])(?!\s)$"
+    regex = r"^(?=.+\S{8,}$)"
     print("Password:", password)
 
-    if len(password) < 8 or not re.search(regex, password):
-        print("Bad!")
+    # if len(password) < 8 or not re.search(regex, password):
+    if re.search(regex, password):
+        print("Invalid")
         return False
 
-    print("Good!")
+    print("Valid")
     return True
