@@ -105,14 +105,14 @@ def index():
     except (IndexError, RuntimeError):
         return apology(
             "Sorry, your portfolio could not be fetched -- please try again.",
-            400
+            500
         )
     # Error if can't convert # of stocks to int
     except (TypeError, ValueError):
         return apology(
             ("Sorry, an error was found with your portfolio data -- please "
              "try again."),
-            400
+            500
         )
 
     return render_template(
@@ -136,14 +136,14 @@ def buy():
 
         # Error if symbol missing
         if not stock_symbol:
-            return apology("Please submit a symbol", 403)
+            return apology("Please submit a stock symbol", 400)
 
         # Look up stock info
         stock_info = lookup(stock_symbol)
 
         # Error if symbol invalid
         if not lookup(stock_symbol):
-            return apology("Please submit a valid stock symbol", 403)
+            return apology("Please submit a valid stock symbol", 400)
 
         try:
             # Get num of shares to buy
@@ -151,20 +151,20 @@ def buy():
 
             # Error if # shares missing
             if not number_of_shares:
-                return apology("Please enter the number of shares to buy", 403)
+                return apology("Please enter the number of shares to buy", 400)
             # Error if # shares < 1
             elif (number_of_shares < 1):
                 return apology(
                     ("Please submit a number of shares to buy that is greater "
                      "than 0"),
-                    403
+                    400
                 )
 
         # Error if # shares not valid int
         except (TypeError, ValueError):
             return apology(
                 "Please submit the number of shares to buy as a valid number",
-                403
+                400
             )
 
         try:
@@ -182,7 +182,7 @@ def buy():
                     ("Not enough cash to purchase stocks. Your balance is "
                      f"${user_balance:,.2f} & {number_of_shares} share(s) of "
                      f"{stock_info['name']} costs ${buy_amount:,.2f}."),
-                    403
+                    400
                 )
 
             # Calculate new balance
@@ -218,7 +218,7 @@ def buy():
             return apology(
                 ("Sorry, your purchase could not be completed -- please try "
                  "again"),
-                403
+                500
             )
 
         flash(
@@ -310,7 +310,7 @@ def quote():
         stock_symbol = request.form.get("symbol")
 
         if not stock_symbol:
-            return apology("Must input a stock symbol to search", 403)
+            return apology("Must input a stock symbol to search", 400)
 
         lookup_results = lookup(stock_symbol)
 
@@ -321,7 +321,7 @@ def quote():
             # feedback there
             # Keep in case errors encountered with flashing instead of
             # apologizing
-            # return apology("That symbol is invalid", 403)
+            # return apology("That symbol is invalid", 400)
 
         return render_template("quote-results.html", quote=lookup_results)
 
@@ -335,13 +335,17 @@ def register():
         if (not request.form.get("username") or
                 not request.form.get("password") or
                 not request.form.get("confirmation")):
-            return apology("All fields required", 403)
+            return apology("All fields required", 400)
 
         elif request.form.get("password") != request.form.get("confirmation"):
-            return apology("Passwords do not match", 403)
+            return apology("Passwords do not match", 400)
 
         elif not is_valid_password(request.form.get("password")):
-            return apology("Password is not valid", 403)
+            return apology(
+                ("Password must be 8+ chars & have at least 1 lower, 1 cap, 1 "
+                 "num, & 1 symbol"),
+                400
+            )
 
         username = request.form.get("username")
         password = generate_password_hash(request.form.get("password"))
@@ -353,7 +357,7 @@ def register():
             )
 
             if existing_user_id:
-                return apology("That username already exists", 403)
+                return apology("That username already exists", 500)
 
             db.execute(
                 "INSERT INTO users (username, hash) VALUES (?, ?)",
@@ -365,7 +369,7 @@ def register():
             return apology(
                 ("Sorry, your account could not be registered. Please try "
                  "again."),
-                403
+                500
             )
 
         flash(f"Hi, {username}! You've registered successfully.")
@@ -407,7 +411,7 @@ def sell():
         except RuntimeError:
             return apology(
                 "Sorry, your stocks could not be found -- please try again.",
-                403
+                500
             )
 
         return render_template("sell-stocks.html", stocks_owned=stocks_owned)
@@ -416,12 +420,12 @@ def sell():
         # Error if user doesn't submit a stock "symbol"
         symbol = request.form.get("symbol")
         if not symbol:
-            return apology("Must submit a stock symbol to sell", 403)
+            return apology("Must submit a stock symbol to sell", 400)
 
         # Error if stock symbol isn't valid
         stock_info = lookup(symbol)
         if not stock_info:
-            return apology("Sorry, that stock symbol is not valid", 403)
+            return apology("Sorry, that stock symbol is not valid", 400)
 
         # Error if user doesn't submit shares to sell as "shares", isn't
         # valid number, or # of shares < 1
@@ -430,13 +434,13 @@ def sell():
             if shares_to_sell < 1:
                 return apology(
                     "Please submit 1 or more shares to sell",
-                    403
+                    400
                 )
 
         except (TypeError, ValueError):
             return apology(
                 "Please submit a valid number of shares to sell",
-                403
+                400
             )
 
         # Look up shares of selected stock user currently owns
@@ -470,7 +474,7 @@ def sell():
             if shares_to_sell > stocks_owned:
                 return apology(
                     "Sorry, you don't own enough of those shares to sell",
-                    403
+                    400
                 )
 
             # Add sale to transactions table
@@ -498,13 +502,13 @@ def sell():
 
         # Error if don't own any of those stocks
         except (TypeError, ValueError):
-            return apology("Sorry, you don't own any of those stocks", 403)
+            return apology("Sorry, you don't own any of those stocks", 400)
 
         # Error if any queries fail
         except (IndexError, RuntimeError):
             return apology(
                 "Sorry, your stock(s) could not be sold. Please try again.",
-                403
+                500
             )
 
         # Give feedback & return to home page
@@ -534,7 +538,8 @@ def settings():
         except (KeyError, RuntimeError):
             return apology(
                 ("Sorry, your settings could not be loaded -- please "
-                 "try again later.")
+                 "try again later."),
+                500
             )
 
 
@@ -547,7 +552,7 @@ def update_password():
         confirm_pw = request.form.get("confirm")
 
         if not usr_existing_pw or not new_pw or not confirm_pw:
-            return apology("Please submit all fields")
+            return apology("Please submit all fields", 400)
 
         # Fetch current password & dehash
         db_existing_pw = db.execute(
@@ -557,24 +562,27 @@ def update_password():
 
         # Check existing DB & user PWs match
         if not check_password_hash(db_existing_pw, usr_existing_pw):
-            return apology("Sorry, your existing password is incorrect")
+            return apology("Sorry, your existing password is incorrect", 400)
 
         # Check "new" & "confirm" are equivalent
         elif new_pw != confirm_pw:
             return apology(
-                "Sorry, your new password was not confirmed correctly"
+                "Sorry, your new & confirmation passwords do not match", 400
             )
 
         # Check existing & new PWs don't match
         elif usr_existing_pw == new_pw:
             return apology(
                 ("Please enter a new password that is different from your old "
-                 "one")
+                 "one"),
+                400
             )
 
         elif not is_valid_password(new_pw):
             return apology(
-                "Please enter a valid password"
+                ("Password must be 8+ chars & have at least 1 lower, 1 cap, 1 "
+                 "num, & 1 symbol"),
+                400
             )
 
         # Hash "new" & replace PW in DB
@@ -586,12 +594,13 @@ def update_password():
             session["user_id"]
         )
 
-        # TODO: Log user out & back in instead?
+        # TODO: Log user out & back in to ensure they've stored it in their PW
+        # manager but ISSUE: How to provide feedback after signing them out?
         flash("Your password has been successfully updated.")
         return redirect(url_for("index"))
 
     except (IndexError, RuntimeError):
-        return apology("Sorry, your password could not be updated")
+        return apology("Sorry, your password could not be updated", 500)
 
 
 @app.route("/add-cash", methods=["POST"])
@@ -626,4 +635,4 @@ def add_cash():
         return redirect(url_for("index"))
 
     except (IndexError, RuntimeError):
-        return apology("Sorry, your balance could not be updated", 400)
+        return apology("Sorry, your balance could not be updated", 500)
