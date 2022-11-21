@@ -340,6 +340,9 @@ def register():
         elif request.form.get("password") != request.form.get("confirmation"):
             return apology("Passwords do not match", 403)
 
+        elif not is_valid_password(request.form.get("password")):
+            return apology("Password is not valid", 403)
+
         username = request.form.get("username")
         password = generate_password_hash(request.form.get("password"))
 
@@ -557,9 +560,21 @@ def update_password():
             return apology("Sorry, your existing password is incorrect")
 
         # Check "new" & "confirm" are equivalent
-        if new_pw != confirm_pw:
+        elif new_pw != confirm_pw:
             return apology(
                 "Sorry, your new password was not confirmed correctly"
+            )
+
+        # Check existing & new PWs don't match
+        elif usr_existing_pw == new_pw:
+            return apology(
+                ("Please enter a new password that is different from your old "
+                 "one")
+            )
+
+        elif not is_valid_password(new_pw):
+            return apology(
+                "Please enter a valid password"
             )
 
         # Hash "new" & replace PW in DB

@@ -12,7 +12,7 @@
         </div>
         <div class="mb-3">
             <label class="form-label" for="username">Password</label>
-            <input autocomplete="new-password" class="form-control" title="Password must be 8+ characters & contain 1 at least capital, number, & symbol." minlength="8" name="password" required placeholder="Password" type="password">
+            <input autocomplete="new-password" class="form-control" minlength="8" name="password" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z\d\s]).{8,}$" placeholder="Password" required title="Password must be 8+ chars & contain at least 1 capital, lower, number, & symbol." type="password">
         </div>
         <div class="mb-3">
             <label class="form-label" for="confirmation">Confirm Password</label>
