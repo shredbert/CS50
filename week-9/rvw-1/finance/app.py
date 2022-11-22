@@ -2,7 +2,7 @@ import os
 
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, \
-    url_for
+    url_for, jsonify
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -128,9 +128,11 @@ def buy():
     """Buy shares of stock"""
 
     if request.method == "GET":
+
         return render_template("buy-stocks.html")
 
     elif request.method == "POST":
+
         # Get stock symbol -- case DOESN'T matter to API
         stock_symbol = request.form.get("symbol")
 
@@ -192,7 +194,7 @@ def buy():
 
             # Store purchase -- user_id, stock_symbol, number_of_shares,
             # stock_price
-            db.execute(
+            new_transaction = db.execute(
                 "INSERT INTO stock_transactions (user_id, transaction_type, \
                  stock_symbol, number_of_shares, stock_price) \
                  VALUES (?, ?, ?, ?, ?)",
@@ -221,11 +223,12 @@ def buy():
                 500
             )
 
-        flash(
-            (f"You successfully purchased {number_of_shares} share(s) of "
-             f"{stock_info['name']} for ${buy_amount:,.2f}.")
+        success_message = (
+            f"You successfully purchased {number_of_shares} share(s) of "
+            f"{stock_info['name']} for ${buy_amount:,.2f}."
         )
 
+        flash(success_message)
         return redirect(url_for("index"))
 
 

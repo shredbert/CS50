@@ -42,8 +42,16 @@
                                 <td class="text-end">{{ stock["shares"] }}</td>
                                 <td class="text-end">{{ "${:,.2f}".format(stock["current_price"]) }}</td>
                                 <td class="text-end">{{ "${:,.2f}".format(stock["total_value"]) }}</td>
-                                <td class="text-centre"><button class="btn btn-secondary buy-btn" value="{{ stock['symbol'] }}">Buy</button></td>
-                                <td class="text-centre"><button class="btn btn-secondary sell-btn" data-sell value="{{ stock['symbol'] }}">Sell</button></td>
+                                <td class="text-centre">
+                                    <button class="btn btn-secondary buy-btn" value="{{ stock['symbol'] }}">
+                                        Buy
+                                    </button>
+                                </td>
+                                <td class="text-centre">
+                                    <button class="btn btn-secondary sell-btn" data-sell value="{{ stock['symbol'] }}">
+                                        Sell
+                                    </button>
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>
