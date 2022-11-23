@@ -33,7 +33,7 @@
             {% if balance %}
                 <div class="mb-3">
                     <label class="form-label" for="current-balance">Current Balance</label>
-                    <input class="form-control" disabled name="current-balance" type="text" value="{{ "${:,.2f}".format(balance) }}">
+                    <input class="form-control" readonly name="current-balance" type="text" value="{{ "${:,.2f}".format(balance) }}">
                 </div>
             {% endif %}
             <div class="mb-3">
