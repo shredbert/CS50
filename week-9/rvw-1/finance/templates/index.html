@@ -13,7 +13,9 @@
                 <th class="text-start">Available Cash</th>
                 <td class="text-end">{{ "${:,.2f}".format(user_wealth['cash']) }}</td>
                 <td class="align-middle text-centre" rowspan="2">
-                    <button class="btn btn-primary" id="add-cash-btn" data-available-cash="{{ user_wealth['cash'] }}">Add Cash</button>
+                    <button class="btn btn-primary" id="add-cash-btn" data-available-cash="{{ user_wealth['cash'] }}">
+                        Add Cash
+                    </button>
                 </td>
             </tr>
             <tr>
@@ -22,6 +24,20 @@
             </tr>
         </table>
     </div>
+    <dialog class="mx-auto w-25 text-start" id="add-cash-dlg">
+        <form action="/add-cash" autucomplete="off" class="form" method="post">
+            <div class="mb-3">
+                <label class="form-label" for="available-cash">Available Cash</label>
+                <input class="form-control" disabled id="available-cash" name="available-cash" type="text" value="{{ "${:,.2f}".format(user_wealth['cash']) }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="amount">Amount to Add</label>
+                <input class="form-control" min="0.01" name="amount" step="0.01" type="number">
+            </div>
+            <button class="btn btn-primary">Add Cash</button>
+            <button class="btn btn-secondary" id="cancelAddCash" type="reset">Cancel</button>
+        </form>
+    </dialog>
 
     {% if user_portfolio %}
         <div class="mx-auto table-container table-responsive">
@@ -95,16 +111,6 @@
                 </div>
                 <button class="btn btn-primary">Sell Shares</button>
                 <button class="btn btn-secondary" id="cancelSell" type="reset">Cancel</button>
-            </form>
-        </dialog>
-        <dialog class="mx-auto w-25 text-start" id="add-cash-dlg">
-            <form action="/add-cash" autucomplete="off" class="form" method="post">
-                <div class="mb-3">
-                    <label class="form-label" for="available-cash">Available Cash</label>
-                    <input class="form-control" disabled id="available-cash" name="available-cash" type="text" value="{{ "${:,.2f}".format(user_wealth['cash']) }}">
-                </div>
-                <button class="btn btn-primary">Add Cash</button>
-                <button class="btn btn-secondary" id="cancelAddCash" type="reset">Cancel</button>
             </form>
         </dialog>
     {% else %}

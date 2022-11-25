@@ -2,6 +2,7 @@
     // TODO: Make progressively enhanced -- don't display buy/sell buttons if
     // dialogues not working
     document.addEventListener('click', async (e) => {
+
         if (e.target.classList.contains('buy-btn')) {
 
             // Populate dialogue with symbol
@@ -39,11 +40,15 @@
 
             // Populate dialogue with symbol
             const addCashDlg = document.querySelector('#add-cash-dlg');
-            const availableCash = parseFloat(e.target.dataset.availableCash)
-                .toFixed(2)
-                .toLocaleString( { style: 'currency' } );
-            console.log(availableCash);
-            addCashDlg.querySelector('#available-cash').value = availableCash;
+
+            // No need to round -- toLocaleString() rounds to 2 places
+            // automatically
+            const availableCash = parseFloat(
+                e.target.dataset.availableCash
+            ).toLocaleString();
+
+            addCashDlg.querySelector('#available-cash')
+                .value = `$${availableCash}`;
 
             // Dialogue behaviours
             addCashDlg.showModal();
