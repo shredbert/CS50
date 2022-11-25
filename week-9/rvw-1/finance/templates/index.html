@@ -5,13 +5,14 @@
 {% endblock %}
 
 {% block main %}
+
     <h1>Wealth Summary</h1>
 
     <div class="mx-auto table-container table-responsive">
         <table class="table table-primary">
             <tr>
                 <th class="text-start">Available Cash</th>
-                <td class="text-end">{{ "${:,.2f}".format(user_wealth['cash']) }}</td>
+                <td class="text-end">{{ user_wealth['cash'] | usd }}</td>
                 <td class="align-middle text-centre" rowspan="2">
                     <button class="btn btn-primary" id="add-cash-btn" data-available-cash="{{ user_wealth['cash'] }}" type="submit">
                         Add Cash
@@ -20,7 +21,7 @@
             </tr>
             <tr>
                 <th class="text-start">Total Wealth</th>
-                <td class="text-end">{{ "${:,.2f}".format(user_wealth['total']) }}</td>
+                <td class="text-end">{{ user_wealth['total'] | usd }}</td>
             </tr>
         </table>
     </div>
@@ -28,7 +29,7 @@
         <form action="/add-cash" autucomplete="off" class="form" method="post">
             <div class="mb-3">
                 <label class="form-label" for="available-cash">Available Cash</label>
-                <input class="form-control" disabled id="available-cash" name="available-cash" type="text" value="{{ "${:,.2f}".format(user_wealth['cash']) }}">
+                <input class="form-control" disabled id="available-cash" name="available-cash" type="text" value="{{ user_wealth['cash'] }}">
             </div>
             <div class="mb-3">
                 <label class="form-label" for="amount">Amount to Add</label>
@@ -59,8 +60,8 @@
                                 <td class="text-start">{{ stock["company_name"] }}</td>
                                 <td class="text-start">{{ stock["symbol"] }}</td>
                                 <td class="text-end">{{ stock["shares"] }}</td>
-                                <td class="text-end">{{ "${:,.2f}".format(stock["current_price"]) }}</td>
-                                <td class="text-end">{{ "${:,.2f}".format(stock["total_value"]) }}</td>
+                                <td class="text-end">{{ stock["current_price"] | usd }}</td>
+                                <td class="text-end">{{ stock["total_value"] | usd }}</td>
                                 <td class="text-centre">
                                     <button class="btn btn-secondary buy-btn" data-shares="{{ stock['shares'] }}" data-symbol="{{ stock['symbol'] }}">
                                         Buy
@@ -116,6 +117,7 @@
     {% else %}
         <p><em>You don't own any stocks yet.</em></p>
     {% endif %}
+
 {% endblock %}
 
 {% block scripts %}
