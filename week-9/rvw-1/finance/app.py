@@ -42,6 +42,7 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
+
 @app.route("/")
 @login_required
 def index():
@@ -278,7 +279,7 @@ def login():
         if (len(rows) != 1 or
                 not check_password_hash(
                     rows[0]["hash"], request.form.get("password")
-                )):
+        )):
             return apology("invalid username and/or password", 403)
 
         # Remember which user has logged in
