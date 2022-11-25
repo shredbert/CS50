@@ -244,7 +244,7 @@ def history():
             TIME(transaction_time, 'localtime') AS transaction_time \
          FROM stock_transactions \
          WHERE user_id = ? \
-         ORDER BY transaction_time",
+         ORDER BY transaction_time DESC",
         session["user_id"]
     )
     return render_template("history.html", transactions=transactions)
@@ -318,13 +318,11 @@ def quote():
         lookup_results = lookup(stock_symbol)
 
         if not lookup_results:
-            flash("Invalid symbol -- please try again")
-            return render_template("search-quotes.html")
-            # Better UX to take back to message for re-searching & giving
-            # feedback there
-            # Keep in case errors encountered with flashing instead of
-            # apologizing
-            # return apology("That symbol is invalid", 400)
+            return apology("That symbol is invalid", 400)
+
+            # TODO: Better UX to flash message on same page
+            # flash("Invalid symbol -- please try again")
+            # return render_template("search-quotes.html")
 
         return render_template("quote-results.html", quote=lookup_results)
 
@@ -360,7 +358,7 @@ def register():
             )
 
             if existing_user_id:
-                return apology("That username already exists", 500)
+                return apology("That username already exists", 400)
 
             db.execute(
                 "INSERT INTO users (username, hash) VALUES (?, ?)",

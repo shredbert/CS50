@@ -25,14 +25,14 @@
             </div>
             <!-- Hide & display with JS -- only useful if JS enabled -->
             <div hidden id="sharesOwnedGroup" class="mb-3">
-                <label class="form-label" for="shares">Shares Owned</label>
-                <input class="form-control" id="sharesOwned" name="shares" readonly type="text" value=0>
+                <label class="form-label" for="shares-owned">Shares Owned</label>
+                <input class="form-control" id="sharesOwned" name="shares-owned" readonly type="text" value=0>
             </div>
             <div class="mb-3">
                 <label for="shares">Shares to Sell</label>
                 <input class="form-control" min="1" name="shares" type="number" required>
             </div>
-            <button class="btn btn-primary">Sell Shares</button>
+            <button class="btn btn-primary" type="submit">Sell Shares</button>
         </form>
     {% else %}
         <p><em>

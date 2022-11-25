@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block main %}
+
     <h1>Get Quotes</h1>
 
     <form action="/quote" autocomplete="off" class="mx-auto w-25 text-start" method="post">
@@ -12,7 +13,7 @@
             <label class="form-label">Stock Symbol</label>
             <input autofocus class="form-control" name="symbol" required placeholder="Stock symbol" type="text">
         </div>       
-        <button class="btn btn-primary">Get Quote</button>
+        <button class="btn btn-primary" type="submit">Get Quote</button>
     </form>
 
 {% endblock %}
