@@ -133,9 +133,6 @@ def buy():
 
     elif request.method == "POST":
 
-        print(request.form.get("symbol"))
-        print(request.form.get("shares"))
-
         # Get stock symbol -- case DOESN'T matter to API
         stock_symbol = request.form.get("symbol")
 

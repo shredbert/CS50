@@ -2,7 +2,6 @@
     // TODO: Make progressively enhanced -- don't display buy/sell buttons if
     // dialogues not working
     document.addEventListener('click', async (e) => {
-
         if (e.target.classList.contains('buy-btn')) {
 
             // Populate dialogue with symbol
@@ -11,6 +10,7 @@
             buyDlg.querySelector('#symbol').value = symbol;
             const shares = e.target.dataset.shares;
             buyDlg.querySelector('#current-shares').value = shares;
+            console.log(shares);
 
             // Dialogue behaviours
             buyDlg.showModal();
@@ -33,6 +33,23 @@
             sellDlg.querySelector('#cancelSell')
                 .addEventListener('click', () => {
                     sellDlg.close();
+                });
+
+        } else if (e.target.getAttribute('id') === 'add-cash-btn') {
+
+            // Populate dialogue with symbol
+            const addCashDlg = document.querySelector('#add-cash-dlg');
+            const availableCash = parseFloat(e.target.dataset.availableCash)
+                .toFixed(2)
+                .toLocaleString( { style: 'currency' } );
+            console.log(availableCash);
+            addCashDlg.querySelector('#available-cash').value = availableCash;
+
+            // Dialogue behaviours
+            addCashDlg.showModal();
+            addCashDlg.querySelector('#cancelAddCash')
+                .addEventListener('click', () => {
+                    addCashDlg.close();
                 });
 
         }
