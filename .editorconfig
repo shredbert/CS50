@@ -1,0 +1,7 @@
+[*]
+indent_style = tab
+indent_size = 4
+tab_width = 4
+
+[*.{adoc,md,txt}]
+max_line_length = 79

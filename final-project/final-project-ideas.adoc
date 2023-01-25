@@ -1,0 +1,127 @@
+= CS50 Final Project Ideas
+
+== Jamadoro -- Jamming to tunes while doing Pomodoros
+
+* Web app with a simple Pomodoro timer with work time, short break time, & the
+  # of Pomodoros to count
+** count down time in large font
+** play different noises for work, break, & session stop
+** integrate with Spotify by:
+*** checking for open players
+*** if found, playing during work time & not break time
+** store settings on server
+*** work time
+*** break time
+*** default number of Pomodoros
+*** Spotify credentials?
+*** where user is in session in case interrupted?
+
+* tech detes:
+** read Spotify key from server as per C$50 Finance
+** make regular updates to DB as time ellapses -- e.g., create PUT endpoint for
+   updating in progress time field, send update every 10 seconds?
+
+* Pros:
+** Quite useful
+** API exposure
+** Web exposure
+** Limited/realistic scope
+** DB exposure
+
+* Cons:
+** Not as CS-heavy?
+
+* *q:* all client = use TS, Sass, etc.
+** client-server = more vanilla?
+** *both* compatible with API -- slight differences in implementation for
+   securing
+
+== Do Toos
+
+* Web app
+
+* TODOs on steroids: create tasks, share them with other users, track
+  completion rates, re-assign as needed
+** Helps manage a home more easily: actually useful
+** Assign tasks to "`areas`" that help divy up the workload
+** Leverage Google & Outlook calendar APIs
+
+* Pros:
+** Web XP
+** Useful to career in Web IRL
+** Easily shareable portfolio piece
+** API XP
+
+* Cons:
+** More design/product xp necessary to make impressive portfolio piece
+** Lots of design work required before happy with it
+** Design work useful but distracting for purposes of course
+
+== Al Gore Rhythms
+
+* Console App
+
+* CLI app written in C & Python to compare the time it takes to complete common
+  algorithms between languages
+** Write common algorithms in C, Python, & others going forward
+** Accept a single list of numbers from the user
+*** Validate numbers contain only valid digits, separated by whitespace
+** "`Dispatch`" these algorithms while timing them
+** Write results to console in textual format
+*** Eventually, can represent graphically, either through CLI app lib or
+    web-based one (using Wasm?)
+** Name = compare perf to be least wasteful from computing? Fun idea?
+
+* Pros:
+** Good portfolio piece
+*** Can add to over time with different algorithms, data structures, &
+    frameworks – valuable learning XP
+** Exposure to CS/algorithms & data structures?
+** Very little design work required
+** Interesting – can keep adding other languages/platforms for experimentation
+   & explore other algorithms
+
+* Cons:
+** Not easily shareable unless go with Wasm (out of scope probably?)
+*** _Maybe not relevant? Can just share GitHub?_
+** Not as applicable to web career
+
+== **CLI**ppy
+
+* A library of common Unix utilities
+
+* Re-make the most common CLI tools for a Unix environment in C
+** Learning experience for writing low-level system code
+** Find source code for GNU-based equivalents & compare approaches in writeup?
+** Most common = `+ls+`, `+cat+`, `+grep+`, `+cd+`
+*** `+cd+` = shell builtin?
+** *Or* should just pick 1 & try to recreate all it’s args, features, etc.?
+** *Or* pick 1 & provide most useful options for it?
+*** Ex., `+ls+` = list normally, list all, list long?
+
+* Pros:
+** Good learning XP for low-level systems programming
+** Interesting to compare with real code for learning purposes
+** Good portfolio piece?
+** Very applicable to course code?
+
+* Cons:
+** Lots of time?
+** Beyond skill level?
+
+== Crash -- The **Cra**sh-prone **Sh**ell
+
+* Make a basic shell coded in C
+** Read from $PATH?
+** Dispatch C programs?
+** Include several built-ins?
+
+* Pros:
+** Good XP?
+** Fun project to maintain/add to over time?
+** Add useful features – built-in package manager for prompts?
+*** Bundle with Oh My Posh?
+
+* Cons:
+** Lots of time?
+** Beyond skill level?
