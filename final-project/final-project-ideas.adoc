@@ -1,6 +1,6 @@
 = CS50 Final Project Ideas
 
-== Jamadoro -- Jamming to tunes while doing Pomodoros
+== Jammadoro -- Jamming to tunes while doing Pomodoros
 
 * Web app with a simple Pomodoro timer with work time, short break time, & the
   # of Pomodoros to count

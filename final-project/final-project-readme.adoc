@@ -1,0 +1,57 @@
+= CS50 Final Project: Jammadoro
+
+== Intro
+
+* Web app with a simple Pomodoro timer with work time, break time, & the
+  # of Pomodoros to count
+** count down time in large font
+** play different noises for work, break, & session stop
+** integrate with Spotify by:
+*** checking for open players
+*** if found, playing during work time & not break time
+** store settings on server
+*** work time
+*** break time
+*** default number of Pomodoros
+*** Spotify credentials?
+*** where user is in session in case interrupted?
+
+== Product Requirements
+
+* home = view & set work time & # of Pomodoros to count in a row
+** create account to store preferences & view dashboard
+
+* allow for login to Spotify
+** select from playlists in lib to listen to
+** toggle play/pause if app open
+** display which app being played in
+** *persist* login if logged into app?
+
+* dashboard = display:
+** total length of time using app
+** avg Pomodoros per month, day, week
+** *top playlists/songs* while Pomodoros active?!?!
+
+* sign in = integrate with Google & MS?
+** good xp w/ APIs?
+
+== Technical Requirements
+
+* TODO: how to store where at in timer session? regularly update server?
+  necessary?
+
+* timer itself = pretty simple, mostly client logic
+** separate page for configs -- stores in Postgres
+
+* use Flask for server
+
+* use Flask-Session for storing user's state
+
+* contact Spotify API
+** use "requests" package
+
+* use Postgres instead of SQLite & connect via SQLAlchemy
+** requires more Python packages -- check which ones
+
+* deploy to Digital Ocean
+** run DB on server itself, *not* separately
